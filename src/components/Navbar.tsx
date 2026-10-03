@@ -15,7 +15,9 @@ import {
   X,
   ChevronDown,
   ArrowRight,
-  Zap
+  Zap,
+  Bot,
+  Search
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -216,6 +218,15 @@ export default function Navbar() {
 
         {/* Desktop CTA Buttons */}
         <div className="hidden sm:flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent('open-agentos-ai'))}
+            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition group"
+          >
+            <Bot className="w-3.5 h-3.5 text-brand-400 group-hover:scale-110 transition-transform" />
+            <span>Ask AI</span>
+            <kbd className="text-[10px] bg-black/40 px-1.5 py-0.5 rounded text-slate-400 font-mono border border-white/5">⌘K</kbd>
+          </button>
           <Link 
             href="/pricing" 
             className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition"
@@ -267,6 +278,17 @@ export default function Navbar() {
             ))}
           </div>
           <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5">
+            <button 
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                window.dispatchEvent(new CustomEvent('open-agentos-ai'));
+              }}
+              className="w-full text-center py-2.5 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 text-xs font-bold text-brand-300 border border-brand-500/20 flex items-center justify-center gap-2"
+            >
+              <Bot className="w-4 h-4 text-brand-400" />
+              <span>Ask AgentOS AI Copilot</span>
+            </button>
             <Link 
               href="/pricing" 
               onClick={() => setOpen(false)} 

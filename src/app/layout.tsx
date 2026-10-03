@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import AiAssistantModal from '@/components/AiAssistantModal';
 
 export const metadata: Metadata = {
   title: 'AgentOS Academy — 6 Powerful AI SaaS Tools Under One Roof',
@@ -45,6 +46,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <AiAssistantModal />
       </body>
     </html>
   );
