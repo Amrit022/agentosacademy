@@ -75,7 +75,7 @@ export default function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Shield className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Stripe Global Payments (\$USD)</span>
+              <span>PayPal & Global Payments (USD)</span>
             </li>
             <li className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
