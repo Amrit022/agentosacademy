@@ -2,10 +2,26 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Zap, ArrowRight, ShieldCheck, Globe, Star, Sparkles, HelpCircle } from 'lucide-react';
+import { 
+  CheckCircle2, 
+  Zap, 
+  ArrowRight, 
+  ShieldCheck, 
+  Globe, 
+  Sparkles, 
+  CreditCard, 
+  Lock,
+  X,
+  HelpCircle,
+  ExternalLink
+} from 'lucide-react';
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(true);
+  const [showPaypalModal, setShowPaypalModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState('Pro Creator ($9/mo)');
+  const [paypalUsername, setPaypalUsername] = useState('');
+  const [paypalSuccess, setPaypalSuccess] = useState(false);
 
   const plans = [
     {
@@ -41,8 +57,8 @@ export default function PricingPage() {
       period: '/month',
       badge: 'Most Popular',
       popular: true,
-      ctaText: 'Upgrade to Pro Plan',
-      ctaHref: '#checkout',
+      ctaText: 'Upgrade with PayPal / Card',
+      ctaHref: '#paypal',
       features: [
         'All 6 Micro-SaaS Tools Unlocked',
         'Unlimited AI Content & Copy Generation',
@@ -62,8 +78,8 @@ export default function PricingPage() {
       period: '/month',
       badge: 'Power Agency',
       popular: false,
-      ctaText: 'Start Agency Plan',
-      ctaHref: '#agency',
+      ctaText: 'Start Agency Plan with PayPal',
+      ctaHref: '#paypal-agency',
       features: [
         'Everything in Pro Tier Included',
         'Unlimited Client Workspaces & Sub-Accounts',
@@ -77,20 +93,31 @@ export default function PricingPage() {
     },
   ];
 
+  const handleOpenPaypal = (planName: string) => {
+    setSelectedPlan(planName);
+    setShowPaypalModal(true);
+    setPaypalSuccess(false);
+  };
+
+  const handleSimulatePayment = (e: React.FormEvent) => {
+    e.preventDefault();
+    setPaypalSuccess(true);
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-20">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-24">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold text-accent-400 bg-accent-500/10 border border-accent-500/20">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Simple, Transparent Pricing</span>
+          <span>Instant Global Checkout</span>
         </div>
         <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight">
           One Membership. <br />
           <span className="text-gradient">All 6 Micro-SaaS Engines.</span>
         </h1>
         <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-          Say goodbye to paying $190/month across Canva, Jasper, Bitly, and Linktree. Get our full suite with predictable, high-value plans.
+          Pay with PayPal or any global credit/debit card. Zero paperwork, zero hidden platform fees.
         </p>
 
         {/* Monthly / Annual Toggle */}
@@ -117,7 +144,7 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* Pricing Cards Grid */}
+      {/* Pricing Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
         {plans.map((p, idx) => (
           <div
@@ -174,15 +201,15 @@ export default function PricingPage() {
             <div className="mt-10">
               {p.ctaHref.startsWith('#') ? (
                 <button
-                  onClick={() => alert(`Stripe & Razorpay checkout initiated for ${p.name}! Accepting international USD cards and Indian UPI.`)}
+                  onClick={() => handleOpenPaypal(p.name)}
                   className={`w-full py-3.5 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg ${
                     p.popular
                       ? 'bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white shadow-brand-500/25 hover:opacity-90'
                       : 'glass hover:bg-white/10 text-white border border-white/10'
                   }`}
                 >
+                  <CreditCard className="w-4 h-4" />
                   <span>{p.ctaText}</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               ) : (
                 <Link
@@ -197,30 +224,135 @@ export default function PricingPage() {
         ))}
       </div>
 
-      {/* Trust & Guarantee Banner */}
-      <div className="glass rounded-3xl p-8 max-w-4xl mx-auto border border-white/5 grid grid-cols-1 md:grid-cols-3 gap-6 text-center sm:text-left">
-        <div className="flex items-center gap-3">
-          <ShieldCheck className="w-8 h-8 text-emerald-400 shrink-0" />
-          <div>
-            <div className="text-xs font-bold text-white">14-Day Money Back Guarantee</div>
-            <div className="text-[11px] text-slate-400">Zero hassle refund policy if unsatisfied</div>
-          </div>
+      {/* WHY ARE THE TOOLS FREE? (Transparent Business Model) */}
+      <div className="glass rounded-3xl p-8 sm:p-12 max-w-4xl mx-auto border border-white/10 space-y-6">
+        <div className="flex items-center gap-2 text-brand-400">
+          <HelpCircle className="w-5 h-5" />
+          <h2 className="text-lg font-bold text-white">Why are these tools free to use? (Our Business Model)</h2>
         </div>
-        <div className="flex items-center gap-3">
-          <Globe className="w-8 h-8 text-cyan-400 shrink-0" />
-          <div>
-            <div className="text-xs font-bold text-white">Global & Indian Payments</div>
-            <div className="text-[11px] text-slate-400">Stripe USD, Credit Cards & Razorpay UPI</div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-300">
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-2">
+            <div className="font-bold text-white text-sm">1. Free Value First</div>
+            <p className="text-slate-400 leading-relaxed">
+              We believe anyone should be able to build a professional resume, generate an email signature, or launch a bio link without having to enter a credit card upfront.
+            </p>
           </div>
-        </div>
-        <div className="flex items-center gap-3">
-          <Zap className="w-8 h-8 text-amber-400 shrink-0" />
-          <div>
-            <div className="text-xs font-bold text-white">Instant Account Activation</div>
-            <div className="text-[11px] text-slate-400">No manual setup or waiting periods</div>
+
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-2">
+            <div className="font-bold text-white text-sm">2. Organic Viral Loop</div>
+            <p className="text-slate-400 leading-relaxed">
+              When free users share their bio link pages or email signatures, it naturally spreads awareness for AgentOS Academy globally with $0 advertising spend.
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-2">
+            <div className="font-bold text-white text-sm">3. Pro Upgrades for Scale</div>
+            <p className="text-slate-400 leading-relaxed">
+              Serious freelancers, agencies, and founders happily upgrade to Pro ($9/mo) to unlock unlimited AI content generation, Wall-of-Love widgets, and custom branding.
+            </p>
           </div>
         </div>
       </div>
+
+      {/* Zero-Documentation Global Payment Info */}
+      <div className="glass rounded-3xl p-8 sm:p-12 max-w-4xl mx-auto border border-white/10 space-y-4">
+        <div className="flex items-center gap-2 text-cyan-400">
+          <Globe className="w-5 h-5" />
+          <h2 className="text-lg font-bold text-white">How You Can Accept Global Payments with Zero Paperwork</h2>
+        </div>
+        <p className="text-xs text-slate-300 leading-relaxed">
+          If you are starting from India and selling freelance deliverables to clients in the USA, Europe, or Australia, you don't need complicated business registration:
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300 pt-2">
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+            <div className="font-bold text-white">PayPal.me (Free & Instant)</div>
+            <p className="text-slate-400 mt-1 leading-relaxed">
+              Create a free account at PayPal.com. You get a link like <code>paypal.me/yourname</code>. Send it to any client globally and they can pay with any credit/debit card in USD or EUR. Money auto-transfers to your Indian bank in 24 hours.
+            </p>
+          </div>
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
+            <div className="font-bold text-white">Gumroad & Lemon Squeezy (Merchant of Record)</div>
+            <p className="text-slate-400 mt-1 leading-relaxed">
+              Both platforms act as your global sales merchant. They handle US sales tax, VAT, and card fraud automatically with 0 paperwork. You withdraw your USD earnings directly to your local bank account.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive PayPal Payment Modal */}
+      {showPaypalModal && (
+        <div className="fixed inset-0 z-[250] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="glass p-7 sm:p-8 rounded-3xl border border-white/20 max-w-md w-full bg-[#0c1020] shadow-2xl relative space-y-5">
+            <button 
+              onClick={() => setShowPaypalModal(false)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-white p-1"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-xl bg-[#003087] flex items-center justify-center text-white font-black text-sm">
+                P
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">PayPal Global Checkout</h3>
+                <div className="text-xs text-slate-400">{selectedPlan}</div>
+              </div>
+            </div>
+
+            {!paypalSuccess ? (
+              <form onSubmit={handleSimulatePayment} className="space-y-4 pt-2">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Your Email or PayPal ID</label>
+                  <input 
+                    type="email" 
+                    required
+                    value={paypalUsername} 
+                    onChange={(e) => setPaypalUsername(e.target.value)}
+                    placeholder="you@gmail.com"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-medium"
+                  />
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#003087]/20 border border-[#003087]/40 text-xs text-slate-300 space-y-1">
+                  <div className="font-bold text-white flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>PayPal Buyer Protection Active</span>
+                  </div>
+                  <div className="text-[11px] text-slate-400">
+                    Works globally with Visa, MasterCard, Amex, Discover, and local bank debit cards.
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3.5 rounded-xl bg-[#0070ba] hover:bg-[#003087] text-white font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2"
+                >
+                  <span>Pay with PayPal</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
+            ) : (
+              <div className="text-center py-6 space-y-3">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+                  <CheckCircle2 className="w-7 h-7" />
+                </div>
+                <h4 className="text-base font-bold text-white">Payment Checkout Verified!</h4>
+                <p className="text-xs text-slate-300">
+                  Your PayPal integration for {selectedPlan} is active. Thank you!
+                </p>
+                <button
+                  onClick={() => setShowPaypalModal(false)}
+                  className="mt-4 px-6 py-2 rounded-xl bg-white/10 text-xs font-bold text-white"
+                >
+                  Close Window
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

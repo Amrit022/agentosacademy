@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { 
   Link2, 
   Plus, 
@@ -13,30 +14,62 @@ import {
   Eye, 
   BarChart2, 
   Palette, 
-  Share2,
-  DollarSign,
-  Video,
-  Music,
-  ShoppingBag
+  Shuffle,
+  DollarSign
 } from 'lucide-react';
 
+const SAMPLE_LINK_PRESETS = [
+  [
+    { id: '1', title: '💼 Hire Me for Custom Development ($60/hr)', url: 'https://upwork.com', icon: '💻', clicks: 1420 },
+    { id: '2', title: '📄 Download My ATS Tech Resume (PDF)', url: '/tools/resume-builder', icon: '📄', clicks: 980 },
+    { id: '3', title: '🎥 Watch My System Architecture Tutorials', url: 'https://youtube.com', icon: '🎥', clicks: 610 },
+    { id: '4', title: '☕ Support My Work via PayPal / Coffee', url: 'https://paypal.me', icon: '☕', clicks: 310 },
+  ],
+  [
+    { id: '1', title: '🎨 Explore My Figma UI/UX Design Portfolio', url: 'https://dribbble.com', icon: '🎨', clicks: 2150 },
+    { id: '2', title: '📅 Book a 30-Min Discovery Call', url: 'https://cal.com', icon: '📅', clicks: 1120 },
+    { id: '3', title: '⭐ Client Wall-of-Love Reviews', url: '/tools/testimonials', icon: '⭐', clicks: 740 },
+    { id: '4', title: '💌 Subscribe to My Design Substack', url: 'https://substack.com', icon: '💌', clicks: 490 },
+  ],
+  [
+    { id: '1', title: '📈 Read My B2B SaaS Growth Playbook', url: 'https://linkedin.com', icon: '📈', clicks: 3400 },
+    { id: '2', title: '🚀 Micro-SaaS Content Generator Engine', url: '/tools/content-writer', icon: '🚀', clicks: 1820 },
+    { id: '3', title: '🔗 Branded Link Analytics Dashboard', url: '/tools/url-shortener', icon: '🔗', clicks: 920 },
+    { id: '4', title: '💳 Send Global USD Payments (PayPal)', url: 'https://paypal.me', icon: '💳', clicks: 530 },
+  ]
+];
+
 export default function BioLinkPage() {
-  const [handle, setHandle] = useState('amritgupta');
-  const [displayName, setDisplayName] = useState('Amrit Gupta');
-  const [bio, setBio] = useState('Full Stack SaaS Engineer & Founder. Building digital products from India for the world 🇮🇳 🌍');
+  const [handle, setHandle] = useState('elenarostova');
+  const [displayName, setDisplayName] = useState('Elena Rostova');
+  const [bio, setBio] = useState('Product Designer & Design Systems Lead. Building user-centered interfaces for global startups 🇩🇪 🌍');
   const [theme, setTheme] = useState<'midnight' | 'sunset' | 'emerald' | 'minimal'>('midnight');
   const [activeTab, setActiveTab] = useState<'editor' | 'analytics'>('editor');
+  const [presetIndex, setPresetIndex] = useState(0);
   
-  const [links, setLinks] = useState([
-    { id: '1', title: '🚀 My Digital SaaS Tools Suite', url: 'https://agentosacademy.com', icon: '⚡', clicks: 1240, type: 'featured' },
-    { id: '2', title: '💼 Hire Me for Custom Development ($50/hr)', url: 'https://upwork.com', icon: '💻', clicks: 840, type: 'standard' },
-    { id: '3', title: '📺 Watch My Tech Tutorials on YouTube', url: 'https://youtube.com', icon: '🎥', clicks: 512, type: 'standard' },
-    { id: '4', title: '☕ Support My Open-Source Work (Coffee/Tips)', url: 'https://buymeacoffee.com', icon: '☕', clicks: 230, type: 'standard' },
-  ]);
-  
+  const [links, setLinks] = useState(SAMPLE_LINK_PRESETS[0]);
   const [copied, setCopied] = useState(false);
 
   const totalClicks = links.reduce((acc, curr) => acc + curr.clicks, 0);
+
+  const loadPreset = () => {
+    const next = (presetIndex + 1) % SAMPLE_LINK_PRESETS.length;
+    setPresetIndex(next);
+    setLinks(SAMPLE_LINK_PRESETS[next]);
+    if (next === 0) {
+      setHandle('amritdev');
+      setDisplayName('Amrit Gupta');
+      setBio('Full Stack SaaS Architect & Developer. Shipping micro-tools globally from India 🇮🇳');
+    } else if (next === 1) {
+      setHandle('elenadesign');
+      setDisplayName('Elena Rostova');
+      setBio('Lead Product Designer & Design Systems Specialist. Creating sleek fintech apps in Berlin 🇩🇪');
+    } else {
+      setHandle('priyagrowth');
+      setDisplayName('Priya Sharma');
+      setBio('Head of Organic Growth & Content Strategy. Scaling B2B SaaS pipelines to $5M+ ARR 🌍');
+    }
+  };
 
   const addLink = () => {
     setLinks([
@@ -46,8 +79,7 @@ export default function BioLinkPage() {
         title: 'New Featured Deliverable', 
         url: 'https://', 
         icon: '🔗', 
-        clicks: 0, 
-        type: 'standard' 
+        clicks: 0
       }
     ]);
   };
@@ -73,19 +105,31 @@ export default function BioLinkPage() {
               Linktree & Beacons Alternative
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-white mt-1">Bio Link Creator & Bento Portfolios</h1>
+          <h1 className="text-2xl sm:text-4xl font-black text-white mt-1">Bio Link Page Creator</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Host your branded link-in-bio hub under <strong className="text-white">agentosacademy.com/u/{handle}</strong> with 0% commission.
+            Host your customized, zero-commission portfolio link under <strong className="text-white">agentosacademy.com/u/{handle}</strong>.
           </p>
         </div>
 
-        <button 
-          onClick={copyUrl}
-          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xs shadow-lg shadow-purple-500/25 flex items-center gap-2 hover:opacity-90 transition"
-        >
-          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? 'Copied to Clipboard!' : 'Copy Public Bio URL'}
-        </button>
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={loadPreset}
+            className="px-4 py-2.5 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/30 text-white font-bold text-xs flex items-center gap-2 transition"
+          >
+            <Shuffle className="w-3.5 h-3.5 text-purple-300" />
+            <span>🎲 Load Sample Creator</span>
+          </button>
+
+          <button 
+            type="button"
+            onClick={copyUrl}
+            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xs shadow-lg shadow-purple-500/25 flex items-center gap-2 hover:opacity-90 transition"
+          >
+            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {copied ? 'Copied Bio URL!' : 'Copy Public Bio URL'}
+          </button>
+        </div>
       </div>
 
       {/* Editor & Analytics Tabs */}
@@ -99,7 +143,7 @@ export default function BioLinkPage() {
           }`}
         >
           <Palette className="w-4 h-4" />
-          <span>Page Builder & Links</span>
+          <span>Page Builder & Buttons</span>
         </button>
         <button
           onClick={() => setActiveTab('analytics')}
@@ -119,12 +163,12 @@ export default function BioLinkPage() {
           {/* Controls Panel (7 cols) */}
           <div className="lg:col-span-7 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
             <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
-              <Sparkles className="w-4 h-4 text-purple-400" /> Bio Profile Customizer
+              <Sparkles className="w-4 h-4 text-purple-400" /> Page Settings
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">Custom Handle URL</label>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">Custom Handle</label>
                 <div className="flex items-center rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-xs text-slate-400">
                   <span>/u/</span>
                   <input 
@@ -153,7 +197,7 @@ export default function BioLinkPage() {
                 rows={2} 
                 value={bio} 
                 onChange={(e) => setBio(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-purple-500"
+                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-purple-500 font-sans"
               />
             </div>
 
@@ -264,7 +308,7 @@ export default function BioLinkPage() {
             </div>
           </div>
 
-          {/* Right Panel: Live Mobile Simulator (5 cols) */}
+          {/* Right Panel: Live Mobile Phone Simulation (5 cols) */}
           <div className="lg:col-span-5 flex flex-col items-center sticky top-28">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-400 mb-3">
               <Smartphone className="w-4 h-4 text-purple-400" />
@@ -281,10 +325,10 @@ export default function BioLinkPage() {
                 ? 'bg-[#0f1117]'
                 : 'bg-[#0a0c18]'
             }`}>
-              {/* Dynamic island / speaker bar */}
+              {/* Dynamic island bar */}
               <div className="w-32 h-5 bg-black/60 rounded-full mx-auto mb-6" />
 
-              {/* Profile Card */}
+              {/* Profile Header */}
               <div className="text-center space-y-3 px-3">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 mx-auto flex items-center justify-center text-2xl font-black text-white shadow-xl shadow-purple-500/30 border-2 border-white/20">
                   {displayName.charAt(0)}
@@ -296,13 +340,13 @@ export default function BioLinkPage() {
                 <p className="text-[11px] text-slate-200 leading-relaxed px-2 font-medium">{bio}</p>
               </div>
 
-              {/* Stack of Buttons */}
+              {/* Links Stack */}
               <div className="space-y-3 my-6 px-1">
                 {links.map((l) => (
                   <a
                     key={l.id}
                     href={l.url}
-                    target="_blank"
+                    target={l.url.startsWith('/') ? '_self' : '_blank'}
                     rel="noreferrer"
                     className={`w-full py-3.5 px-4 rounded-2xl flex items-center justify-between text-xs font-bold transition-all shadow-md group ${
                       theme === 'sunset'
@@ -324,7 +368,7 @@ export default function BioLinkPage() {
               </div>
 
               {/* Watermark */}
-              <div className="text-center text-[10px] text-slate-400 pb-3 border-t border-white/10 pt-3">
+              <div className="text-center text-[10px] text-slate-400 pb-3 border-t border-white/10 pt-3 font-mono">
                 agentosacademy.com/u/{handle}
               </div>
             </div>
@@ -335,7 +379,7 @@ export default function BioLinkPage() {
         <div className="glass p-8 sm:p-10 rounded-3xl border border-white/10 max-w-4xl mx-auto space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="glass p-5 rounded-2xl border border-white/5">
-              <div className="text-xs font-bold text-slate-400">Total Page Views</div>
+              <div className="text-xs font-bold text-slate-400">Total Profile Views</div>
               <div className="text-3xl font-black text-white mt-1">4,892</div>
               <div className="text-[10px] text-emerald-400 mt-1 font-bold">+28% this week</div>
             </div>
@@ -345,9 +389,9 @@ export default function BioLinkPage() {
               <div className="text-[10px] text-slate-400 mt-1 font-bold">57.6% CTR</div>
             </div>
             <div className="glass p-5 rounded-2xl border border-white/5">
-              <div className="text-xs font-bold text-slate-400">Top Performing Channel</div>
-              <div className="text-xl font-bold text-emerald-300 mt-1">SaaS Tools Suite</div>
-              <div className="text-[10px] text-slate-400 mt-1 font-bold">1,240 clicks</div>
+              <div className="text-xs font-bold text-slate-400">Top Performing Link</div>
+              <div className="text-base font-bold text-emerald-300 mt-1 truncate">{links[0]?.title}</div>
+              <div className="text-[10px] text-slate-400 mt-1 font-bold">{links[0]?.clicks} clicks</div>
             </div>
           </div>
         </div>

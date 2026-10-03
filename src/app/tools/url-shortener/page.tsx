@@ -14,21 +14,22 @@ import {
   Laptop,
   Tablet,
   Download,
-  Share2
+  Share2,
+  Sparkles
 } from 'lucide-react';
 
 export default function UrlShortenerPage() {
-  const [destinationUrl, setDestinationUrl] = useState('https://agentosacademy.com/tools/resume-builder');
-  const [customSlug, setCustomSlug] = useState('free-resume');
-  const [shortUrl, setShortUrl] = useState('https://agentosacademy.com/s/free-resume');
+  const [destinationUrl, setDestinationUrl] = useState('https://dribbble.com/shots/21400-figma-saas-ui');
+  const [customSlug, setCustomSlug] = useState('design-portfolio');
+  const [shortUrl, setShortUrl] = useState('https://agentosacademy.com/s/design-portfolio');
   const [copied, setCopied] = useState(false);
-  const [clicks, setClicks] = useState(1480);
+  const [clicks, setClicks] = useState(4210);
 
   const [history, setHistory] = useState([
-    { slug: 'free-resume', dest: 'https://agentosacademy.com/tools/resume-builder', clicks: 1480, created: 'Today', status: 'Active' },
-    { slug: 'amrit-bio', dest: 'https://agentosacademy.com/u/amritgupta', clicks: 824, created: 'Yesterday', status: 'Active' },
-    { slug: 'upwork-portfolio', dest: 'https://upwork.com/freelancers/profile', clicks: 312, created: '3 days ago', status: 'Active' },
-    { slug: 'youtube-demo', dest: 'https://youtube.com/watch?v=agentos', clicks: 184, created: '5 days ago', status: 'Active' },
+    { slug: 'design-portfolio', dest: 'https://dribbble.com/shots/21400-figma-saas-ui', clicks: 4210, created: 'Today', tag: 'Portfolio' },
+    { slug: 'tech-newsletter', dest: 'https://substack.com/@creatorshub/post-84', clicks: 1890, created: 'Yesterday', tag: 'Newsletter' },
+    { slug: 'zoom-consulting', dest: 'https://cal.com/amritgupta/strategy-session', clicks: 940, created: '3 days ago', tag: 'Booking' },
+    { slug: 'product-demo', dest: 'https://loom.com/share/92a83bd789e2', clicks: 620, created: '5 days ago', tag: 'Video' },
   ]);
 
   const handleShorten = (e: React.FormEvent) => {
@@ -38,7 +39,7 @@ export default function UrlShortenerPage() {
     const newShort = `https://agentosacademy.com/s/${slug}`;
     setShortUrl(newShort);
     setHistory([
-      { slug, dest: destinationUrl, clicks: 1, created: 'Just now', status: 'Active' },
+      { slug, dest: destinationUrl, clicks: 1, created: 'Just now', tag: 'Custom' },
       ...history
     ]);
   };
@@ -56,16 +57,16 @@ export default function UrlShortenerPage() {
         <div className="flex items-center gap-2">
           <span className="text-xs font-bold uppercase tracking-wider text-cyan-400">Tool #6</span>
           <span className="text-[10px] text-cyan-300 bg-cyan-500/10 px-2 py-0.5 rounded-full font-bold">
-            Custom Domains & Geo Tracking
+            Branded Links & QR Engine
           </span>
         </div>
         <h1 className="text-2xl sm:text-4xl font-black text-white mt-1">URL Shortener & Geographic Analytics</h1>
         <p className="text-xs text-slate-400 mt-1">
-          Generate branded short links with instant vector QR codes and geographic visitor metrics.
+          Turn long destination URLs into clean, memorable links with instant vector QR codes and geographic analytics.
         </p>
       </div>
 
-      {/* Main Shortener Bar */}
+      {/* Main Shortener Form */}
       <div className="glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
         <form onSubmit={handleShorten} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
           <div className="md:col-span-7">
@@ -111,8 +112,8 @@ export default function UrlShortenerPage() {
         <div className="glass p-6 sm:p-7 rounded-3xl border border-white/10 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-slate-400">Generated Short URL</span>
-              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-bold">Active</span>
+              <span className="text-xs font-bold text-slate-400">Generated Short Link</span>
+              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-bold">Live Redirect</span>
             </div>
             <div className="text-lg font-black text-cyan-300 font-mono break-all">{shortUrl}</div>
             <div className="text-[11px] text-slate-400 mt-2 truncate font-mono">
@@ -135,51 +136,51 @@ export default function UrlShortenerPage() {
             <QrCode className="w-20 h-20 text-slate-950" />
           </div>
           <div className="text-xs font-bold text-white">Scannable Vector QR Code</div>
-          <div className="text-[11px] text-slate-400 mt-1">High-contrast for packaging, flyers, and business cards</div>
+          <div className="text-[11px] text-slate-400 mt-1">Ready for business cards, print flyers, and posters</div>
         </div>
 
-        {/* Geographic Visitor Breakdown */}
+        {/* Geographic Breakdown */}
         <div className="glass p-6 sm:p-7 rounded-3xl border border-white/10 space-y-3">
           <div className="flex items-center justify-between border-b border-white/5 pb-2">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
-              <Globe2 className="w-3.5 h-3.5 text-cyan-400" /> Traffic Locations
+              <Globe2 className="w-3.5 h-3.5 text-cyan-400" /> Geographic Visitors
             </span>
             <span className="text-xs font-bold text-emerald-400">+{clicks} total clicks</span>
           </div>
 
           <div className="space-y-2 text-xs">
             <div className="flex justify-between text-slate-300">
-              <span>🇮🇳 India</span>
-              <span className="font-bold text-white">52% (770 clicks)</span>
+              <span>🇺🇸 United States</span>
+              <span className="font-bold text-white">48% (2,020 clicks)</span>
             </div>
             <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-cyan-400 h-full w-[52%]" />
+              <div className="bg-cyan-400 h-full w-[48%]" />
             </div>
 
             <div className="flex justify-between text-slate-300 pt-1">
-              <span>🇺🇸 United States</span>
-              <span className="font-bold text-white">29% (429 clicks)</span>
+              <span>🇮🇳 India</span>
+              <span className="font-bold text-white">32% (1,347 clicks)</span>
             </div>
             <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-indigo-400 h-full w-[29%]" />
+              <div className="bg-indigo-400 h-full w-[32%]" />
             </div>
 
             <div className="flex justify-between text-slate-300 pt-1">
               <span>🇬🇧 United Kingdom</span>
-              <span className="font-bold text-white">14% (207 clicks)</span>
+              <span className="font-bold text-white">12% (505 clicks)</span>
             </div>
             <div className="w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-purple-400 h-full w-[14%]" />
+              <div className="bg-purple-400 h-full w-[12%]" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Recent Campaign Links Table */}
+      {/* Campaign Directory Table with Diverse Links */}
       <div className="glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-bold text-white uppercase tracking-wider">Campaign Links Directory</h3>
-          <span className="text-[11px] text-slate-400">{history.length} active links</span>
+          <span className="text-[11px] text-slate-400">{history.length} active campaigns</span>
         </div>
 
         <div className="overflow-x-auto">
@@ -187,9 +188,10 @@ export default function UrlShortenerPage() {
             <thead>
               <tr className="border-b border-white/5 text-slate-400">
                 <th className="pb-3 font-bold">Short Link</th>
+                <th className="pb-3 font-bold">Category</th>
                 <th className="pb-3 font-bold">Original Destination</th>
                 <th className="pb-3 font-bold text-right">Total Clicks</th>
-                <th className="pb-3 font-bold text-right">Status</th>
+                <th className="pb-3 font-bold text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -198,14 +200,26 @@ export default function UrlShortenerPage() {
                   <td className="py-3.5 font-bold text-cyan-300 font-mono">
                     agentosacademy.com/s/{h.slug}
                   </td>
+                  <td className="py-3.5">
+                    <span className="px-2 py-0.5 rounded-md bg-white/5 text-[10px] font-semibold text-slate-300 border border-white/5">
+                      {h.tag}
+                    </span>
+                  </td>
                   <td className="py-3.5 text-slate-400 max-w-xs truncate font-mono">
                     {h.dest}
                   </td>
                   <td className="py-3.5 text-right font-black text-white">
-                    {h.clicks}
+                    {h.clicks.toLocaleString()}
                   </td>
-                  <td className="py-3.5 text-right text-emerald-400 font-bold">
-                    {h.status}
+                  <td className="py-3.5 text-right">
+                    <a
+                      href={h.dest}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-brand-400 hover:text-brand-300 inline-flex items-center gap-1 font-semibold"
+                    >
+                      <span>Visit</span> <ExternalLink className="w-3 h-3" />
+                    </a>
                   </td>
                 </tr>
               ))}
