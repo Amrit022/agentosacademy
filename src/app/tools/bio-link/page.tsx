@@ -1,27 +1,59 @@
 'use client';
 
 import { useState } from 'react';
-import { Link2, Plus, Trash2, ExternalLink, Copy, Check, Sparkles, Smartphone } from 'lucide-react';
+import { 
+  Link2, 
+  Plus, 
+  Trash2, 
+  ExternalLink, 
+  Copy, 
+  Check, 
+  Sparkles, 
+  Smartphone, 
+  Eye, 
+  BarChart2, 
+  Palette, 
+  Share2,
+  DollarSign,
+  Video,
+  Music,
+  ShoppingBag
+} from 'lucide-react';
 
 export default function BioLinkPage() {
   const [handle, setHandle] = useState('amritgupta');
   const [displayName, setDisplayName] = useState('Amrit Gupta');
   const [bio, setBio] = useState('Full Stack SaaS Engineer & Founder. Building digital products from India for the world 🇮🇳 🌍');
-  const [theme, setTheme] = useState<'glass' | 'gradient' | 'minimal'>('glass');
+  const [theme, setTheme] = useState<'midnight' | 'sunset' | 'emerald' | 'minimal'>('midnight');
+  const [activeTab, setActiveTab] = useState<'editor' | 'analytics'>('editor');
+  
   const [links, setLinks] = useState([
-    { title: '🚀 My Digital Micro-Tools', url: 'https://agentosacademy.com', icon: '⚡' },
-    { title: '💼 Hire Me for Custom Development', url: 'https://upwork.com', icon: '💻' },
-    { title: '📺 Watch My Tech & SaaS Tutorials', url: 'https://youtube.com', icon: '🎥' },
-    { title: '☕ Support My Work (Coffee/Tips)', url: 'https://buymeacoffee.com', icon: '☕' },
+    { id: '1', title: '🚀 My Digital SaaS Tools Suite', url: 'https://agentosacademy.com', icon: '⚡', clicks: 1240, type: 'featured' },
+    { id: '2', title: '💼 Hire Me for Custom Development ($50/hr)', url: 'https://upwork.com', icon: '💻', clicks: 840, type: 'standard' },
+    { id: '3', title: '📺 Watch My Tech Tutorials on YouTube', url: 'https://youtube.com', icon: '🎥', clicks: 512, type: 'standard' },
+    { id: '4', title: '☕ Support My Open-Source Work (Coffee/Tips)', url: 'https://buymeacoffee.com', icon: '☕', clicks: 230, type: 'standard' },
   ]);
+  
   const [copied, setCopied] = useState(false);
 
+  const totalClicks = links.reduce((acc, curr) => acc + curr.clicks, 0);
+
   const addLink = () => {
-    setLinks([...links, { title: 'New Custom Link', url: 'https://', icon: '🔗' }]);
+    setLinks([
+      ...links,
+      { 
+        id: Date.now().toString(), 
+        title: 'New Featured Deliverable', 
+        url: 'https://', 
+        icon: '🔗', 
+        clicks: 0, 
+        type: 'standard' 
+      }
+    ]);
   };
 
-  const removeLink = (index: number) => {
-    setLinks(links.filter((_, i) => i !== index));
+  const removeLink = (id: string) => {
+    setLinks(links.filter((l) => l.id !== id));
   };
 
   const copyUrl = () => {
@@ -31,213 +63,295 @@ export default function BioLinkPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+      {/* Top Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-purple-400">Tool #2</span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">Social Media Bio Link Creator</h1>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-purple-400">Tool #2</span>
+            <span className="text-[10px] text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-full font-bold">
+              Linktree & Beacons Alternative
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-black text-white mt-1">Bio Link Creator & Bento Portfolios</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Build your custom, zero-commission link-in-bio page under <strong className="text-white">agentosacademy.com/u/{handle}</strong>.
+            Host your branded link-in-bio hub under <strong className="text-white">agentosacademy.com/u/{handle}</strong> with 0% commission.
           </p>
         </div>
+
         <button 
           onClick={copyUrl}
-          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xs shadow-lg shadow-purple-500/20 flex items-center gap-2 hover:opacity-90 transition"
+          className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-xs shadow-lg shadow-purple-500/25 flex items-center gap-2 hover:opacity-90 transition"
         >
           {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? 'Copied Bio URL!' : 'Copy Public Link'}
+          {copied ? 'Copied to Clipboard!' : 'Copy Public Bio URL'}
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        {/* Editor Settings */}
-        <div className="glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
-          <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
-            <Sparkles className="w-4 h-4 text-purple-400" /> Page Configuration
-          </h2>
+      {/* Editor & Analytics Tabs */}
+      <div className="flex items-center gap-3 border-b border-white/10 pb-4">
+        <button
+          onClick={() => setActiveTab('editor')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+            activeTab === 'editor' 
+              ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' 
+              : 'glass text-slate-400 hover:text-white'
+          }`}
+        >
+          <Palette className="w-4 h-4" />
+          <span>Page Builder & Links</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('analytics')}
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
+            activeTab === 'analytics' 
+              ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' 
+              : 'glass text-slate-400 hover:text-white'
+          }`}
+        >
+          <BarChart2 className="w-4 h-4" />
+          <span>Traffic & Click Analytics</span>
+        </button>
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Username Slug</label>
-              <div className="flex items-center rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-xs text-slate-400">
-                <span>/u/</span>
+      {activeTab === 'editor' ? (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Controls Panel (7 cols) */}
+          <div className="lg:col-span-7 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
+            <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
+              <Sparkles className="w-4 h-4 text-purple-400" /> Bio Profile Customizer
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">Custom Handle URL</label>
+                <div className="flex items-center rounded-xl bg-white/5 border border-white/10 px-3 py-2 text-xs text-slate-400">
+                  <span>/u/</span>
+                  <input 
+                    type="text" 
+                    value={handle} 
+                    onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
+                    className="bg-transparent text-white outline-none font-bold ml-1 w-full"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5">Display Name</label>
                 <input 
                   type="text" 
-                  value={handle} 
-                  onChange={(e) => setHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, ''))}
-                  className="bg-transparent text-white outline-none font-semibold ml-1 w-full"
+                  value={displayName} 
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-purple-500 font-semibold"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">Display Name</label>
-              <input 
-                type="text" 
-                value={displayName} 
-                onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-purple-500"
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">Bio Tagline</label>
+              <textarea 
+                rows={2} 
+                value={bio} 
+                onChange={(e) => setBio(e.target.value)}
+                className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-purple-500"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Bio Description</label>
-            <textarea 
-              rows={2} 
-              value={bio} 
-              onChange={(e) => setBio(e.target.value)}
-              className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-purple-500"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-2">Color Theme</label>
-            <div className="grid grid-cols-3 gap-2">
-              <button
-                type="button"
-                onClick={() => setTheme('glass')}
-                className={`py-2 text-xs font-semibold rounded-xl border transition ${
-                  theme === 'glass' ? 'bg-purple-500/20 border-purple-500 text-white' : 'glass text-slate-400 border-white/5'
-                }`}
-              >
-                Dark Glass
-              </button>
-              <button
-                type="button"
-                onClick={() => setTheme('gradient')}
-                className={`py-2 text-xs font-semibold rounded-xl border transition ${
-                  theme === 'gradient' ? 'bg-gradient-to-r from-purple-500/30 to-pink-500/30 border-pink-500 text-white' : 'glass text-slate-400 border-white/5'
-                }`}
-              >
-                Neon Gradient
-              </button>
-              <button
-                type="button"
-                onClick={() => setTheme('minimal')}
-                className={`py-2 text-xs font-semibold rounded-xl border transition ${
-                  theme === 'minimal' ? 'bg-white/10 border-slate-400 text-white' : 'glass text-slate-400 border-white/5'
-                }`}
-              >
-                Ultra Minimal
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-3 border-t border-white/5 pt-4">
-              <label className="text-xs font-semibold text-slate-300">Active Link Buttons ({links.length})</label>
-              <button 
-                onClick={addLink} 
-                className="text-xs text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-1"
-              >
-                <Plus className="w-3.5 h-3.5" /> Add New Button
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              {links.map((link, idx) => (
-                <div key={idx} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
-                  <input
-                    type="text"
-                    value={link.icon}
-                    onChange={(e) => {
-                      const next = [...links];
-                      next[idx].icon = e.target.value;
-                      setLinks(next);
-                    }}
-                    className="w-10 text-center py-1.5 rounded-lg bg-white/5 text-base border border-white/10 outline-none"
-                    title="Emoji icon"
-                  />
-                  <div className="flex-1 space-y-1.5">
-                    <input 
-                      type="text" 
-                      value={link.title}
-                      onChange={(e) => {
-                        const next = [...links];
-                        next[idx].title = e.target.value;
-                        setLinks(next);
-                      }}
-                      className="w-full text-xs font-semibold text-white bg-transparent outline-none"
-                      placeholder="Button Title"
-                    />
-                    <input 
-                      type="text" 
-                      value={link.url}
-                      onChange={(e) => {
-                        const next = [...links];
-                        next[idx].url = e.target.value;
-                        setLinks(next);
-                      }}
-                      className="w-full text-[11px] text-slate-400 bg-transparent outline-none"
-                      placeholder="https://..."
-                    />
-                  </div>
-                  <button onClick={() => removeLink(idx)} className="text-slate-500 hover:text-rose-400 p-2">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Live Phone Simulation */}
-        <div className="flex flex-col items-center">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
-            <Smartphone className="w-4 h-4 text-purple-400" />
-            <span>Live Mobile View</span>
-          </div>
-
-          <div className="w-[330px] rounded-[48px] p-4 bg-[#070b14] border-[6px] border-slate-700 shadow-2xl relative min-h-[580px] flex flex-col justify-between">
-            {/* Camera notch */}
-            <div className="w-32 h-5 bg-slate-800 rounded-full mx-auto mb-6" />
-
-            {/* Profile Avatar & Bio */}
-            <div className="text-center space-y-3 px-2">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 mx-auto flex items-center justify-center text-2xl font-black text-white shadow-xl shadow-purple-500/30">
-                {displayName.charAt(0)}
-              </div>
-              <div>
-                <h3 className="text-base font-extrabold text-white">{displayName}</h3>
-                <div className="text-[11px] text-purple-400 font-semibold mt-0.5">@{handle}</div>
-              </div>
-              <p className="text-[11px] text-slate-300 leading-relaxed px-2">{bio}</p>
-            </div>
-
-            {/* Links Stack */}
-            <div className="space-y-2.5 my-6 px-1">
-              {links.map((l, i) => (
-                <a
-                  key={i}
-                  href={l.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`w-full py-3 px-4 rounded-2xl flex items-center justify-between text-xs font-bold transition-all shadow-sm ${
-                    theme === 'gradient'
-                      ? 'bg-gradient-to-r from-purple-600/40 to-pink-600/40 border border-pink-500/30 text-white hover:scale-105'
-                      : theme === 'minimal'
-                      ? 'bg-white/10 text-white border border-white/20 hover:bg-white/20'
-                      : 'glass border-white/10 text-slate-100 hover:bg-white/10 hover:border-purple-500/30'
+            {/* Theme Selectors */}
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-2">Visual Theme</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setTheme('midnight')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    theme === 'midnight' ? 'bg-purple-600/30 border-purple-500 text-white' : 'glass text-slate-400 border-white/5'
                   }`}
                 >
-                  <span className="flex items-center gap-2">
-                    <span>{l.icon}</span>
-                    <span>{l.title}</span>
-                  </span>
-                  <ExternalLink className="w-3 h-3 opacity-60" />
-                </a>
-              ))}
+                  Midnight Cyber
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('sunset')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    theme === 'sunset' ? 'bg-pink-600/30 border-pink-500 text-white' : 'glass text-slate-400 border-white/5'
+                  }`}
+                >
+                  Sunset Neon
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('emerald')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    theme === 'emerald' ? 'bg-emerald-600/30 border-emerald-500 text-white' : 'glass text-slate-400 border-white/5'
+                  }`}
+                >
+                  Emerald Glass
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('minimal')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    theme === 'minimal' ? 'bg-white/15 border-slate-300 text-white' : 'glass text-slate-400 border-white/5'
+                  }`}
+                >
+                  Obsidian
+                </button>
+              </div>
             </div>
 
-            {/* Watermark */}
-            <div className="text-center text-[10px] text-slate-500 pb-2 border-t border-white/5 pt-3">
-              agentosacademy.com/u/{handle}
+            {/* Link Items */}
+            <div>
+              <div className="flex items-center justify-between mb-3 border-t border-white/5 pt-4">
+                <label className="text-xs font-bold text-slate-200">Active Links ({links.length})</label>
+                <button 
+                  onClick={addLink} 
+                  className="text-xs text-purple-400 hover:text-purple-300 font-bold flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5" /> Add Link Button
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                {links.map((link, idx) => (
+                  <div key={link.id} className="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
+                    <input
+                      type="text"
+                      value={link.icon}
+                      onChange={(e) => {
+                        const next = [...links];
+                        next[idx].icon = e.target.value;
+                        setLinks(next);
+                      }}
+                      className="w-10 text-center py-1.5 rounded-lg bg-white/5 text-base border border-white/10 outline-none"
+                      title="Emoji Icon"
+                    />
+
+                    <div className="flex-1 space-y-1.5">
+                      <input 
+                        type="text" 
+                        value={link.title}
+                        onChange={(e) => {
+                          const next = [...links];
+                          next[idx].title = e.target.value;
+                          setLinks(next);
+                        }}
+                        className="w-full text-xs font-bold text-white bg-transparent outline-none"
+                        placeholder="Link Label"
+                      />
+                      <input 
+                        type="text" 
+                        value={link.url}
+                        onChange={(e) => {
+                          const next = [...links];
+                          next[idx].url = e.target.value;
+                          setLinks(next);
+                        }}
+                        className="w-full text-[11px] text-slate-400 bg-transparent outline-none font-mono"
+                        placeholder="https://"
+                      />
+                    </div>
+
+                    <div className="text-right flex items-center gap-2">
+                      <span className="text-[10px] text-slate-400 font-mono hidden sm:inline">{link.clicks} clicks</span>
+                      <button onClick={() => removeLink(link.id)} className="text-slate-500 hover:text-rose-400 p-1.5">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Panel: Live Mobile Simulator (5 cols) */}
+          <div className="lg:col-span-5 flex flex-col items-center sticky top-28">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-400 mb-3">
+              <Smartphone className="w-4 h-4 text-purple-400" />
+              <span>Live Interactive Mobile Preview</span>
+            </div>
+
+            {/* Mobile Device Mockup */}
+            <div className={`w-[340px] rounded-[50px] p-4 border-[6px] border-slate-800 shadow-2xl relative min-h-[620px] flex flex-col justify-between transition-all ${
+              theme === 'sunset'
+                ? 'bg-gradient-to-b from-[#2a0845] to-[#6441a5]'
+                : theme === 'emerald'
+                ? 'bg-gradient-to-b from-[#062925] to-[#041a17]'
+                : theme === 'minimal'
+                ? 'bg-[#0f1117]'
+                : 'bg-[#0a0c18]'
+            }`}>
+              {/* Dynamic island / speaker bar */}
+              <div className="w-32 h-5 bg-black/60 rounded-full mx-auto mb-6" />
+
+              {/* Profile Card */}
+              <div className="text-center space-y-3 px-3">
+                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 mx-auto flex items-center justify-center text-2xl font-black text-white shadow-xl shadow-purple-500/30 border-2 border-white/20">
+                  {displayName.charAt(0)}
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-white tracking-tight">{displayName}</h3>
+                  <div className="text-[11px] text-purple-300 font-bold mt-0.5">@{handle}</div>
+                </div>
+                <p className="text-[11px] text-slate-200 leading-relaxed px-2 font-medium">{bio}</p>
+              </div>
+
+              {/* Stack of Buttons */}
+              <div className="space-y-3 my-6 px-1">
+                {links.map((l) => (
+                  <a
+                    key={l.id}
+                    href={l.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`w-full py-3.5 px-4 rounded-2xl flex items-center justify-between text-xs font-bold transition-all shadow-md group ${
+                      theme === 'sunset'
+                        ? 'bg-white/15 backdrop-blur-md text-white border border-white/20 hover:scale-105'
+                        : theme === 'emerald'
+                        ? 'bg-emerald-950/80 text-emerald-100 border border-emerald-500/30 hover:border-emerald-400'
+                        : theme === 'minimal'
+                        ? 'bg-white/10 text-white border border-white/10 hover:bg-white/20'
+                        : 'glass text-white border-white/15 hover:border-purple-400/50 hover:bg-white/10'
+                    }`}
+                  >
+                    <span className="flex items-center gap-2.5">
+                      <span className="text-sm">{l.icon}</span>
+                      <span className="line-clamp-1">{l.title}</span>
+                    </span>
+                    <ExternalLink className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                  </a>
+                ))}
+              </div>
+
+              {/* Watermark */}
+              <div className="text-center text-[10px] text-slate-400 pb-3 border-t border-white/10 pt-3">
+                agentosacademy.com/u/{handle}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        /* Analytics View */
+        <div className="glass p-8 sm:p-10 rounded-3xl border border-white/10 max-w-4xl mx-auto space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="glass p-5 rounded-2xl border border-white/5">
+              <div className="text-xs font-bold text-slate-400">Total Page Views</div>
+              <div className="text-3xl font-black text-white mt-1">4,892</div>
+              <div className="text-[10px] text-emerald-400 mt-1 font-bold">+28% this week</div>
+            </div>
+            <div className="glass p-5 rounded-2xl border border-white/5">
+              <div className="text-xs font-bold text-slate-400">Total Outbound Clicks</div>
+              <div className="text-3xl font-black text-purple-400 mt-1">{totalClicks}</div>
+              <div className="text-[10px] text-slate-400 mt-1 font-bold">57.6% CTR</div>
+            </div>
+            <div className="glass p-5 rounded-2xl border border-white/5">
+              <div className="text-xs font-bold text-slate-400">Top Performing Channel</div>
+              <div className="text-xl font-bold text-emerald-300 mt-1">SaaS Tools Suite</div>
+              <div className="text-[10px] text-slate-400 mt-1 font-bold">1,240 clicks</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
