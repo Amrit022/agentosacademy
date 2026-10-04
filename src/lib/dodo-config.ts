@@ -17,7 +17,7 @@ export interface DodoPlan {
 
 export const DODO_SUBSCRIPTION_PLANS: Record<string, DodoPlan> = {
   // 1. Pro Creator - Monthly ($9.00 USD)
-  // Live product link verified and active
+  // Live verified product link
   'pro-monthly': {
     key: 'pro-monthly',
     id: 'pdt_0Noz3iseuD6nqAUvsHz2R',
@@ -26,7 +26,9 @@ export const DODO_SUBSCRIPTION_PLANS: Record<string, DodoPlan> = {
     billing: 'monthly',
     priceUsd: 9,
     periodLabel: '$9/month',
-    checkoutUrl: 'https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1',
+    checkoutUrl:
+      process.env.NEXT_PUBLIC_DODO_PRO_MONTHLY_URL ||
+      'https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1',
     isConfigured: true,
     features: [
       'All 6 Micro-SaaS Tools Unlocked',
@@ -40,9 +42,10 @@ export const DODO_SUBSCRIPTION_PLANS: Record<string, DodoPlan> = {
   },
 
   // 2. Pro Creator - Annual ($84.00 USD / year = $7/mo)
+  // Live verified product link
   'pro-annual': {
     key: 'pro-annual',
-    id: process.env.NEXT_PUBLIC_DODO_PRO_ANNUAL_ID || '',
+    id: 'pdt_0Np1qDMLvoeyTkbLCTlxq',
     name: 'Pro Creator (Annual)',
     tier: 'pro',
     billing: 'annual',
@@ -51,12 +54,8 @@ export const DODO_SUBSCRIPTION_PLANS: Record<string, DodoPlan> = {
     discountBadge: 'Save 20%',
     checkoutUrl:
       process.env.NEXT_PUBLIC_DODO_PRO_ANNUAL_URL ||
-      (process.env.NEXT_PUBLIC_DODO_PRO_ANNUAL_ID
-        ? `https://checkout.dodopayments.com/buy/${process.env.NEXT_PUBLIC_DODO_PRO_ANNUAL_ID}?quantity=1`
-        : ''),
-    isConfigured: Boolean(
-      process.env.NEXT_PUBLIC_DODO_PRO_ANNUAL_URL || process.env.NEXT_PUBLIC_DODO_PRO_ANNUAL_ID
-    ),
+      'https://checkout.dodopayments.com/buy/pdt_0Np1qDMLvoeyTkbLCTlxq?quantity=1',
+    isConfigured: true,
     features: [
       'Everything in Pro Monthly Included',
       'Save $24 per year (20% Annual Discount)',
@@ -66,9 +65,10 @@ export const DODO_SUBSCRIPTION_PLANS: Record<string, DodoPlan> = {
   },
 
   // 3. Agency Unlimited - Monthly ($29.00 USD)
+  // Live verified product link
   'agency-monthly': {
     key: 'agency-monthly',
-    id: process.env.NEXT_PUBLIC_DODO_AGENCY_MONTHLY_ID || '',
+    id: 'pdt_0Np1r1uRrhPDEdvIPoauq',
     name: 'Agency Unlimited (Monthly)',
     tier: 'agency',
     billing: 'monthly',
@@ -76,12 +76,8 @@ export const DODO_SUBSCRIPTION_PLANS: Record<string, DodoPlan> = {
     periodLabel: '$29/month',
     checkoutUrl:
       process.env.NEXT_PUBLIC_DODO_AGENCY_MONTHLY_URL ||
-      (process.env.NEXT_PUBLIC_DODO_AGENCY_MONTHLY_ID
-        ? `https://checkout.dodopayments.com/buy/${process.env.NEXT_PUBLIC_DODO_AGENCY_MONTHLY_ID}?quantity=1`
-        : ''),
-    isConfigured: Boolean(
-      process.env.NEXT_PUBLIC_DODO_AGENCY_MONTHLY_URL || process.env.NEXT_PUBLIC_DODO_AGENCY_MONTHLY_ID
-    ),
+      'https://checkout.dodopayments.com/buy/pdt_0Np1r1uRrhPDEdvIPoauq?quantity=1',
+    isConfigured: true,
     features: [
       'Everything in Pro Tier Included',
       'Unlimited Client Workspaces & Sub-Accounts',
@@ -94,9 +90,10 @@ export const DODO_SUBSCRIPTION_PLANS: Record<string, DodoPlan> = {
   },
 
   // 4. Agency Unlimited - Annual ($288.00 USD / year = $24/mo)
+  // Live verified product link
   'agency-annual': {
     key: 'agency-annual',
-    id: process.env.NEXT_PUBLIC_DODO_AGENCY_ANNUAL_ID || '',
+    id: 'pdt_0Np1rOczGBa2FMPQLMCzL',
     name: 'Agency Unlimited (Annual)',
     tier: 'agency',
     billing: 'annual',
@@ -105,12 +102,8 @@ export const DODO_SUBSCRIPTION_PLANS: Record<string, DodoPlan> = {
     discountBadge: 'Save $60 / 20%',
     checkoutUrl:
       process.env.NEXT_PUBLIC_DODO_AGENCY_ANNUAL_URL ||
-      (process.env.NEXT_PUBLIC_DODO_AGENCY_ANNUAL_ID
-        ? `https://checkout.dodopayments.com/buy/${process.env.NEXT_PUBLIC_DODO_AGENCY_ANNUAL_ID}?quantity=1`
-        : ''),
-    isConfigured: Boolean(
-      process.env.NEXT_PUBLIC_DODO_AGENCY_ANNUAL_URL || process.env.NEXT_PUBLIC_DODO_AGENCY_ANNUAL_ID
-    ),
+      'https://checkout.dodopayments.com/buy/pdt_0Np1rOczGBa2FMPQLMCzL?quantity=1',
+    isConfigured: true,
     features: [
       'Everything in Agency Monthly Included',
       'Save $60 per year with Annual Billing',
@@ -130,12 +123,8 @@ export function getDodoPlan(tier: 'pro' | 'agency', annual: boolean): DodoPlan {
 
 /**
  * Retrieve the checkout URL for a plan.
- * Returns null if the specific tier's Dodo link is not configured yet.
  */
-export function getDodoCheckoutUrl(tier: 'pro' | 'agency', annual: boolean): string | null {
+export function getDodoCheckoutUrl(tier: 'pro' | 'agency', annual: boolean): string {
   const plan = getDodoPlan(tier, annual);
-  if (plan.checkoutUrl && plan.checkoutUrl.trim().length > 0) {
-    return plan.checkoutUrl;
-  }
-  return null;
+  return plan.checkoutUrl;
 }
