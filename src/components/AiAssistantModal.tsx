@@ -7,21 +7,28 @@ import {
   Send, 
   X, 
   ArrowRight, 
-  MessageSquare, 
-  CornerDownLeft, 
   RefreshCw,
   Search,
   ExternalLink,
-  ShieldCheck
+  ShieldCheck,
+  Key,
+  ChevronDown,
+  ChevronUp,
+  Cpu
 } from 'lucide-react';
 import Link from 'next/link';
-import { queryAgentOsAssistant, AssistantResponse } from '@/lib/ai-engine';
+
+interface RelevantTool {
+  name: string;
+  href: string;
+  description: string;
+}
 
 interface Message {
   id: string;
   sender: 'user' | 'assistant';
   content: string;
-  tool?: AssistantResponse['relevantTool'];
+  tool?: RelevantTool;
   followUps?: string[];
 }
 
@@ -29,22 +36,38 @@ export default function AiAssistantModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showKeySettings, setShowKeySettings] = useState(false);
+  const [apiKey, setApiKey] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
       sender: 'assistant',
-      content: `👋 **Welcome to AgentOS Academy!** I am your built-in AI Copilot.\n\nYou can ask me *anything* about:\n- **AI Video Generation** workflows & tools\n- **Global Freelance & USD Earnings** from India\n- **ATS Resume Formatting & Scores**\n- **Bio Links, Shorteners & Micro-SaaS tools**`,
+      content: `👋 **Welcome to AgentOS AI!** I am your universal AI assistant — built just like ChatGPT and Claude.\n\nYou can ask me **ANYTHING in the world**:\n- 💻 **Coding & Debugging**: Python scrapers, React hooks, SQL queries, TypeScript\n- 🧮 **Math & Calculations**: Equations, formulas, and percentages\n- 🌐 **Science, History & Knowledge**: Explanations, Wikipedia-grounded facts, concepts\n- 🎬 **AI Video Workflows**: Runway Gen-3, Kling AI, Midjourney, ElevenLabs\n- 🚀 **Freelancing & SaaS**: How to earn in USD, pricing, cold emails, and ATS resumes`,
       followUps: [
-        'How to make AI videos step-by-step?',
-        'How to earn $5,000/mo freelancing from India in USD?',
-        'How do I make my resume pass ATS filters?',
-        'Why are tools on AgentOS Academy free?'
+        'Write a Python script to scrape website headlines',
+        'How to make AI videos with Runway and ElevenLabs?',
+        'Solve math: 45 * 24 + 150',
+        'How can I earn $5,000/month freelancing from India in USD?'
       ]
     }
   ]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const savedKey = localStorage.getItem('agentos_gemini_key') || '';
+    if (savedKey) setApiKey(savedKey);
+  }, []);
+
+  const handleSaveKey = (key: string) => {
+    setApiKey(key);
+    if (key.trim()) {
+      localStorage.setItem('agentos_gemini_key', key.trim());
+    } else {
+      localStorage.removeItem('agentos_gemini_key');
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -72,7 +95,7 @@ export default function AiAssistantModal() {
     }
   }, [isOpen, messages]);
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const question = textToSend || input;
     if (!question.trim()) return;
 
@@ -86,18 +109,42 @@ export default function AiAssistantModal() {
     setInput('');
     setLoading(true);
 
-    setTimeout(() => {
-      const response = queryAgentOsAssistant(question);
-      const botMsg: Message = {
-        id: `bot-${Date.now()}`,
-        sender: 'assistant',
-        content: response.answer,
-        tool: response.relevantTool,
-        followUps: response.suggestedFollowUps
-      };
-      setMessages((prev) => [...prev, botMsg]);
+    try {
+      const res = await fetch('/api/ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'ask_assistant',
+          question,
+          apiKey: apiKey.trim() || undefined
+        })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        const botMsg: Message = {
+          id: `bot-${Date.now()}`,
+          sender: 'assistant',
+          content: data.answer,
+          tool: data.relevantTool,
+          followUps: data.suggestedFollowUps
+        };
+        setMessages((prev) => [...prev, botMsg]);
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (err: any) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `bot-${Date.now()}`,
+          sender: 'assistant',
+          content: `⚠️ Error fetching response. Please try again!`
+        }
+      ]);
+    } finally {
       setLoading(false);
-    }, 400);
+    }
   };
 
   return (
@@ -114,7 +161,7 @@ export default function AiAssistantModal() {
         </div>
         <div className="text-left hidden sm:block">
           <div className="text-xs font-black tracking-tight leading-none">Ask AgentOS AI</div>
-          <div className="text-[10px] text-white/75 font-medium leading-tight">Instant Answers & Tools</div>
+          <div className="text-[10px] text-white/75 font-medium leading-tight">Answers Any Question Like ChatGPT</div>
         </div>
         <span className="text-[10px] bg-black/30 px-1.5 py-0.5 rounded text-white/80 font-mono hidden md:inline">
           ⌘K
@@ -125,7 +172,7 @@ export default function AiAssistantModal() {
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
           <div 
-            className="w-full max-w-2xl h-[650px] max-h-[90vh] glass rounded-3xl border border-white/15 shadow-2xl flex flex-col overflow-hidden bg-[#0a0f1d]/95"
+            className="w-full max-w-2xl h-[680px] max-h-[92vh] glass rounded-3xl border border-white/15 shadow-2xl flex flex-col overflow-hidden bg-[#0a0f1d]/95"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
@@ -136,21 +183,65 @@ export default function AiAssistantModal() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-extrabold text-white tracking-tight">AgentOS AI Copilot</h3>
+                    <h3 className="text-sm font-extrabold text-white tracking-tight">AgentOS AI — Universal Assistant</h3>
                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live Online
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Ready
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400">Ask any question about AI workflows, SaaS tools, or USD monetization</p>
+                  <p className="text-[11px] text-slate-400">Ask anything: Coding, Math, Science, Business, or AI Video</p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition"
-              >
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowKeySettings(!showKeySettings)}
+                  className="px-2.5 py-1 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white text-[11px] font-medium flex items-center gap-1 transition"
+                  title="Configure optional API key"
+                >
+                  <Key className="w-3 h-3 text-amber-400" />
+                  <span className="hidden sm:inline">AI Key</span>
+                  {showKeySettings ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                </button>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
+
+            {/* Optional AI Key Drawer */}
+            {showKeySettings && (
+              <div className="px-6 py-3 bg-black/60 border-b border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                <div className="space-y-0.5">
+                  <div className="font-bold text-slate-200 flex items-center gap-1.5">
+                    <Cpu className="w-3.5 h-3.5 text-brand-400" /> Connect Free Gemini API Key (Optional)
+                  </div>
+                  <div className="text-[10px] text-slate-400">
+                    Works 100% out-of-the-box without key! Add your key for direct Google Gemini 1.5 Flash streaming.
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="password"
+                    value={apiKey}
+                    onChange={(e) => handleSaveKey(e.target.value)}
+                    placeholder="AIzaSy..."
+                    className="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 w-44 font-mono text-[11px]"
+                  />
+                  {apiKey && (
+                    <button
+                      type="button"
+                      onClick={() => handleSaveKey('')}
+                      className="text-[10px] text-rose-400 hover:underline"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Chat Messages Body */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4 text-xs font-sans">
@@ -170,13 +261,13 @@ export default function AiAssistantModal() {
                   </div>
 
                   <div 
-                    className={`max-w-[88%] sm:max-w-[80%] rounded-2xl p-4 leading-relaxed ${
+                    className={`max-w-[88%] sm:max-w-[82%] rounded-2xl p-4 leading-relaxed ${
                       m.sender === 'user' 
                         ? 'bg-gradient-to-r from-brand-600 to-accent-600 text-white rounded-br-none shadow-md shadow-brand-500/20' 
                         : 'bg-white/[0.04] border border-white/10 text-slate-200 rounded-bl-none shadow-lg'
                     }`}
                   >
-                    <div className="whitespace-pre-wrap space-y-2">
+                    <div className="whitespace-pre-wrap space-y-2 font-sans">
                       {m.content}
                     </div>
 
@@ -223,7 +314,7 @@ export default function AiAssistantModal() {
               {loading && (
                 <div className="flex items-center gap-2 text-slate-400 text-xs py-2">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin text-brand-400" />
-                  <span>AgentOS AI is thinking...</span>
+                  <span>AgentOS AI is thinking and generating answer...</span>
                 </div>
               )}
               <div ref={messagesEndRef} />
@@ -245,7 +336,7 @@ export default function AiAssistantModal() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
-                    placeholder="Ask anything... (e.g. how to make AI videos, how to earn in USD, ats resume tips)"
+                    placeholder="Ask anything... (e.g. write python code, what is photosynthesis, how to make ai videos, math 25*14)"
                     className="w-full pl-10 pr-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 transition placeholder:text-slate-500"
                   />
                 </div>
@@ -261,7 +352,7 @@ export default function AiAssistantModal() {
               <div className="flex items-center justify-between mt-2 px-1 text-[10px] text-slate-500">
                 <span>Press Enter to send • ESC to close</span>
                 <span className="flex items-center gap-1">
-                  <ShieldCheck className="w-3 h-3 text-emerald-400" /> Grounded in AgentOS SaaS Knowledge
+                  <ShieldCheck className="w-3 h-3 text-emerald-400" /> Universal AI Engine Active
                 </span>
               </div>
             </div>

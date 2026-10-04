@@ -1,18 +1,83 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Copy, Check, Sparkles, Eye, ShieldCheck, Calendar, Phone, Globe, Linkedin, Twitter, Github } from 'lucide-react';
+import { 
+  Mail, 
+  Copy, 
+  Check, 
+  Sparkles, 
+  Eye, 
+  Shuffle, 
+  Trash2, 
+  Calendar, 
+  Phone, 
+  Globe 
+} from 'lucide-react';
+
+interface SignatureProfile {
+  name: string;
+  role: string;
+  company: string;
+  email: string;
+  phone: string;
+  website: string;
+  calendarUrl: string;
+  themeColor: string;
+}
+
+const SAMPLE_PROFILES: SignatureProfile[] = [
+  {
+    name: 'Sarah Jenkins',
+    role: 'VP of Growth & Partnerships',
+    company: 'Apex Venture Labs',
+    email: 'sarah.jenkins@apexventure.io',
+    phone: '+1 (415) 890-4321',
+    website: 'apexventure.io',
+    calendarUrl: 'https://cal.com/sarah-growth',
+    themeColor: '#6366f1' // Indigo
+  },
+  {
+    name: 'Marcus Vance',
+    role: 'Principal Cloud & Systems Architect',
+    company: 'MatrixScale Systems',
+    email: 'm.vance@matrixscale.dev',
+    phone: '+1 (206) 555-0198',
+    website: 'matrixscale.dev',
+    calendarUrl: 'https://cal.com/marcus-vance',
+    themeColor: '#06b6d4' // Cyan
+  },
+  {
+    name: 'Priya Nair',
+    role: 'Creative Brand & Design Director',
+    company: 'Studio Lumina',
+    email: 'priya@studiolumina.co',
+    phone: '+44 20 7946 0912',
+    website: 'studiolumina.co',
+    calendarUrl: 'https://cal.com/priya-lumina',
+    themeColor: '#9333ea' // Purple
+  },
+  {
+    name: 'Alex Rivera',
+    role: 'Head of Enterprise Sales',
+    company: 'ScalePoint Solutions',
+    email: 'alex.rivera@scalepoint.com',
+    phone: '+1 (312) 555-7823',
+    website: 'scalepoint.com',
+    calendarUrl: 'https://cal.com/alex-scalepoint',
+    themeColor: '#10b981' // Emerald
+  }
+];
 
 export default function EmailSignaturePage() {
-  const [name, setName] = useState('Amrit Gupta');
-  const [role, setRole] = useState('Founder & Lead Product Architect');
-  const [company, setCompany] = useState('AgentOS Academy');
-  const [email, setEmail] = useState('amrit@agentosacademy.com');
-  const [phone, setPhone] = useState('+91 98765 43210');
-  const [website, setWebsite] = useState('agentosacademy.com');
-  const [themeColor, setThemeColor] = useState('#6366f1'); // Indigo
-  const [calendarUrl, setCalendarUrl] = useState('https://cal.com/amritgupta');
-  const [template, setTemplate] = useState<'border' | 'card' | 'minimal'>('border');
+  const [profileIndex, setProfileIndex] = useState(0);
+  const [name, setName] = useState(SAMPLE_PROFILES[0].name);
+  const [role, setRole] = useState(SAMPLE_PROFILES[0].role);
+  const [company, setCompany] = useState(SAMPLE_PROFILES[0].company);
+  const [email, setEmail] = useState(SAMPLE_PROFILES[0].email);
+  const [phone, setPhone] = useState(SAMPLE_PROFILES[0].phone);
+  const [website, setWebsite] = useState(SAMPLE_PROFILES[0].website);
+  const [themeColor, setThemeColor] = useState(SAMPLE_PROFILES[0].themeColor);
+  const [calendarUrl, setCalendarUrl] = useState(SAMPLE_PROFILES[0].calendarUrl);
   const [copied, setCopied] = useState(false);
 
   const colors = [
@@ -24,32 +89,60 @@ export default function EmailSignaturePage() {
     { label: 'Purple', value: '#9333ea' },
   ];
 
+  const handleLoadRandom = () => {
+    const nextIdx = (profileIndex + 1) % SAMPLE_PROFILES.length;
+    setProfileIndex(nextIdx);
+    const p = SAMPLE_PROFILES[nextIdx];
+    setName(p.name);
+    setRole(p.role);
+    setCompany(p.company);
+    setEmail(p.email);
+    setPhone(p.phone);
+    setWebsite(p.website);
+    setCalendarUrl(p.calendarUrl);
+    setThemeColor(p.themeColor);
+  };
+
+  const handleClear = () => {
+    setName('');
+    setRole('');
+    setCompany('');
+    setEmail('');
+    setPhone('');
+    setWebsite('');
+    setCalendarUrl('');
+  };
+
   const signatureHtml = `
 <table cellpadding="0" cellspacing="0" border="0" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 13px; color: #1e293b; line-height: 1.45;">
   <tr>
     <td style="padding-right: 18px; vertical-align: top; border-right: 3px solid ${themeColor};">
-      <div style="font-size: 16px; font-weight: 800; color: #0f172a; letter-spacing: -0.2px;">${name}</div>
-      <div style="font-size: 12px; font-weight: 700; color: ${themeColor}; margin-top: 2px;">${role}</div>
-      <div style="font-size: 12px; font-weight: 700; color: #475569; margin-top: 1px;">${company}</div>
+      <div style="font-size: 16px; font-weight: 800; color: #0f172a; letter-spacing: -0.2px;">${name || 'Your Full Name'}</div>
+      <div style="font-size: 12px; font-weight: 700; color: ${themeColor}; margin-top: 2px;">${role || 'Your Professional Title'}</div>
+      <div style="font-size: 12px; font-weight: 700; color: #475569; margin-top: 1px;">${company || 'Company Name'}</div>
     </td>
     <td style="padding-left: 18px; vertical-align: top;">
+      ${email ? `
       <div style="margin-bottom: 4px;">
         <span style="color: #64748b; font-size: 11px;">✉</span>
         <a href="mailto:${email}" style="color: #0f172a; text-decoration: none; font-weight: 500; margin-left: 4px;">${email}</a>
-      </div>
+      </div>` : ''}
+      ${phone ? `
       <div style="margin-bottom: 4px;">
         <span style="color: #64748b; font-size: 11px;">☎</span>
         <span style="color: #334155; margin-left: 4px;">${phone}</span>
-      </div>
+      </div>` : ''}
+      ${website ? `
       <div style="margin-bottom: 8px;">
         <span style="color: #64748b; font-size: 11px;">🌐</span>
         <a href="https://${website}" target="_blank" style="color: ${themeColor}; text-decoration: none; font-weight: 700; margin-left: 4px;">${website}</a>
-      </div>
+      </div>` : ''}
+      ${calendarUrl ? `
       <div>
         <a href="${calendarUrl}" target="_blank" style="display: inline-block; background-color: ${themeColor}; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-decoration: none; letter-spacing: 0.3px;">
           📅 Book a 15-Min Meeting
         </a>
-      </div>
+      </div>` : ''}
     </td>
   </tr>
 </table>
@@ -78,21 +171,46 @@ export default function EmailSignaturePage() {
           </p>
         </div>
 
-        <button 
-          onClick={handleCopy}
-          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-brand-500 to-indigo-500 text-white font-bold text-xs shadow-lg shadow-amber-500/25 flex items-center gap-2 hover:opacity-90 transition"
-        >
-          {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-          {copied ? 'HTML Copied to Clipboard!' : 'Copy Raw HTML Signature'}
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button 
+            type="button"
+            onClick={handleLoadRandom}
+            className="px-4 py-2.5 rounded-xl bg-purple-600/30 hover:bg-purple-600/50 border border-purple-500/30 text-white font-bold text-xs flex items-center gap-2 transition"
+          >
+            <Shuffle className="w-3.5 h-3.5 text-purple-300" />
+            <span>🎲 Load Random Sample Profile</span>
+          </button>
+
+          <button 
+            type="button"
+            onClick={handleClear}
+            className="px-3.5 py-2.5 rounded-xl glass hover:bg-white/10 text-slate-400 hover:text-white font-semibold text-xs transition flex items-center gap-1.5"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+            <span>Clear</span>
+          </button>
+
+          <button 
+            onClick={handleCopy}
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-brand-500 to-indigo-500 text-white font-bold text-xs shadow-lg shadow-amber-500/25 flex items-center gap-2 hover:opacity-90 transition"
+          >
+            {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            {copied ? 'HTML Copied to Clipboard!' : 'Copy Raw HTML Signature'}
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Editor Form (5 cols) */}
         <div className="lg:col-span-5 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-5">
-          <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
-            <Sparkles className="w-4 h-4 text-amber-400" /> Signature Details
-          </h2>
+          <div className="flex items-center justify-between border-b border-white/5 pb-3">
+            <h2 className="text-sm font-bold text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400" /> Signature Details
+            </h2>
+            <span className="text-[11px] text-slate-400">
+              Loaded: <span className="text-white font-semibold">{SAMPLE_PROFILES[profileIndex].name}</span>
+            </span>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -101,6 +219,7 @@ export default function EmailSignaturePage() {
                 type="text" 
                 value={name} 
                 onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Sarah Jenkins"
                 className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-amber-500 font-semibold"
               />
             </div>
@@ -110,6 +229,7 @@ export default function EmailSignaturePage() {
                 type="text" 
                 value={role} 
                 onChange={(e) => setRole(e.target.value)}
+                placeholder="e.g. VP of Growth"
                 className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-amber-500 font-semibold"
               />
             </div>
@@ -122,6 +242,7 @@ export default function EmailSignaturePage() {
                 type="text" 
                 value={company} 
                 onChange={(e) => setCompany(e.target.value)}
+                placeholder="e.g. Apex Venture Labs"
                 className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-amber-500"
               />
             </div>
@@ -131,6 +252,7 @@ export default function EmailSignaturePage() {
                 type="text" 
                 value={phone} 
                 onChange={(e) => setPhone(e.target.value)}
+                placeholder="+1 (555) 000-0000"
                 className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none"
               />
             </div>
@@ -143,6 +265,7 @@ export default function EmailSignaturePage() {
                 type="email" 
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@company.com"
                 className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none"
               />
             </div>
@@ -152,6 +275,7 @@ export default function EmailSignaturePage() {
                 type="text" 
                 value={website} 
                 onChange={(e) => setWebsite(e.target.value)}
+                placeholder="company.com"
                 className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none"
               />
             </div>
@@ -163,6 +287,7 @@ export default function EmailSignaturePage() {
               type="text" 
               value={calendarUrl} 
               onChange={(e) => setCalendarUrl(e.target.value)}
+              placeholder="https://cal.com/your-name"
               className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-amber-500"
             />
           </div>
@@ -210,38 +335,46 @@ export default function EmailSignaturePage() {
               <tbody>
                 <tr>
                   <td style={{ paddingRight: '18px', verticalAlign: 'top', borderRight: `3px solid ${themeColor}` }}>
-                    <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>{name}</div>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: themeColor, marginTop: '2px' }}>{role}</div>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginTop: '1px' }}>{company}</div>
+                    <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a' }}>{name || 'Your Full Name'}</div>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: themeColor, marginTop: '2px' }}>{role || 'Your Professional Title'}</div>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#475569', marginTop: '1px' }}>{company || 'Company Name'}</div>
                   </td>
                   <td style={{ paddingLeft: '18px', verticalAlign: 'top' }}>
-                    <div style={{ marginBottom: '4px' }}>
-                      <span style={{ color: '#64748b', fontSize: '11px' }}>✉</span>
-                      <span style={{ color: '#0f172a', fontWeight: 500, marginLeft: '4px' }}>{email}</span>
-                    </div>
-                    <div style={{ marginBottom: '4px' }}>
-                      <span style={{ color: '#64748b', fontSize: '11px' }}>☎</span>
-                      <span style={{ color: '#334155', marginLeft: '4px' }}>{phone}</span>
-                    </div>
-                    <div style={{ marginBottom: '8px' }}>
-                      <span style={{ color: '#64748b', fontSize: '11px' }}>🌐</span>
-                      <span style={{ color: themeColor, fontWeight: 700, marginLeft: '4px' }}>{website}</span>
-                    </div>
-                    <div>
-                      <span 
-                        style={{
-                          display: 'inline-block',
-                          backgroundColor: themeColor,
-                          color: '#ffffff',
-                          padding: '5px 12px',
-                          borderRadius: '6px',
-                          fontSize: '11px',
-                          fontWeight: 700
-                        }}
-                      >
-                        📅 Book a 15-Min Meeting
-                      </span>
-                    </div>
+                    {email && (
+                      <div style={{ marginBottom: '4px' }}>
+                        <span style={{ color: '#64748b', fontSize: '11px' }}>✉</span>
+                        <span style={{ color: '#0f172a', fontWeight: 500, marginLeft: '4px' }}>{email}</span>
+                      </div>
+                    )}
+                    {phone && (
+                      <div style={{ marginBottom: '4px' }}>
+                        <span style={{ color: '#64748b', fontSize: '11px' }}>☎</span>
+                        <span style={{ color: '#334155', marginLeft: '4px' }}>{phone}</span>
+                      </div>
+                    )}
+                    {website && (
+                      <div style={{ marginBottom: '8px' }}>
+                        <span style={{ color: '#64748b', fontSize: '11px' }}>🌐</span>
+                        <span style={{ color: themeColor, fontWeight: 700, marginLeft: '4px' }}>{website}</span>
+                      </div>
+                    )}
+                    {calendarUrl && (
+                      <div>
+                        <span 
+                          style={{
+                            display: 'inline-block',
+                            backgroundColor: themeColor,
+                            color: '#ffffff',
+                            padding: '5px 12px',
+                            borderRadius: '6px',
+                            fontSize: '11px',
+                            fontWeight: 700
+                          }}
+                        >
+                          📅 Book a 15-Min Meeting
+                        </span>
+                      </div>
+                    )}
                   </td>
                 </tr>
               </tbody>
@@ -252,7 +385,7 @@ export default function EmailSignaturePage() {
             <div className="font-bold text-slate-200">Installation Guide:</div>
             <div>1. Click <strong>"Copy Raw HTML Signature"</strong> above.</div>
             <div>2. Open Gmail &gt; Settings (gear icon) &gt; See all settings &gt; General &gt; Signature.</div>
-            <div>3. Paste and Save Changes!</div>
+            <div>3. Paste directly and Save Changes!</div>
           </div>
         </div>
       </div>

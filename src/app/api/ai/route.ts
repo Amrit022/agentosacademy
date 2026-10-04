@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'ask_assistant') {
-      const response = queryAgentOsAssistant(question || '');
+      const response = await queryAgentOsAssistant(question || '', body.apiKey);
       return NextResponse.json({ success: true, ...response });
     }
 

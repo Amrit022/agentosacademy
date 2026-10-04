@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { jsPDF } from 'jspdf';
 import { 
   Sparkles, 
   Download, 
@@ -198,6 +199,177 @@ export default function ResumeBuilderPage() {
 
   const atsScore = calculateAtsScore();
 
+  const handleDownloadPdf = () => {
+    try {
+      const doc = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const fileName = `${(name || 'Professional').replace(/\s+/g, '_')}_Resume.pdf`;
+
+      let y = 18;
+      // Header
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(18);
+      doc.setTextColor(15, 23, 42);
+      doc.text(name || 'Your Full Name', 15, y);
+
+      y += 6;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(11);
+      doc.setTextColor(79, 70, 229);
+      doc.text(title || 'Professional Title', 15, y);
+
+      y += 5;
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139);
+      const contactParts = [email, phone, location, linkedin, github].filter(Boolean);
+      doc.text(contactParts.join('  •  '), 15, y);
+
+      y += 4;
+      doc.setDrawColor(203, 213, 225);
+      doc.setLineWidth(0.4);
+      doc.line(15, y, 195, y);
+
+      const addSectionHeader = (titleText: string) => {
+        y += 7;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(15, 23, 42);
+        doc.text(titleText.toUpperCase(), 15, y);
+        y += 2;
+        doc.setDrawColor(226, 232, 240);
+        doc.line(15, y, 195, y);
+        y += 4;
+      };
+
+      if (summary) {
+        addSectionHeader('Executive Summary');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9.5);
+        doc.setTextColor(51, 65, 85);
+        const splitSummary = doc.splitTextToSize(summary, 180);
+        doc.text(splitSummary, 15, y);
+        y += splitSummary.length * 4.5 + 2;
+      }
+
+      if (skills) {
+        addSectionHeader('Core Competencies & Technical Skills');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9.5);
+        doc.setTextColor(51, 65, 85);
+        const splitSkills = doc.splitTextToSize(skills, 180);
+        doc.text(splitSkills, 15, y);
+        y += splitSkills.length * 4.5 + 2;
+      }
+
+      if (experiences.length > 0) {
+        addSectionHeader('Professional Experience');
+        experiences.forEach((exp) => {
+          if (y > 260) {
+            doc.addPage();
+            y = 18;
+          }
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(10);
+          doc.setTextColor(15, 23, 42);
+          doc.text(exp.role, 15, y);
+
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(100, 116, 139);
+          doc.text(`${exp.company}  |  ${exp.period}  |  ${exp.location}`, 15, y + 4);
+
+          y += 8;
+          doc.setFontSize(9);
+          doc.setTextColor(51, 65, 85);
+          const splitPoints = doc.splitTextToSize(exp.points, 180);
+          doc.text(splitPoints, 15, y);
+          y += splitPoints.length * 4.2 + 4;
+        });
+      }
+
+      if (education.length > 0) {
+        if (y > 250) {
+          doc.addPage();
+          y = 18;
+        }
+        addSectionHeader('Education & Credentials');
+        education.forEach((edu) => {
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(9.5);
+          doc.setTextColor(15, 23, 42);
+          doc.text(edu.degree, 15, y);
+          doc.setFont('helvetica', 'normal');
+          doc.setTextColor(100, 116, 139);
+          doc.text(`${edu.institution}  •  ${edu.period}`, 15, y + 4);
+          y += 8;
+        });
+      }
+
+      doc.save(fileName);
+    } catch (err) {
+      console.error('PDF generation error, falling back to print:', err);
+      window.print();
+    }
+  };
+
+  const handleDownloadTxt = () => {
+    const fileName = `${(name || 'Professional').replace(/\s+/g, '_')}_ATS_Resume.txt`;
+    const contactParts = [email, phone, location, linkedin, github].filter(Boolean);
+    
+    let content = `========================================================================\n`;
+    content += `${(name || 'Your Full Name').toUpperCase()} — ${title || 'Professional Title'}\n`;
+    content += `========================================================================\n`;
+    content += `Contact: ${contactParts.join(' | ')}\n\n`;
+
+    if (summary) {
+      content += `------------------------------------------------------------------------\n`;
+      content += `EXECUTIVE SUMMARY\n`;
+      content += `------------------------------------------------------------------------\n`;
+      content += `${summary}\n\n`;
+    }
+
+    if (skills) {
+      content += `------------------------------------------------------------------------\n`;
+      content += `CORE COMPETENCIES & TECHNICAL SKILLS\n`;
+      content += `------------------------------------------------------------------------\n`;
+      content += `${skills}\n\n`;
+    }
+
+    if (experiences.length > 0) {
+      content += `------------------------------------------------------------------------\n`;
+      content += `PROFESSIONAL WORK HISTORY\n`;
+      content += `------------------------------------------------------------------------\n`;
+      experiences.forEach((exp) => {
+        content += `${exp.role.toUpperCase()} | ${exp.company} (${exp.period})\n`;
+        content += `Location: ${exp.location}\n`;
+        content += `${exp.points}\n\n`;
+      });
+    }
+
+    if (education.length > 0) {
+      content += `------------------------------------------------------------------------\n`;
+      content += `EDUCATION & CREDENTIALS\n`;
+      content += `------------------------------------------------------------------------\n`;
+      education.forEach((edu) => {
+        content += `${edu.degree} — ${edu.institution} (${edu.period})\n`;
+      });
+      content += `\n`;
+    }
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -265,10 +437,29 @@ export default function ResumeBuilderPage() {
 
           <button 
             type="button"
-            onClick={handlePrint}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-accent-500 text-white font-bold text-xs shadow-lg shadow-brand-500/25 flex items-center gap-2 hover:opacity-90 transition"
+            onClick={handleDownloadPdf}
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white font-bold text-xs shadow-lg shadow-emerald-500/25 flex items-center gap-1.5 hover:opacity-95 transition"
+            title="Download PDF directly to your computer"
           >
-            <Printer className="w-4 h-4" /> Export / Print PDF
+            <Download className="w-4 h-4" /> Download PDF
+          </button>
+
+          <button 
+            type="button"
+            onClick={handleDownloadTxt}
+            className="px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white font-semibold text-xs flex items-center gap-1.5 transition"
+            title="Download clean plain-text resume for standard ATS applicant portals"
+          >
+            <FileText className="w-3.5 h-3.5 text-slate-400" /> Download ATS (.txt)
+          </button>
+
+          <button 
+            type="button"
+            onClick={handlePrint}
+            className="px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-accent-500 text-white font-bold text-xs shadow-lg shadow-brand-500/20 flex items-center gap-1.5 hover:opacity-90 transition"
+            title="Open browser print / Save as PDF dialog"
+          >
+            <Printer className="w-3.5 h-3.5" /> Print
           </button>
         </div>
       </div>
