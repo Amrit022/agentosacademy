@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     'URL shortener analytics'
   ],
   authors: [{ name: 'OmniStack AI' }],
-  metadataBase: new URL('https://omnistack.ai'),
+  metadataBase: new URL('https://agentosacademy.com'),
   openGraph: {
     title: 'OmniStack AI — The All-in-One Global AI SaaS Platform',
     description: '6 high-impact micro-tools and universal AI assistant in one single dashboard. Designed for global freelancers, founders, and creators.',
-    url: 'https://omnistack.ai',
+    url: 'https://agentosacademy.com',
     siteName: 'OmniStack AI',
     type: 'website',
   },
