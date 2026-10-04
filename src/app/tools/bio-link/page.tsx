@@ -48,6 +48,7 @@ export default function BioLinkPage() {
   const [bio, setBio] = useState('Product Designer & Design Systems Lead. Building user-centered interfaces for global startups 🇩🇪 🌍');
   const [theme, setTheme] = useState<'midnight' | 'sunset' | 'emerald' | 'minimal' | 'cyberpunk' | 'gold'>('midnight');
   const [activeTab, setActiveTab] = useState<'editor' | 'analytics'>('editor');
+  const [mobileView, setMobileView] = useState<'editor' | 'preview'>('editor');
   const [presetIndex, setPresetIndex] = useState(0);
   
   const [links, setLinks] = useState(SAMPLE_LINK_PRESETS[0]);
@@ -173,10 +174,42 @@ export default function BioLinkPage() {
         </button>
       </div>
 
+      {/* Mobile / Tablet Toggle between Builder & Phone Preview */}
+      {activeTab === 'editor' && (
+        <div className="lg:hidden flex items-center p-1 bg-white/5 border border-white/10 rounded-2xl mb-2">
+          <button
+            type="button"
+            onClick={() => setMobileView('editor')}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+              mobileView === 'editor'
+                ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/25'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Palette className="w-3.5 h-3.5" />
+            <span>Page Builder & Links</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileView('preview')}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+              mobileView === 'preview'
+                ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/25'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>Phone Preview</span>
+          </button>
+        </div>
+      )}
+
       {activeTab === 'editor' ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Controls Panel (7 cols) */}
-          <div className="lg:col-span-7 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
+          <div className={`lg:col-span-7 glass p-5 sm:p-8 rounded-3xl border border-white/10 space-y-6 ${
+            mobileView === 'preview' ? 'hidden lg:block' : 'block'
+          }`}>
             <h2 className="text-sm font-bold text-white flex items-center gap-2 border-b border-white/5 pb-3">
               <Sparkles className="w-4 h-4 text-purple-400" /> Page Settings
             </h2>
@@ -345,14 +378,16 @@ export default function BioLinkPage() {
           </div>
 
           {/* Right Panel: Live Mobile Phone Simulation (5 cols) */}
-          <div className="lg:col-span-5 flex flex-col items-center sticky top-28">
+          <div className={`lg:col-span-5 flex flex-col items-center lg:sticky lg:top-28 ${
+            mobileView === 'editor' ? 'hidden lg:flex' : 'flex'
+          }`}>
             <div className="flex items-center gap-2 text-xs font-bold text-slate-400 mb-3">
               <Smartphone className="w-4 h-4 text-purple-400" />
               <span>Live Interactive Mobile Preview</span>
             </div>
 
             {/* Mobile Device Mockup */}
-            <div className={`w-[340px] rounded-[50px] p-4 border-[6px] border-slate-800 shadow-2xl relative min-h-[620px] flex flex-col justify-between transition-all ${
+            <div className={`w-full max-w-[340px] rounded-[44px] sm:rounded-[50px] p-3.5 sm:p-4 border-[5px] sm:border-[6px] border-slate-800 shadow-2xl relative min-h-[580px] sm:min-h-[620px] flex flex-col justify-between transition-all ${
               theme === 'sunset'
                 ? 'bg-gradient-to-b from-[#2a0845] to-[#6441a5]'
                 : theme === 'emerald'

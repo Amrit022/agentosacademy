@@ -400,9 +400,9 @@ Merchant Entity    : OmniStack AI Technologies Inc.
         {plans.map((p, idx) => (
           <div
             key={idx}
-            className={`p-8 sm:p-10 rounded-3xl flex flex-col justify-between transition-all duration-300 relative ${
+            className={`p-6 sm:p-10 rounded-3xl flex flex-col justify-between transition-all duration-300 relative ${
               p.popular
-                ? 'bg-[#0e1428]/95 border-2 border-brand-500 shadow-2xl shadow-brand-500/20 scale-105 z-10'
+                ? 'bg-[#0e1428]/95 border-2 border-brand-500 shadow-2xl shadow-brand-500/20 lg:scale-105 z-10'
                 : 'glass border border-white/10 hover:border-white/20'
             }`}
           >

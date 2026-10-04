@@ -38,6 +38,7 @@ export default function HomePage() {
     {
       id: 'resume',
       title: 'AI Resume & ATS Builder',
+      shortName: 'Resume',
       desc: 'Build resumes that conquer ATS scanners. Featuring real-time keyword analysis, Harvard single-column formatting, and an integrated cover letter generator.',
       href: '/tools/resume-builder',
       icon: FileText,
@@ -51,6 +52,7 @@ export default function HomePage() {
     {
       id: 'bio',
       title: 'Social Media Bio Link Page (Linktree Pro)',
+      shortName: 'Bio Link',
       desc: 'Create beautiful Bento-style link pages for creators and brands. Zero branding, custom domain support, and integrated click analytics.',
       href: '/tools/bio-link',
       icon: Link2,
@@ -64,6 +66,7 @@ export default function HomePage() {
     {
       id: 'content',
       title: 'AI Content & Copywriting Engine',
+      shortName: 'AI Writer',
       desc: 'Generate viral LinkedIn carousels, cold sales email sequences, SEO articles, and YouTube hooks engineered using viral formulas.',
       href: '/tools/content-writer',
       icon: PenTool,
@@ -77,6 +80,7 @@ export default function HomePage() {
     {
       id: 'signature',
       title: 'HTML Email Signature Generator',
+      shortName: 'Signature',
       desc: 'Generate pixel-perfect, clickable email signatures for Gmail, Outlook, and Apple Mail with calendar booking buttons.',
       href: '/tools/email-signature',
       icon: Mail,
@@ -90,6 +94,7 @@ export default function HomePage() {
     {
       id: 'testimonials',
       title: 'Testimonial Collector & Embed Widget',
+      shortName: 'Reviews',
       desc: 'Collect glowing video & text reviews asynchronously from clients, then embed an interactive Wall-of-Love widget on any website.',
       href: '/tools/testimonials',
       icon: MessageSquareQuote,
@@ -103,6 +108,7 @@ export default function HomePage() {
     {
       id: 'url',
       title: 'URL Shortener & Geo Analytics',
+      shortName: 'Short Link',
       desc: 'Shorten links with custom slugs, generate high-resolution scannable QR codes, and measure visitor geographic traffic in real-time.',
       href: '/tools/url-shortener',
       icon: Scissors,
@@ -136,7 +142,7 @@ export default function HomePage() {
           <span>The All-In-One SaaS Suite for Global Creators & Agencies</span>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.12] max-w-5xl mx-auto">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.12] max-w-5xl mx-auto break-words">
           Build Faster. <br />
           <span className="text-gradient">Scale Globally. Monetize Smarter.</span>
         </h1>
@@ -149,14 +155,14 @@ export default function HomePage() {
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link 
             href="/tools/resume-builder" 
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white font-bold text-sm shadow-xl shadow-brand-500/30 hover:scale-[1.03] transition-all flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white font-bold text-sm shadow-xl shadow-brand-500/30 hover:scale-[1.03] active:scale-95 transition-all flex items-center justify-center gap-2"
           >
             <span>Launch Free Tools Suite</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link 
             href="/pricing" 
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 text-white font-semibold text-sm transition-all"
+            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 active:scale-95 border border-white/10 text-white font-semibold text-sm transition-all"
           >
             Explore Unlimited Plans ($9/mo)
           </Link>
@@ -185,27 +191,27 @@ export default function HomePage() {
 
       {/* Interactive Tool Switcher Demo */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass rounded-3xl p-6 sm:p-12 border border-white/10 bg-[#090e1d]/90 shadow-2xl relative overflow-hidden">
-          <div className="text-center max-w-2xl mx-auto mb-10">
+        <div className="glass rounded-3xl p-5 sm:p-10 lg:p-12 border border-white/10 bg-[#090e1d]/90 shadow-2xl relative overflow-hidden">
+          <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
             <span className="text-xs font-bold uppercase tracking-wider text-brand-400">Interactive Workspace</span>
             <h2 className="text-2xl sm:text-4xl font-black text-white mt-2">Test All 6 Engines Right Here</h2>
             <p className="text-xs sm:text-sm text-slate-400 mt-2">Click below to preview each tool before launching.</p>
           </div>
 
-          {/* Tab selector */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+          {/* Tab selector - Smooth horizontal touch swiping on mobile */}
+          <div className="flex items-center overflow-x-auto no-scrollbar gap-2 mb-8 sm:mb-10 pb-2 px-1 justify-start sm:justify-center">
             {tools.map((t, idx) => (
               <button
                 key={t.id}
                 onClick={() => setActiveTab(idx)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
+                className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                   activeTab === idx
                     ? 'bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-lg shadow-brand-500/25 scale-105'
                     : 'glass text-slate-400 hover:text-white hover:bg-white/10'
                 }`}
               >
-                <t.icon className="w-3.5 h-3.5" />
-                <span>{t.title.split(' ')[0]}</span>
+                <t.icon className="w-3.5 h-3.5 shrink-0" />
+                <span>{t.shortName}</span>
               </button>
             ))}
           </div>
@@ -372,9 +378,13 @@ export default function HomePage() {
           <p className="text-slate-400 text-xs sm:text-sm mt-2">See how much you save every single month.</p>
         </div>
 
+        <div className="sm:hidden text-center text-[11px] text-slate-400 mb-2 font-medium flex items-center justify-center gap-1.5">
+          <span>👈 Swipe horizontally to view full matrix 👉</span>
+        </div>
+
         <div className="glass rounded-3xl border border-white/10 overflow-hidden shadow-2xl">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+          <div className="overflow-x-auto no-scrollbar touch-pan-x">
+            <table className="w-full text-left text-xs min-w-[560px]">
               <thead>
                 <tr className="bg-white/5 border-b border-white/10 text-slate-300">
                   <th className="p-4 sm:p-5 font-bold">Tool Functionality</th>
@@ -388,7 +398,7 @@ export default function HomePage() {
                     <td className="p-4 sm:p-5 font-semibold text-white">{c.tool}</td>
                     <td className="p-4 sm:p-5 text-rose-400 font-bold">{c.separateCost}</td>
                     <td className="p-4 sm:p-5 text-emerald-400 font-bold flex items-center gap-1.5">
-                      <CheckCircle2 className="w-4 h-4" /> Included in 1 Suite
+                      <CheckCircle2 className="w-4 h-4 shrink-0" /> Included in 1 Suite
                     </td>
                   </tr>
                 ))}

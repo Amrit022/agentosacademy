@@ -153,7 +153,7 @@ export default function AiAssistantModal() {
       {/* Floating Trigger Button (Bottom Right) */}
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 group flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-brand-600 via-accent-600 to-pink-600 text-white shadow-2xl shadow-brand-500/40 hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20"
+        className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-40 group flex items-center gap-2.5 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-brand-600 via-accent-600 to-pink-600 text-white shadow-2xl shadow-brand-500/40 hover:scale-105 active:scale-95 transition-all duration-200 border border-white/20 cursor-pointer"
         aria-label="Open AI Assistant"
       >
         <div className="relative">
@@ -171,25 +171,25 @@ export default function AiAssistantModal() {
 
       {/* Modal Dialog */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 md:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
           <div 
-            className="w-full max-w-2xl h-[680px] max-h-[92vh] glass rounded-3xl border border-white/15 shadow-2xl flex flex-col overflow-hidden bg-[#0a0f1d]/95"
+            className="w-full max-w-2xl h-[680px] max-h-[96vh] sm:max-h-[92vh] glass rounded-2xl sm:rounded-3xl border border-white/15 shadow-2xl flex flex-col overflow-hidden bg-[#0a0f1d]/95"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-brand-500 via-accent-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/25">
-                  <Bot className="w-5 h-5" />
+            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-tr from-brand-500 via-accent-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/25 shrink-0">
+                  <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-extrabold text-white tracking-tight">OmniStack AI — Universal Assistant</h3>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <h3 className="text-xs sm:text-sm font-extrabold text-white tracking-tight truncate">OmniStack AI — Universal Assistant</h3>
+                    <span className="px-1.5 sm:px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] sm:text-[10px] font-bold flex items-center gap-1 shrink-0">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Ready
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400">Ask anything: Coding, Math, Science, Business, or AI Video</p>
+                  <p className="text-[10px] sm:text-[11px] text-slate-400 line-clamp-1">Ask anything: Coding, Math, Science, Business, or AI Video</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">

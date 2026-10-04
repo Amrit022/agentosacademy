@@ -203,6 +203,7 @@ export default function EmailSignaturePage() {
 
   // Modal & Copy State
   const [copied, setCopied] = useState(false);
+  const [mobileView, setMobileView] = useState<'form' | 'preview'>('form');
   const [showProModal, setShowProModal] = useState(false);
   const [proFeature, setProFeature] = useState('');
 
@@ -620,9 +621,39 @@ export default function EmailSignaturePage() {
         </div>
       </div>
 
+      {/* Mobile / Tablet Toggle between Form & In-Inbox Preview */}
+      <div className="lg:hidden flex items-center p-1 bg-white/5 border border-white/10 rounded-2xl mb-2">
+        <button
+          type="button"
+          onClick={() => setMobileView('form')}
+          className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+            mobileView === 'form'
+              ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/25'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Mail className="w-3.5 h-3.5" />
+          <span>Edit Details</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setMobileView('preview')}
+          className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+            mobileView === 'preview'
+              ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/25'
+              : 'text-slate-400 hover:text-white'
+          }`}
+        >
+          <Eye className="w-3.5 h-3.5" />
+          <span>In-Inbox Preview</span>
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Editor Form (5 cols) */}
-        <div className="lg:col-span-5 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-5">
+        <div className={`lg:col-span-5 glass p-5 sm:p-8 rounded-3xl border border-white/10 space-y-5 ${
+          mobileView === 'preview' ? 'hidden lg:block' : 'block'
+        }`}>
           <div className="flex items-center justify-between border-b border-white/5 pb-3">
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-400" /> Signature Details
@@ -803,7 +834,9 @@ export default function EmailSignaturePage() {
         </div>
 
         {/* Live Preview & Instructions (7 cols) */}
-        <div className="lg:col-span-7 glass p-6 sm:p-10 rounded-3xl border border-white/10 space-y-6 sticky top-28">
+        <div className={`lg:col-span-7 glass p-4 sm:p-8 lg:p-10 rounded-3xl border border-white/10 space-y-6 lg:sticky lg:top-28 ${
+          mobileView === 'form' ? 'hidden lg:block' : 'block'
+        }`}>
           <div className="flex items-center justify-between border-b border-white/5 pb-3">
             <span className="text-xs font-bold text-slate-300 flex items-center gap-2">
               <Eye className="w-4 h-4 text-amber-400" />

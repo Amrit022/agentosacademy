@@ -142,6 +142,7 @@ export type ResumeTemplate = 'modern' | 'harvard' | 'minimal' | 'executive' | 'c
 
 export default function ResumeBuilderPage() {
   const [activeTab, setActiveTab] = useState<'resume' | 'cover-letter'>('resume');
+  const [mobileView, setMobileView] = useState<'form' | 'preview'>('form');
   const [template, setTemplate] = useState<ResumeTemplate>('modern');
   const [showProInfo, setShowProInfo] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -384,7 +385,7 @@ export default function ResumeBuilderPage() {
             title="See what's included in OmniStack AI Pro"
           >
             <Crown className="w-3.5 h-3.5 text-amber-400" />
-            <span>⭐ What's in Pro? ($19/mo)</span>
+            <span>⭐ What's in Pro? ($9/mo)</span>
           </button>
 
           <button 
@@ -476,10 +477,42 @@ export default function ResumeBuilderPage() {
         </button>
       </div>
 
+      {/* Mobile / Tablet Toggle between Form and Live Canvas */}
+      {activeTab === 'resume' && (
+        <div className="lg:hidden flex items-center p-1 bg-white/5 border border-white/10 rounded-2xl mb-2">
+          <button
+            type="button"
+            onClick={() => setMobileView('form')}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+              mobileView === 'form'
+                ? 'bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-lg shadow-brand-500/25'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            <span>Edit Resume Form</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMobileView('preview')}
+            className={`flex-1 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+              mobileView === 'preview'
+                ? 'bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-lg shadow-brand-500/25'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Eye className="w-3.5 h-3.5" />
+            <span>Live Canvas ({atsScore}/100)</span>
+          </button>
+        </div>
+      )}
+
       {activeTab === 'resume' ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Form (5 cols) */}
-          <div className="lg:col-span-5 glass p-6 sm:p-7 rounded-3xl border border-white/10 space-y-6">
+          <div className={`lg:col-span-5 glass p-5 sm:p-7 rounded-3xl border border-white/10 space-y-6 ${
+            mobileView === 'preview' ? 'hidden lg:block' : 'block'
+          }`}>
             {/* ATS Score */}
             <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
               <div>
@@ -784,8 +817,10 @@ export default function ResumeBuilderPage() {
           </div>
 
           {/* Right Panel: Rendered Resume (7 cols) */}
-          <div className="lg:col-span-7 sticky top-28">
-            <div className="glass p-6 sm:p-10 rounded-3xl border border-white/10 bg-[#070b16] shadow-2xl">
+          <div className={`lg:col-span-7 lg:sticky lg:top-28 ${
+            mobileView === 'form' ? 'hidden lg:block' : 'block'
+          }`}>
+            <div className="glass p-3 sm:p-6 lg:p-8 rounded-3xl border border-white/10 bg-[#070b16] shadow-2xl overflow-x-auto no-scrollbar">
               <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-brand-400" />
@@ -809,7 +844,7 @@ export default function ResumeBuilderPage() {
                         </span>
                       </div>
                       <div className="text-[11px] text-slate-300 mt-0.5">
-                        Styles D, E, F, G, and H require OmniStack AI Pro ($19/mo). Upgrade to download unwatermarked vector PDF, ATS plain-text, and print exports.
+                        Styles D, E, F, G, and H require OmniStack AI Pro ($9/mo). Upgrade to download unwatermarked vector PDF, ATS plain-text, and print exports.
                       </div>
                     </div>
                   </div>

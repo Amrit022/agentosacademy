@@ -120,24 +120,24 @@ export default function Navbar() {
   }, [pathname]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[100] bg-[#070b14]/95 backdrop-blur-2xl border-b border-white/10 shadow-2xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-[100] bg-[#070b14]/95 backdrop-blur-2xl border-b border-white/10 shadow-2xl transition-all duration-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 via-indigo-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/30 group-hover:scale-105 transition-all">
-            <Sparkles className="w-5 h-5 text-white" />
+        <Link href="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-brand-500 via-indigo-500 to-accent-500 flex items-center justify-center shadow-lg shadow-brand-500/30 group-hover:scale-105 active:scale-95 transition-all">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xl font-extrabold tracking-tight text-white">OmniStack</span>
-              <span className="text-xl font-extrabold tracking-tight text-gradient">AI</span>
+            <div className="flex items-center gap-1.5 leading-none">
+              <span className="text-lg sm:text-xl font-extrabold tracking-tight text-white">OmniStack</span>
+              <span className="text-lg sm:text-xl font-extrabold tracking-tight text-gradient">AI</span>
             </div>
-            <div className="text-[10px] text-slate-400 font-medium tracking-wide">6-in-1 Premium SaaS Suite</div>
+            <div className="text-[9px] sm:text-[10px] text-slate-400 font-medium tracking-wide mt-0.5">6-in-1 Premium SaaS Suite</div>
           </div>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-7">
+        <nav className="hidden lg:flex items-center gap-6 xl:gap-7">
           <Link 
             href="/" 
             className={`text-xs font-semibold tracking-wide transition px-3 py-2 rounded-lg ${
@@ -217,11 +217,11 @@ export default function Navbar() {
         </nav>
 
         {/* Desktop CTA Buttons */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-2 lg:gap-3">
           <button
             type="button"
             onClick={() => window.dispatchEvent(new CustomEvent('open-agentos-ai'))}
-            className="flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition group"
+            className="hidden xl:flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition group cursor-pointer active:scale-95"
           >
             <Bot className="w-3.5 h-3.5 text-brand-400 group-hover:scale-110 transition-transform" />
             <span>Ask AI</span>
@@ -229,15 +229,15 @@ export default function Navbar() {
           </button>
           <Link 
             href="/pricing" 
-            className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition"
+            className="hidden md:flex px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition active:scale-95"
           >
             Pricing ($9/mo)
           </Link>
           <Link 
             href="/tools/resume-builder" 
-            className="px-5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:scale-[1.02] transition flex items-center gap-2"
+            className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:scale-[1.02] active:scale-95 transition flex items-center gap-1.5 sm:gap-2"
           >
-            <Zap className="w-3.5 h-3.5" />
+            <Zap className="w-3.5 h-3.5 shrink-0" />
             <span>Launch Free Tools</span>
           </Link>
         </div>
@@ -245,46 +245,47 @@ export default function Navbar() {
         {/* Mobile menu trigger */}
         <button 
           onClick={() => setOpen(!open)} 
-          className="lg:hidden p-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-white"
+          className="lg:hidden p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white active:scale-90 transition-transform cursor-pointer"
+          aria-label="Toggle navigation menu"
         >
-          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {open ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6" />}
         </button>
       </div>
 
       {/* Mobile Drawer */}
       {open && (
-        <div className="lg:hidden bg-[#0a0e1c] border-t border-white/10 px-4 py-6 space-y-4 shadow-2xl">
+        <div className="lg:hidden bg-[#0a0e1c]/98 backdrop-blur-2xl border-t border-white/10 px-4 py-5 space-y-4 shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto overscroll-contain animate-in fade-in slide-in-from-top-2 duration-200">
           <Link 
             href="/" 
             onClick={() => setOpen(false)} 
-            className="block text-sm font-bold text-white py-1"
+            className="block text-sm font-bold text-white py-1.5 active:text-brand-400 transition"
           >
             Home
           </Link>
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider pt-2 border-t border-white/5">
             All 6 Micro-SaaS Tools
           </div>
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             {tools.map((t) => (
               <Link
                 key={t.href}
                 href={t.href}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 py-2 px-3 rounded-xl hover:bg-white/10 text-xs font-semibold text-slate-300 hover:text-white"
+                className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-white/10 active:bg-white/15 text-xs font-semibold text-slate-300 hover:text-white transition"
               >
-                <t.icon className={`w-4 h-4 ${t.color}`} />
-                <span>{t.name}</span>
+                <t.icon className={`w-4 h-4 ${t.color} shrink-0`} />
+                <span className="truncate">{t.name}</span>
               </Link>
             ))}
           </div>
-          <div className="pt-4 border-t border-white/5 flex flex-col gap-2.5">
+          <div className="pt-3 border-t border-white/5 flex flex-col gap-2.5">
             <button 
               type="button"
               onClick={() => {
                 setOpen(false);
                 window.dispatchEvent(new CustomEvent('open-agentos-ai'));
               }}
-              className="w-full text-center py-2.5 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 text-xs font-bold text-brand-300 border border-brand-500/20 flex items-center justify-center gap-2"
+              className="w-full text-center py-2.5 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 active:bg-brand-500/30 text-xs font-bold text-brand-300 border border-brand-500/20 flex items-center justify-center gap-2 cursor-pointer transition"
             >
               <Bot className="w-4 h-4 text-brand-400" />
               <span>Ask OmniStack AI Copilot</span>
@@ -292,14 +293,14 @@ export default function Navbar() {
             <Link 
               href="/pricing" 
               onClick={() => setOpen(false)} 
-              className="text-center py-2.5 rounded-xl bg-white/10 text-xs font-bold text-white border border-white/10"
+              className="text-center py-2.5 rounded-xl bg-white/10 hover:bg-white/15 active:bg-white/20 text-xs font-bold text-white border border-white/10 transition"
             >
               Plans & Pricing ($9/mo)
             </Link>
             <Link 
               href="/tools/resume-builder" 
               onClick={() => setOpen(false)} 
-              className="text-center py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-accent-500 text-xs font-bold text-white shadow-lg"
+              className="text-center py-2.5 rounded-xl bg-gradient-to-r from-brand-500 to-accent-500 text-xs font-bold text-white shadow-lg active:scale-98 transition"
             >
               Get Started Free
             </Link>
