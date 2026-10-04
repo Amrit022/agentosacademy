@@ -7,6 +7,7 @@ import {
   Copy, 
   Zap, 
   ArrowRight, 
+  ArrowLeft,
   ShieldCheck, 
   Globe, 
   Sparkles, 
@@ -533,77 +534,95 @@ Merchant Entity    : OmniStack AI Technologies Inc.
 
       {/* FULL INTERACTIVE GLOBAL PAYMENT GATEWAY & CHECKOUT WINDOW */}
       {showPaypalModal && (
-        <div className="fixed inset-0 z-[250] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="glass p-6 sm:p-8 rounded-3xl border border-white/20 max-w-xl w-full bg-[#0a0f1d] shadow-2xl relative space-y-6 my-6 animate-in fade-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-white/10 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-accent-500 flex items-center justify-center text-white font-black text-sm shadow-lg shadow-brand-500/20">
-                  <Sparkles className="w-5 h-5" />
+        <div 
+          className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-xl flex flex-col justify-start items-center p-2.5 sm:p-4 md:p-6 overflow-y-auto overscroll-contain animate-in fade-in duration-200"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowPaypalModal(false);
+          }}
+        >
+          <div 
+            className="w-full max-w-xl bg-[#0a0f1d] border border-white/20 rounded-3xl shadow-2xl relative my-auto sm:my-8 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Sticky Navigation & Header Bar (Always pinned at top of viewport on mobile & desktop) */}
+            <div className="sticky top-0 z-50 bg-[#0a0f1d]/98 backdrop-blur-xl px-4 sm:px-6 py-3 border-b border-white/10 flex items-center justify-between gap-2 shadow-lg">
+              <button 
+                type="button"
+                onClick={() => setShowPaypalModal(false)}
+                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white text-xs font-bold transition flex items-center gap-1.5 shrink-0 border border-white/10 active:scale-95 cursor-pointer"
+                title="Back to Pricing Plans"
+              >
+                <ArrowLeft className="w-4 h-4 text-brand-400" />
+                <span>← Back</span>
+              </button>
+
+              <div className="text-center min-w-0 flex-1 px-1">
+                <div className="flex items-center justify-center gap-1.5">
+                  <span className="text-xs sm:text-sm font-extrabold text-white truncate">{selectedPlan.name}</span>
+                  <span className="text-[9px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-full border border-emerald-500/20 shrink-0">
+                    256-Bit SSL
+                  </span>
                 </div>
-                <div>
-                  <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-                    <span>Global Payment Gateway</span>
-                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                      256-Bit SSL
-                    </span>
-                  </h3>
-                  <div className="text-xs text-slate-400">
-                    {selectedPlan.name} · {annual ? `${selectedPlan.annualPriceNum} USD / Year` : `${selectedPlan.priceNum} USD / Month`}
-                  </div>
+                <div className="text-[10px] text-slate-400 truncate">
+                  {annual ? `${selectedPlan.annualPriceNum} USD / Year` : `${selectedPlan.priceNum} USD / Month`}
                 </div>
               </div>
+
               <button 
+                type="button"
                 onClick={() => setShowPaypalModal(false)}
-                className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/10 transition"
+                className="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white flex items-center justify-center transition shrink-0 border border-white/10 active:scale-95 cursor-pointer"
+                title="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            {!paymentSuccess ? (
-              <div className="space-y-5">
-                {/* Payment Method Selector Tabs */}
-                <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-black/40 border border-white/10">
-                  <button
-                    type="button"
-                    onClick={() => setCheckoutTab('card')}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                      checkoutTab === 'card'
-                        ? 'bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-md'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <CreditCard className="w-3.5 h-3.5" />
-                    <span>Card & Apple Pay</span>
-                  </button>
+            {/* Modal Body */}
+            <div className="p-4 sm:p-7 space-y-6">
+              {!paymentSuccess ? (
+                <div className="space-y-5">
+                  {/* Payment Method Selector Tabs */}
+                  <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-black/40 border border-white/10">
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutTab('card')}
+                      className={`py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
+                        checkoutTab === 'card'
+                          ? 'bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-md'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <CreditCard className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">Card & Pay</span>
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setCheckoutTab('upi')}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                      checkoutTab === 'upi'
-                        ? 'bg-emerald-600 text-white shadow-md'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <QrCode className="w-3.5 h-3.5" />
-                    <span>UPI / QR Transfer</span>
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutTab('upi')}
+                      className={`py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
+                        checkoutTab === 'upi'
+                          ? 'bg-emerald-600 text-white shadow-md'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <QrCode className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">UPI / QR</span>
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setCheckoutTab('paypal')}
-                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                      checkoutTab === 'paypal'
-                        ? 'bg-[#0070ba] text-white shadow-md'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <span className="font-black text-xs">P</span>
-                    <span>PayPal Portal</span>
-                  </button>
-                </div>
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutTab('paypal')}
+                      className={`py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
+                        checkoutTab === 'paypal'
+                          ? 'bg-[#0070ba] text-white shadow-md'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      <span className="font-black text-xs shrink-0">P</span>
+                      <span className="truncate">PayPal</span>
+                    </button>
+                  </div>
 
                 {/* TAB 1: PAYPAL OFFICIAL CHECKOUT */}
                 {checkoutTab === 'paypal' && (
@@ -978,7 +997,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                       <button
                         type="button"
                         onClick={handleVerifyUpiPayment}
-                        className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20"
+                        className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20 cursor-pointer active:scale-98"
                       >
                         <Check className="w-4 h-4" />
                         <span>Verify UTR & Activate Pro License</span>
@@ -986,6 +1005,18 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                     </div>
                   </div>
                 )}
+
+                {/* Secondary Back/Cancel Button at bottom */}
+                <div className="pt-2 border-t border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setShowPaypalModal(false)}
+                    className="w-full py-3.5 px-4 rounded-xl border border-white/10 hover:border-white/20 text-slate-300 hover:text-white hover:bg-white/5 text-xs font-semibold transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  >
+                    <ArrowLeft className="w-4 h-4 text-brand-400" />
+                    <span>Cancel and return to pricing plans</span>
+                  </button>
+                </div>
               </div>
             ) : (
               /* PAYMENT VERIFIED & SUCCESS SCREEN */
@@ -1042,19 +1073,21 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                   </Link>
                 </div>
 
-                <div>
+                <div className="pt-2">
                   <button
                     type="button"
                     onClick={() => setShowPaypalModal(false)}
-                    className="text-xs text-slate-400 hover:text-white underline mt-1"
+                    className="w-full py-3 px-4 rounded-xl border border-white/10 hover:border-white/20 text-xs text-slate-300 hover:text-white hover:bg-white/5 font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer"
                   >
-                    Close Window
+                    <ArrowLeft className="w-4 h-4 text-brand-400" />
+                    <span>Return to Plans & Close Window</span>
                   </button>
                 </div>
               </div>
             )}
           </div>
         </div>
+      </div>
       )}
     </div>
   );

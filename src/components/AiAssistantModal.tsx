@@ -14,6 +14,7 @@ import {
   Key,
   ChevronDown,
   ChevronUp,
+  ArrowLeft,
   Cpu
 } from 'lucide-react';
 import Link from 'next/link';
@@ -171,14 +172,28 @@ export default function AiAssistantModal() {
 
       {/* Modal Dialog */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 md:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-150">
+        <div 
+          className="fixed inset-0 z-[9999] flex flex-col justify-start sm:justify-center items-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md overflow-y-auto overscroll-contain animate-in fade-in duration-150"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsOpen(false);
+          }}
+        >
           <div 
-            className="w-full max-w-2xl h-[680px] max-h-[96vh] sm:max-h-[92vh] glass rounded-2xl sm:rounded-3xl border border-white/15 shadow-2xl flex flex-col overflow-hidden bg-[#0a0f1d]/95"
+            className="w-full max-w-2xl h-[680px] max-h-[96vh] sm:max-h-[92vh] glass rounded-2xl sm:rounded-3xl border border-white/15 shadow-2xl flex flex-col overflow-hidden bg-[#0a0f1d]/95 my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02]">
-              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+            <div className="px-3 sm:px-6 py-3 sm:py-4 border-b border-white/10 flex items-center justify-between bg-white/[0.02] gap-2">
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="sm:hidden px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white text-xs font-bold flex items-center gap-1 transition shrink-0 border border-white/10 active:scale-95"
+                  title="Back"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5 text-brand-400" />
+                  <span>Back</span>
+                </button>
                 <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-tr from-brand-500 via-accent-500 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-brand-500/25 shrink-0">
                   <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
@@ -192,7 +207,7 @@ export default function AiAssistantModal() {
                   <p className="text-[10px] sm:text-[11px] text-slate-400 line-clamp-1">Ask anything: Coding, Math, Science, Business, or AI Video</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => setShowKeySettings(!showKeySettings)}
@@ -206,6 +221,7 @@ export default function AiAssistantModal() {
                 <button
                   onClick={() => setIsOpen(false)}
                   className="w-8 h-8 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition"
+                  title="Close"
                 >
                   <X className="w-4 h-4" />
                 </button>
