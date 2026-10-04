@@ -713,7 +713,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                   <form onSubmit={handleProcessCardPayment} className="space-y-4 pt-1">
                     {/* Featured 1-Click Hosted Checkout via Dodo Payments */}
                     <a
-                      href="https://test.checkout.dodopayments.com/buy/pdt_0NoyxO4EGBfBBwuqgIVlj?quantity=1"
+                      href="https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full p-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs shadow-xl shadow-emerald-500/25 transition flex items-center justify-between group cursor-pointer"
@@ -867,7 +867,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                             </div>
                           </div>
                           <a
-                            href="https://test.checkout.dodopayments.com/buy/pdt_0NoyxO4EGBfBBwuqgIVlj?quantity=1"
+                            href="https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 shrink-0"

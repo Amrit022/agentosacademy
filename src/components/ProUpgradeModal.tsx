@@ -102,7 +102,7 @@ export default function ProUpgradeModal({
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
           <a 
-            href="https://test.checkout.dodopayments.com/buy/pdt_0NoyxO4EGBfBBwuqgIVlj?quantity=1"
+            href="https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1"
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClose}
