@@ -26,7 +26,10 @@ import {
   Target,
   BarChart3,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Zap,
+  SlidersHorizontal,
+  ShieldCheck
 } from 'lucide-react';
 import { generateCopy } from '@/lib/ai-engine';
 
@@ -90,6 +93,18 @@ const PRO_AI_CAPABILITIES = [
       { name: 'Ghost CMS & Webflow Direct Integration', desc: 'Export rich markdown directly to headless CMS collections.', badge: 'Pro' },
       { name: 'Export to Clean Markdown, PDF & DOCX', desc: 'Download clean formatted documents with zero proprietary watermarks.', badge: 'Pro' }
     ]
+  },
+  {
+    category: '7. Agency Unlimited Programmatic Studio & API',
+    features: [
+      { name: 'Programmatic 50-Variant Ad Matrix', desc: 'Generate 50 headlines, primary text variations, and angles simultaneously.', badge: 'Agency' },
+      { name: 'Agency Multi-Platform Campaign Pack', desc: '1-click outputs blog post, 5 tweets, LinkedIn post, and email announcement.', badge: 'Agency' },
+      { name: '10,000 Row Bulk CSV Generator Engine', desc: 'High-throughput batch export for programmatic SEO and affiliate directories.', badge: 'Agency' },
+      { name: 'Multi-Client Workspaces & Brand Voice Lock', desc: 'Isolate distinct tone profiles for 25+ agency clients.', badge: 'Agency' },
+      { name: 'Headless CMS Webhook Auto-Publish', desc: 'Stream approved copy directly into Supabase, Strapi, or Shopify.', badge: 'Agency' },
+      { name: '100% White-Label Client Deliverables (PDF/Docx)', desc: 'Agency-branded cover sheets ready for client presentation.', badge: 'Agency' },
+      { name: 'Full Commercial Copywriting REST API', desc: 'Integrate OmniStack AI text generation into your own agency workflows.', badge: 'Agency' }
+    ]
   }
 ];
 
@@ -103,15 +118,17 @@ export default function ContentWriterPage() {
   const [copied, setCopied] = useState(false);
   const [variantCount, setVariantCount] = useState(0);
   const [showProModal, setShowProModal] = useState(false);
+  const [proModalTier, setProModalTier] = useState<'pro' | 'agency'>('pro');
   const [proFeature, setProFeature] = useState('');
   const [showMatrix, setShowMatrix] = useState(false);
 
   const presets = [
     { title: '🎥 AI Video Masterclass', format: 'Twitter / X Thought Leadership Thread', topic: 'How to make AI videos with Runway Gen-3, ElevenLabs, and Midjourney' },
-    { title: '🚀 Micro-SaaS Playbook', format: 'Viral LinkedIn Carousel/Post', topic: 'How to build and launch a $5k/month Micro-SaaS tool with zero upfront budget' },
-    { title: '📩 High-Ticket Cold Email', format: 'High-Converting Cold Outreach Email', topic: 'Pitching automated AI workflows and web development retainers to US tech agencies' },
+    { title: '🚀 Micro-SaaS Playbook', format: 'Viral LinkedIn Carousel / Post', topic: 'How to build and launch a $5k/month Micro-SaaS tool with zero upfront budget' },
+    { title: '📩 High-Ticket Cold Email', format: 'High-Ticket Cold Email Sequence (4 Steps)', topic: 'Pitching automated AI workflows and web development retainers to US tech agencies' },
     { title: '🎬 YouTube Reel Script', format: 'YouTube / Short-Form Video Script & Storyboard', topic: 'The step-by-step secret to creating faceless viral AI videos in 2026' },
-    { title: '📝 Comprehensive SEO Guide', format: 'Comprehensive SEO Blog Post', topic: 'Top 7 AI automation tools every remote business needs to scale in 2026' },
+    { title: '📝 Comprehensive SEO Guide', format: 'Comprehensive 3,000-Word Pillar Article', topic: 'Top 7 AI automation tools every remote business needs to scale in 2026' },
+    { title: '⚡ Agency 50-Variant Ad Matrix', format: 'Programmatic 50-Variant Ad Matrix (Meta & Google)', topic: 'Direct-to-consumer launch angles for automated bookkeeping software' }
   ];
 
   const randomTopics = [
@@ -130,13 +147,38 @@ export default function ContentWriterPage() {
   const wordCount = output.trim() ? output.trim().split(/\s+/).length : 0;
   const readingTime = Math.ceil(wordCount / 200) || 1;
 
+  const handleFeatureClick = (badge?: string, name?: string) => {
+    if (badge === 'Free') return;
+    setProModalTier(badge === 'Agency' ? 'agency' : 'pro');
+    if (name) setProFeature(name);
+    setShowProModal(true);
+  };
+
+  const handleFormatSelect = (fmt: string, tier: 'Free' | 'Pro' | 'Agency') => {
+    setFormat(fmt);
+    if (tier !== 'Free') {
+      setProModalTier(tier === 'Agency' ? 'agency' : 'pro');
+    }
+  };
+
   const handleGenerate = () => {
-    const isProFormat = format.includes('YouTube') || format.includes('Cold') || format.includes('SEO');
-    if (isProFormat) {
-      setProFeature(`${format} (Pro Deliverable Engine)`);
+    const isAgencyFormat = format.includes('Agency') || format.includes('Programmatic');
+    const isProFormat = format.includes('YouTube') || format.includes('Carousel') || format.includes('AIDA') || format.includes('PAS') || format.includes('Cold') || format.includes('3,000') || format.includes('Newsletter') || format.includes('Sales Letter');
+
+    if (isAgencyFormat) {
+      setProModalTier('agency');
+      setProFeature(`${format} (⚡ Agency Unlimited Feature)`);
       setShowProModal(true);
       return;
     }
+
+    if (isProFormat) {
+      setProModalTier('pro');
+      setProFeature(`${format} (🔒 Pro Copy Engine)`);
+      setShowProModal(true);
+      return;
+    }
+
     setLoading(true);
     setTimeout(() => {
       const generated = generateCopy({
@@ -159,11 +201,6 @@ export default function ContentWriterPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleProFeatureClick = (name: string) => {
-    setProFeature(name);
-    setShowProModal(true);
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Top Header */}
@@ -175,7 +212,7 @@ export default function ContentWriterPage() {
               Dynamic AI Generation Engine
             </span>
             <span className="text-[10px] text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
-              <Crown className="w-3 h-3 text-amber-400" /> 60+ Pro Features
+              <Crown className="w-3 h-3 text-amber-400" /> 14 Formats · 50+ Capabilities
             </span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-black text-white mt-1">AI Content Generator Studio</h1>
@@ -184,39 +221,53 @@ export default function ContentWriterPage() {
           </p>
         </div>
 
-        <button 
-          type="button"
-          onClick={() => setShowMatrix(!showMatrix)}
-          className="px-4 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center gap-2 transition cursor-pointer self-start md:self-auto"
-        >
-          <Crown className="w-3.5 h-3.5 text-amber-400" />
-          <span>{showMatrix ? 'Hide Pro Feature Catalog' : '👑 Browse 60+ Pro Capabilities'}</span>
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button 
+            type="button"
+            onClick={() => setShowMatrix(!showMatrix)}
+            className="px-4 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center gap-2 transition cursor-pointer self-start md:self-auto"
+          >
+            <Crown className="w-3.5 h-3.5 text-amber-400" />
+            <span>{showMatrix ? 'Hide Capabilities' : '👑 Browse 50+ Pro & Agency Capabilities'}</span>
+          </button>
+        </div>
       </div>
 
-      {/* EXPANDABLE 60+ PRO AI CAPABILITIES MATRIX */}
+      {/* EXPANDABLE 50+ PRO & AGENCY AI CAPABILITIES MATRIX */}
       {showMatrix && (
         <div className="glass p-6 sm:p-8 rounded-3xl border border-amber-500/30 bg-amber-950/10 space-y-6 animate-in slide-in-from-top-4 duration-200">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/20 pb-4">
             <div>
               <div className="flex items-center gap-2 text-amber-300 font-black text-base">
                 <Crown className="w-5 h-5 text-amber-400" />
-                <span>OmniStack Pro Copywriting Infrastructure (60+ AI Capabilities)</span>
+                <span>OmniStack Pro & Agency Copywriting Infrastructure (50+ Advanced Capabilities)</span>
               </div>
               <p className="text-xs text-slate-300 mt-1">
-                From long-form 3,000-word guides to multi-channel cold outreach sequences and humanizer shields.
+                From long-form 3,000-word guides to multi-channel cold outreach sequences, humanizer shields, and programmatic ad matrices.
               </p>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                setProFeature('All 60+ Pro AI Copywriting Engines');
-                setShowProModal(true);
-              }}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 hover:opacity-95 transition shrink-0 cursor-pointer"
-            >
-              Unlock All 60+ Features for $9/mo
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setProModalTier('pro');
+                  setShowProModal(true);
+                }}
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 hover:opacity-95 transition shrink-0 cursor-pointer"
+              >
+                👑 Pro ($9/mo)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setProModalTier('agency');
+                  setShowProModal(true);
+                }}
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 font-black text-xs shadow-lg shadow-cyan-500/20 hover:opacity-95 transition shrink-0 cursor-pointer"
+              >
+                ⚡ Agency ($29/mo)
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -230,11 +281,13 @@ export default function ContentWriterPage() {
                   {category.features.map((f) => (
                     <div 
                       key={f.name}
-                      onClick={() => f.badge === 'Pro' && handleProFeatureClick(f.name)}
+                      onClick={() => handleFeatureClick(f.badge, f.name)}
                       className={`p-2.5 rounded-xl border text-left transition flex items-start justify-between gap-2 cursor-pointer ${
-                        f.badge === 'Pro' 
-                          ? 'bg-white/5 border-white/5 hover:border-amber-500/40 hover:bg-amber-500/10' 
-                          : 'bg-emerald-500/10 border-emerald-500/20'
+                        f.badge === 'Agency'
+                          ? 'bg-cyan-500/10 border-cyan-500/20 hover:border-cyan-400 hover:bg-cyan-500/15'
+                          : f.badge === 'Pro' 
+                            ? 'bg-white/5 border-white/5 hover:border-amber-500/40 hover:bg-amber-500/10' 
+                            : 'bg-emerald-500/10 border-emerald-500/20'
                       }`}
                     >
                       <div>
@@ -246,12 +299,14 @@ export default function ContentWriterPage() {
                         </div>
                       </div>
 
-                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full shrink-0 ${
-                        f.badge === 'Pro' 
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-0.5' 
-                          : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-0.5 ${
+                        f.badge === 'Agency'
+                          ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                          : f.badge === 'Pro' 
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
+                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                       }`}>
-                        {f.badge === 'Pro' ? <><Crown className="w-2.5 h-2.5" /> PRO</> : 'FREE'}
+                        {f.badge === 'Agency' ? <><Zap className="w-2.5 h-2.5" /> AGENCY</> : f.badge === 'Pro' ? <><Crown className="w-2.5 h-2.5" /> PRO</> : 'FREE'}
                       </span>
                     </div>
                   ))}
@@ -262,91 +317,192 @@ export default function ContentWriterPage() {
         </div>
       )}
 
-      {/* Editor & Output Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Form: Inputs (5 cols) */}
-        <div className="lg:col-span-5 glass p-6 sm:p-7 rounded-3xl border border-white/10 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/5 pb-3">
-            <span className="text-xs font-bold text-slate-300 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-pink-400" /> Topic & Format Controls
-            </span>
-            <button
-              type="button"
-              onClick={handleRandomTopic}
-              className="text-[11px] text-pink-300 hover:text-pink-200 font-bold flex items-center gap-1 cursor-pointer"
-            >
-              <Dices className="w-3.5 h-3.5" /> Random Topic
-            </button>
-          </div>
+      {/* Preset Inspirations */}
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5 mr-1">
+          <Lightbulb className="w-3.5 h-3.5 text-amber-400" /> Instant Presets:
+        </span>
+        {presets.map((p, idx) => (
+          <button
+            key={idx}
+            type="button"
+            onClick={() => {
+              setTopic(p.topic);
+              setFormat(p.format);
+            }}
+            className="text-xs px-3 py-1.5 rounded-xl glass hover:bg-white/10 text-slate-300 hover:text-white border border-white/5 transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>{p.title}</span>
+          </button>
+        ))}
+      </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5">What do you want to write about?</label>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Form (5 cols) */}
+        <div className="lg:col-span-5 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-300">Topic, Angle or Key Idea</label>
+              <button 
+                type="button"
+                onClick={handleRandomTopic}
+                className="text-[11px] text-pink-400 hover:text-pink-300 font-semibold flex items-center gap-1 transition cursor-pointer"
+              >
+                <Dices className="w-3.5 h-3.5" /> Random Idea
+              </button>
+            </div>
             <textarea
               rows={3}
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g. How to scale a modern freelance agency to $10,000/month..."
-              className="w-full px-3.5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-pink-500 leading-relaxed font-sans"
+              placeholder="e.g. 5 steps to launch a profitable micro-SaaS with zero budget..."
+              className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-pink-500 leading-relaxed font-sans"
             />
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5">Deliverable Format</label>
-            <select
-              value={format}
-              onChange={(e) => setFormat(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d1424] border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-medium"
-            >
-              <option value="Twitter / X Thought Leadership Thread">Twitter / X Thought Leadership Thread (Free)</option>
-              <option value="Viral LinkedIn Carousel/Post">Viral LinkedIn Carousel / Narrative (Free)</option>
-              <option value="High-Converting Cold Outreach Email">High-Converting Cold Email (🔒 Pro)</option>
-              <option value="YouTube / Short-Form Video Script & Storyboard">YouTube / TikTok Script & Hooks (🔒 Pro)</option>
-              <option value="Comprehensive SEO Blog Post">Comprehensive SEO Blog Post (🔒 Pro)</option>
-            </select>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">Voice Tone</label>
-              <select
-                value={tone}
-                onChange={(e) => setTone(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#0d1424] border border-white/10 text-white text-xs outline-none focus:border-pink-500"
+          {/* Formats Selector (14 Total Formats: 4 Free · 8 Pro · 2 Agency) */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-pink-400" />
+                <span>Deliverable Format (14 Formats):</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  setProModalTier('pro');
+                  setShowProModal(true);
+                }}
+                className="text-[10px] text-amber-400 font-bold hover:underline cursor-pointer"
               >
-                <option value="Inspirational & Tactical">Inspirational & Tactical</option>
-                <option value="Executive & Direct">Executive & Direct</option>
-                <option value="Humorous & Punchy">Humorous & Punchy</option>
-                <option value="Scientific & Analytical">Scientific & Analytical</option>
-              </select>
+                👑 Unlock All
+              </button>
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">Target Audience</label>
-              <input
-                type="text"
-                value={targetAudience}
-                onChange={(e) => setTargetAudience(e.target.value)}
-                placeholder="e.g. B2B Founders"
-                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-medium"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+              {[
+                { name: 'Twitter / X Thought Leadership Thread', tier: 'Free' as const },
+                { name: 'Viral LinkedIn Carousel / Post', tier: 'Free' as const },
+                { name: 'Standard High-Converting Pitch Email', tier: 'Free' as const },
+                { name: 'Foundational SEO Blog Post (500 Words)', tier: 'Free' as const },
+                { name: 'YouTube / Short-Form Video Script & Storyboard', tier: 'Pro' as const },
+                { name: 'Instagram Carousel Slide-by-Slide Copy', tier: 'Pro' as const },
+                { name: 'AIDA Framework Sales Copywriting', tier: 'Pro' as const },
+                { name: 'PAS Problem-Agitate-Solve Landing Page Copy', tier: 'Pro' as const },
+                { name: 'High-Ticket Cold Email Sequence (4 Steps)', tier: 'Pro' as const },
+                { name: 'Comprehensive 3,000-Word Pillar Article', tier: 'Pro' as const },
+                { name: 'Substack & Beehiiv Weekly Newsletter Issue', tier: 'Pro' as const },
+                { name: 'Hypnotic Video Sales Letter (VSL 10-Min Script)', tier: 'Pro' as const },
+                { name: 'Agency Multi-Platform Campaign Pack', tier: 'Agency' as const },
+                { name: 'Programmatic 50-Variant Ad Matrix (Meta & Google)', tier: 'Agency' as const },
+              ].map((fmt) => (
+                <button
+                  key={fmt.name}
+                  type="button"
+                  onClick={() => handleFormatSelect(fmt.name, fmt.tier)}
+                  className={`p-2.5 rounded-xl text-left border text-xs font-bold transition flex items-center justify-between gap-1.5 cursor-pointer ${
+                    format === fmt.name
+                      ? fmt.tier === 'Agency'
+                        ? 'bg-cyan-500/20 border-cyan-400 text-white shadow-sm'
+                        : fmt.tier === 'Pro'
+                          ? 'bg-amber-500/20 border-amber-400 text-white shadow-sm'
+                          : 'bg-pink-600/30 border-pink-500 text-white shadow-sm'
+                      : 'glass text-slate-300 border-white/5 hover:text-white'
+                  }`}
+                >
+                  <span className="truncate text-[11px]">{fmt.name}</span>
+                  <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded-full shrink-0 ${
+                    fmt.tier === 'Agency' ? 'bg-cyan-500/20 text-cyan-300' : fmt.tier === 'Pro' ? 'bg-amber-500/20 text-amber-300' : 'bg-emerald-500/20 text-emerald-300'
+                  }`}>
+                    {fmt.tier === 'Agency' ? '⚡' : fmt.tier === 'Pro' ? '🔒' : 'FREE'}
+                  </span>
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Quick Presets */}
-          <div>
-            <label className="block text-[11px] font-bold text-slate-400 mb-1.5">Quick Viral Presets:</label>
-            <div className="flex flex-wrap gap-1.5">
-              {presets.map((p) => (
+          {/* Tone & Brand Voice (8 Tones) */}
+          <div className="space-y-2">
+            <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-pink-400" />
+              <span>Tone of Voice (8 Cadences):</span>
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+              {[
+                'Inspirational & Tactical',
+                'Wall Street Executive',
+                'Witty & Punchy',
+                'Empathetic Storytelling',
+                'Direct-Response Sales',
+                'Academic Deep Dive',
+                'Hypnotic Storyteller',
+                'AI Persona Cloned'
+              ].map((t) => (
                 <button
-                  key={p.title}
+                  key={t}
                   type="button"
-                  onClick={() => {
-                    setFormat(p.format);
-                    setTopic(p.topic);
-                  }}
-                  className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-[11px] text-slate-300 hover:text-white transition cursor-pointer"
+                  onClick={() => setTone(t)}
+                  className={`p-2 rounded-xl text-[10px] font-bold border transition text-center cursor-pointer ${
+                    tone === t ? 'bg-pink-600 text-white border-pink-400' : 'glass text-slate-400 border-white/5 hover:text-white'
+                  }`}
                 >
-                  {p.title}
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-300 mb-1.5">Target Audience</label>
+            <input 
+              type="text" 
+              value={targetAudience}
+              onChange={(e) => setTargetAudience(e.target.value)}
+              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-semibold"
+            />
+          </div>
+
+          {/* Pro & Agency Add-ons Badges (Image 1 style) */}
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+              <span className="text-slate-400 font-semibold mr-1">👑 Pro Add-ons:</span>
+              {[
+                'AI Humanizer Shield',
+                'Hemingway Tuner',
+                '35+ Languages',
+                'Originality Checker',
+                'WordPress Sync',
+                '4-Step Cold Sequence'
+              ].map((addon) => (
+                <button
+                  key={addon}
+                  type="button"
+                  onClick={() => handleFeatureClick('Pro', addon)}
+                  className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/30 text-slate-300 hover:text-amber-300 transition flex items-center gap-1 cursor-pointer active:scale-95"
+                >
+                  <Crown className="w-2.5 h-2.5 text-amber-400" />
+                  <span>{addon}</span>
+                </button>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5 text-[11px] pt-1 border-t border-white/5">
+              <span className="text-cyan-400 font-semibold mr-1">⚡ Agency Only:</span>
+              {[
+                '10k Batch CSV Generator',
+                'Multi-Client Workspaces',
+                'Headless CMS Webhooks',
+                'White-Label Client Reports',
+                'Full REST API'
+              ].map((agencyAddon) => (
+                <button
+                  key={agencyAddon}
+                  type="button"
+                  onClick={() => handleFeatureClick('Agency', agencyAddon)}
+                  className="px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 hover:border-cyan-400 text-cyan-300 transition flex items-center gap-1 cursor-pointer active:scale-95"
+                >
+                  <Zap className="w-2.5 h-2.5 text-cyan-400" />
+                  <span>{agencyAddon}</span>
                 </button>
               ))}
             </div>
@@ -356,58 +512,64 @@ export default function ContentWriterPage() {
             type="button"
             onClick={handleGenerate}
             disabled={loading}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-pink-500/25 transition flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer disabled:opacity-50"
+            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white font-black text-xs shadow-lg shadow-pink-500/25 flex items-center justify-center gap-2 hover:opacity-95 transition disabled:opacity-50 cursor-pointer active:scale-98"
           >
-            {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PenTool className="w-4 h-4" />}
-            <span>{loading ? 'Synthesizing with AI...' : 'Generate High-Converting Copy'}</span>
+            {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+            <span>{loading ? 'Synthesizing Professional Copy...' : `Generate ${format}`}</span>
           </button>
         </div>
 
-        {/* Right Output: Results (7 cols) */}
+        {/* Right Output Display (7 cols) */}
         <div className="lg:col-span-7 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
-          <div className="flex items-center justify-between border-b border-white/5 pb-3">
-            <div className="flex items-center gap-2 text-xs font-bold text-white">
-              <FileText className="w-4 h-4 text-pink-400" />
-              <span>Generated Content Output</span>
+          <div className="flex items-center justify-between pb-4 border-b border-white/10">
+            <div>
+              <div className="text-xs font-bold text-white flex items-center gap-2">
+                <AlignLeft className="w-4 h-4 text-pink-400" />
+                <span>Generated Output Canvas</span>
+              </div>
+              <div className="text-[11px] text-slate-400 mt-0.5">
+                {wordCount} words · ~{readingTime} min read
+              </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-[11px] text-slate-400 font-mono">
-                {wordCount} words &bull; ~{readingTime} min read
-              </span>
-              {output && (
-                <button
-                  type="button"
-                  onClick={handleCopy}
-                  className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  <span>{copied ? 'Copied!' : 'Copy'}</span>
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={handleCopy}
+                disabled={!output}
+                className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition disabled:opacity-40 cursor-pointer"
+              >
+                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copied ? 'Copied to Clipboard!' : 'Copy Copy'}</span>
+              </button>
             </div>
           </div>
 
           {output ? (
-            <div className="p-5 rounded-2xl bg-black/40 border border-white/10 text-xs text-slate-200 leading-relaxed font-sans whitespace-pre-wrap select-all max-h-[500px] overflow-y-auto">
+            <div className="p-6 rounded-2xl bg-black/40 border border-white/10 text-white text-xs leading-relaxed font-sans whitespace-pre-wrap min-h-[380px] max-h-[600px] overflow-y-auto">
               {output}
             </div>
           ) : (
-            <div className="py-24 text-center space-y-2 text-slate-500">
-              <Sparkles className="w-8 h-8 mx-auto text-slate-600" />
-              <div className="text-xs font-bold text-slate-400">Ready to synthesize content</div>
-              <div className="text-[11px]">Click "Generate High-Converting Copy" on the left to start.</div>
+            <div className="p-12 text-center rounded-2xl bg-white/5 border border-dashed border-white/10 min-h-[380px] flex flex-col items-center justify-center space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
+                <PenTool className="w-6 h-6" />
+              </div>
+              <div className="text-xs font-bold text-white">Your AI-generated text will appear here</div>
+              <p className="text-[11px] text-slate-400 max-w-sm">
+                Enter your topic, select your format, and hit <strong>Generate</strong> to produce engaging content tailored to your target audience.
+              </p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Reusable Pro Upgrade Modal */}
+      {/* Reusable Pro/Agency Upgrade Modal */}
       <ProUpgradeModal 
         isOpen={showProModal}
         onClose={() => setShowProModal(false)}
         toolName="AI Content Generator Studio"
         featureName={proFeature}
+        tier={proModalTier}
       />
     </div>
   );

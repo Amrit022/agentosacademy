@@ -99,6 +99,17 @@ const PRO_URL_CAPABILITIES = [
       { name: 'Export Analytics Reports to CSV & JSON', desc: 'Download complete timestamped click data for client reporting.', badge: 'Pro' },
       { name: 'Basic Overall Click Counter', desc: 'Tracks total volume of redirections per short link.', badge: 'Free' }
     ]
+  },
+  {
+    category: '7. Agency Unlimited Multi-Client Enterprise',
+    features: [
+      { name: '100% White-Label Client Portals', desc: 'Completely eliminate all OmniStack AI branding, logos, and links.', badge: 'Agency' },
+      { name: 'Multi-Client Sub-Account Workspaces', desc: 'Manage up to 25 separate client brands with isolated link databases.', badge: 'Agency' },
+      { name: 'Unlimited Custom CNAME Brand Domains', desc: 'Connect unlimited client domains (go.client1.com, links.client2.com).', badge: 'Agency' },
+      { name: 'Bulk CSV Importer (5,000 Links / Batch)', desc: 'Instant mass migration from Bitly, Rebrandly, or Short.io.', badge: 'Agency' },
+      { name: 'Programmatic REST API & Webhooks', desc: 'Create, edit, and stream real-time click telemetry to client databases.', badge: 'Agency' },
+      { name: 'Automated White-Label Client PDF Reports', desc: 'Generate branded monthly traffic reports with your agency logo.', badge: 'Agency' }
+    ]
   }
 ];
 
@@ -110,7 +121,10 @@ export default function UrlShortenerPage() {
   const [clicks, setClicks] = useState(4210);
   const [showProModal, setShowProModal] = useState(false);
   const [proFeature, setProFeature] = useState('');
+  const [proTier, setProTier] = useState<'pro' | 'agency'>('pro');
   const [showMatrix, setShowMatrix] = useState(false);
+  const [qrStyle, setQrStyle] = useState<'square' | 'rounded' | 'micro' | 'diamond'>('square');
+  const [qrColor, setQrColor] = useState<'classic' | 'cyan' | 'emerald' | 'sunset' | 'gold'>('classic');
 
   const [history, setHistory] = useState([
     { slug: 'design-portfolio', dest: 'https://dribbble.com/shots/21400-figma-saas-ui', clicks: 4210, created: 'Today', tag: 'Portfolio' },
@@ -124,6 +138,7 @@ export default function UrlShortenerPage() {
     if (!destinationUrl) return;
     if (customSlug.trim()) {
       setProFeature('Custom Branded URL Slugs & Vanity Domains');
+      setProTier('pro');
       setShowProModal(true);
       return;
     }
@@ -142,8 +157,9 @@ export default function UrlShortenerPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleProFeatureClick = (name: string) => {
+  const handleFeatureClick = (name: string, tier: 'pro' | 'agency' = 'pro') => {
     setProFeature(name);
+    setProTier(tier);
     setShowProModal(true);
   };
 
@@ -213,11 +229,13 @@ export default function UrlShortenerPage() {
                   {category.features.map((f) => (
                     <div 
                       key={f.name}
-                      onClick={() => f.badge === 'Pro' && handleProFeatureClick(f.name)}
+                      onClick={() => f.badge !== 'Free' && handleFeatureClick(f.name, f.badge === 'Agency' ? 'agency' : 'pro')}
                       className={`p-2.5 rounded-xl border text-left transition flex items-start justify-between gap-2 cursor-pointer ${
-                        f.badge === 'Pro' 
-                          ? 'bg-white/5 border-white/5 hover:border-amber-500/40 hover:bg-amber-500/10' 
-                          : 'bg-emerald-500/10 border-emerald-500/20'
+                        f.badge === 'Agency'
+                          ? 'bg-cyan-500/10 border-cyan-500/20 hover:border-cyan-400 hover:bg-cyan-500/15'
+                          : f.badge === 'Pro' 
+                            ? 'bg-white/5 border-white/5 hover:border-amber-500/40 hover:bg-amber-500/10' 
+                            : 'bg-emerald-500/10 border-emerald-500/20'
                       }`}
                     >
                       <div>
@@ -229,12 +247,14 @@ export default function UrlShortenerPage() {
                         </div>
                       </div>
 
-                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full shrink-0 ${
-                        f.badge === 'Pro' 
-                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-0.5' 
-                          : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-0.5 ${
+                        f.badge === 'Agency'
+                          ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                          : f.badge === 'Pro' 
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' 
+                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                       }`}>
-                        {f.badge === 'Pro' ? <><Crown className="w-2.5 h-2.5" /> PRO</> : 'FREE'}
+                        {f.badge === 'Agency' ? <><Zap className="w-2.5 h-2.5" /> AGENCY</> : f.badge === 'Pro' ? <><Crown className="w-2.5 h-2.5" /> PRO</> : 'FREE'}
                       </span>
                     </div>
                   ))}
@@ -263,7 +283,9 @@ export default function UrlShortenerPage() {
           <div className="md:col-span-3">
             <div className="flex items-center justify-between mb-1.5">
               <label className="text-xs font-bold text-slate-300">Custom Alias</label>
-              <span className="text-[10px] text-amber-400 font-extrabold uppercase">🔒 Pro</span>
+              <span className="text-[10px] text-amber-400 font-extrabold uppercase flex items-center gap-1">
+                <Crown className="w-3 h-3" /> PRO
+              </span>
             </div>
             <div className="flex items-center rounded-2xl bg-white/5 border border-white/10 px-3 py-2.5 text-xs text-slate-400">
               <span className="font-mono">/s/</span>
@@ -287,27 +309,52 @@ export default function UrlShortenerPage() {
           </div>
         </form>
 
-        {/* Quick Pro Options Badges */}
-        <div className="pt-2 flex flex-wrap items-center gap-2 text-[11px]">
-          <span className="text-slate-400 font-semibold">Pro Add-ons:</span>
-          {[
-            'Custom Domain (CNAME)',
-            'Meta Pixel Retargeting',
-            'Password Shield',
-            'Link Expiry Cap',
-            'UTM Builder',
-            'A/B Split Rotator'
-          ].map((addon) => (
-            <button
-              key={addon}
-              type="button"
-              onClick={() => handleProFeatureClick(addon)}
-              className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/30 text-slate-300 hover:text-amber-300 transition flex items-center gap-1 cursor-pointer"
-            >
-              <Crown className="w-2.5 h-2.5 text-amber-400" />
-              <span>{addon}</span>
-            </button>
-          ))}
+        {/* Pro & Agency Add-ons Badges (Image 1 style) */}
+        <div className="space-y-2 pt-2 border-t border-white/5">
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span className="text-slate-400 font-semibold mr-1">Pro Add-ons:</span>
+            {[
+              'Custom Domain (CNAME)',
+              'Meta Pixel Retargeting',
+              'Password Shield',
+              'Link Expiry Cap',
+              'UTM Builder',
+              'A/B Split Rotator',
+              'Device OS Routing',
+              'Geo City Target'
+            ].map((addon) => (
+              <button
+                key={addon}
+                type="button"
+                onClick={() => handleFeatureClick(addon, 'pro')}
+                className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-amber-500/10 border border-white/10 hover:border-amber-500/30 text-slate-300 hover:text-amber-300 transition flex items-center gap-1 cursor-pointer active:scale-95"
+              >
+                <Crown className="w-2.5 h-2.5 text-amber-400" />
+                <span>{addon}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span className="text-cyan-400 font-semibold mr-1">⚡ Agency Only:</span>
+            {[
+              'Multi-Client Workspaces',
+              '10+ Custom CNAME Domains',
+              'Bulk CSV Importer (5k Links)',
+              'White-Label PDF Reports',
+              'Full REST API & Webhooks'
+            ].map((agencyAddon) => (
+              <button
+                key={agencyAddon}
+                type="button"
+                onClick={() => handleFeatureClick(agencyAddon, 'agency')}
+                className="px-2.5 py-1 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 hover:border-cyan-400 text-cyan-300 transition flex items-center gap-1 cursor-pointer active:scale-95"
+              >
+                <Zap className="w-2.5 h-2.5 text-cyan-400" />
+                <span>{agencyAddon}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -335,23 +382,83 @@ export default function UrlShortenerPage() {
           </button>
         </div>
 
-        {/* QR Code Card */}
+        {/* QR Code Card with Interactive Customization */}
         <div className="glass p-6 sm:p-7 rounded-3xl border border-white/10 flex flex-col items-center justify-center text-center">
-          <div className="p-3.5 bg-white rounded-2xl shadow-2xl mb-3">
-            <QrCode className="w-20 h-20 text-slate-950" />
+          <div className={`p-3.5 rounded-2xl shadow-2xl mb-3 transition-colors ${
+            qrColor === 'cyan' ? 'bg-cyan-950/80 border border-cyan-400/40 text-cyan-400' :
+            qrColor === 'emerald' ? 'bg-emerald-950/80 border border-emerald-400/40 text-emerald-400' :
+            qrColor === 'sunset' ? 'bg-pink-950/80 border border-pink-400/40 text-pink-400' :
+            qrColor === 'gold' ? 'bg-amber-950/80 border border-amber-400/40 text-amber-400' :
+            'bg-white text-slate-950'
+          }`}>
+            <QrCode className="w-20 h-20" />
           </div>
-          <div className="text-xs font-bold text-white">Scannable Vector QR Code</div>
-          <div className="text-[11px] text-slate-400 mt-1">Ready for business cards, print flyers, and posters</div>
+
+          <div className="text-xs font-bold text-white">Dynamic Vector QR Studio</div>
+          
+          {/* QR Pattern Styles */}
+          <div className="flex items-center justify-center gap-1.5 mt-2.5">
+            {[
+              { id: 'square', name: 'Square', pro: false },
+              { id: 'rounded', name: 'Dots', pro: true },
+              { id: 'micro', name: 'Micro', pro: true },
+              { id: 'diamond', name: 'Diamond', pro: true }
+            ].map((st) => (
+              <button
+                key={st.id}
+                type="button"
+                onClick={() => {
+                  if (st.pro) {
+                    handleFeatureClick(`QR Code Pattern: ${st.name}`, 'pro');
+                  } else {
+                    setQrStyle(st.id as any);
+                  }
+                }}
+                className={`px-2 py-1 rounded-lg text-[10px] font-bold border transition ${
+                  qrStyle === st.id 
+                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' 
+                    : 'bg-white/5 text-slate-400 border-white/5 hover:text-white'
+                }`}
+              >
+                {st.name} {st.pro && '👑'}
+              </button>
+            ))}
+          </div>
+
+          {/* QR Colors */}
+          <div className="flex items-center justify-center gap-1.5 mt-2">
+            {[
+              { id: 'classic', color: 'bg-white', name: 'Mono', pro: false },
+              { id: 'cyan', color: 'bg-cyan-400', name: 'Cyan', pro: true },
+              { id: 'emerald', color: 'bg-emerald-400', name: 'Emerald', pro: true },
+              { id: 'sunset', color: 'bg-pink-500', name: 'Sunset', pro: true },
+              { id: 'gold', color: 'bg-amber-400', name: 'Gold', pro: true }
+            ].map((cl) => (
+              <button
+                key={cl.id}
+                type="button"
+                onClick={() => {
+                  if (cl.pro) {
+                    handleFeatureClick(`QR Color Palette: ${cl.name}`, 'pro');
+                  } else {
+                    setQrColor(cl.id as any);
+                  }
+                }}
+                className={`w-5 h-5 rounded-full ${cl.color} border transition ${
+                  qrColor === cl.id ? 'ring-2 ring-white scale-110' : 'opacity-70 hover:opacity-100'
+                }`}
+                title={cl.name}
+              />
+            ))}
+          </div>
+
           <button 
             type="button"
-            onClick={() => {
-              setProFeature('Vector QR Code SVG & High-Res PNG Download');
-              setShowProModal(true);
-            }}
-            className="mt-4 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1.5 cursor-pointer"
+            onClick={() => handleFeatureClick('Vector QR SVG, EPS & High-Res PNG Download', 'pro')}
+            className="mt-3 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-xs text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1.5 cursor-pointer"
           >
             <Lock className="w-3.5 h-3.5" />
-            <span>Download Vector QR (🔒 Pro)</span>
+            <span>Download Vector QR (👑 Pro)</span>
           </button>
         </div>
 
@@ -443,13 +550,16 @@ export default function UrlShortenerPage() {
           </table>
         </div>
       </div>
-      {/* Reusable Pro Upgrade Modal */}
+
+      {/* Reusable Pro/Agency Upgrade Modal */}
       <ProUpgradeModal 
         isOpen={showProModal}
         onClose={() => setShowProModal(false)}
         toolName="Branded URL Shortener & Analytics"
         featureName={proFeature}
+        tier={proTier}
       />
     </div>
   );
 }
+
