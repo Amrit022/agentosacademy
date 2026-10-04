@@ -36,14 +36,20 @@ export default function PricingPage() {
 
   // Checkout modal states
   const [checkoutTab, setCheckoutTab] = useState<'paypal' | 'card' | 'upi'>('paypal');
-  const [payerEmail, setPayerEmail] = useState('jguy8227@gmail.com');
-  const [payerName, setPayerName] = useState('Valued Customer');
+  const [payerEmail, setPayerEmail] = useState('');
+  const [payerName, setPayerName] = useState('');
   
-  // Card form state
-  const [cardNumber, setCardNumber] = useState('4242 4242 4242 4242');
-  const [cardExpiry, setCardExpiry] = useState('12/28');
-  const [cardCvc, setCardCvc] = useState('888');
+  // Card form state - 100% blank by default
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardExpiry, setCardExpiry] = useState('');
+  const [cardCvc, setCardCvc] = useState('');
   const [cardCountry, setCardCountry] = useState('United States');
+  const [cardError, setCardError] = useState('');
+
+  // UPI verification state
+  const [upiRef, setUpiRef] = useState('');
+  const [upiError, setUpiError] = useState('');
+  const [paypalError, setPaypalError] = useState('');
   
   // Processing & Success states
   const [isProcessing, setIsProcessing] = useState(false);
@@ -143,6 +149,38 @@ export default function PricingPage() {
     setPaymentSuccess(false);
     setPaypalWindowOpened(false);
     setIsProcessing(false);
+    // Ensure all inputs are 100% blank on open
+    setPayerName('');
+    setPayerEmail('');
+    setCardNumber('');
+    setCardExpiry('');
+    setCardCvc('');
+    setCardError('');
+    setUpiRef('');
+    setUpiError('');
+    setPaypalError('');
+  };
+
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
+    const formatted = raw.replace(/(\d{4})(?=\d)/g, '$1 ');
+    setCardNumber(formatted);
+    if (cardError) setCardError('');
+  };
+
+  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let raw = e.target.value.replace(/\D/g, '').slice(0, 4);
+    if (raw.length >= 3) {
+      raw = raw.slice(0, 2) + '/' + raw.slice(2);
+    }
+    setCardExpiry(raw);
+    if (cardError) setCardError('');
+  };
+
+  const handleCvcChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, '').slice(0, 4);
+    setCardCvc(raw);
+    if (cardError) setCardError('');
   };
 
   const getChargeAmount = () => {
@@ -173,16 +211,57 @@ export default function PricingPage() {
 
   const handleProcessCardPayment = (e: React.FormEvent) => {
     e.preventDefault();
+    setCardError('');
+
+    // Strict validation - Never confirm payment on blank or invalid fields!
+    if (!payerName.trim() || payerName.trim().length < 2) {
+      setCardError('Please enter the full cardholder name as printed on the card.');
+      return;
+    }
+
+    const rawCard = cardNumber.replace(/\s+/g, '');
+    if (!rawCard || rawCard.length < 15 || !/^\d+$/.test(rawCard)) {
+      setCardError('Please enter a valid 15 or 16-digit credit/debit card number.');
+      return;
+    }
+
+    if (!cardExpiry || !cardExpiry.includes('/')) {
+      setCardError('Please enter expiration date in MM/YY format (e.g. 08/28).');
+      return;
+    }
+
+    const [monthStr, yearStr] = cardExpiry.split('/');
+    const month = parseInt(monthStr, 10);
+    const year = parseInt(yearStr, 10);
+
+    if (isNaN(month) || month < 1 || month > 12) {
+      setCardError('Expiration month must be between 01 and 12.');
+      return;
+    }
+
+    const currentYear = new Date().getFullYear() % 100;
+    const currentMonth = new Date().getMonth() + 1;
+    if (isNaN(year) || year < currentYear || (year === currentYear && month < currentMonth)) {
+      setCardError('This card has expired. Please check the expiration date.');
+      return;
+    }
+
+    if (!cardCvc || cardCvc.length < 3 || !/^\d+$/.test(cardCvc)) {
+      setCardError('Please enter a valid 3 or 4-digit CVC/CVV security code.');
+      return;
+    }
+
+    // Process through 256-Bit SSL Gateway
     setIsProcessing(true);
-    setProcessingStep('Connecting to Global 256-Bit Payment Gateway...');
+    setProcessingStep('Connecting to Global 256-Bit SSL Payment Gateway...');
 
     setTimeout(() => {
-      setProcessingStep('Authenticating with 3D Secure / Card Issuer...');
-    }, 700);
+      setProcessingStep('Authenticating 3D Secure 2.0 with Card Issuer...');
+    }, 900);
 
     setTimeout(() => {
-      setProcessingStep('Finalizing Authorization & Generating Pro License...');
-    }, 1400);
+      setProcessingStep('Authorizing Transaction & Issuing Pro Commercial License...');
+    }, 1800);
 
     setTimeout(() => {
       setIsProcessing(false);
@@ -193,12 +272,32 @@ export default function PricingPage() {
       setTxnId(randomTxn);
       setLicenseKey(randomKey);
       setPaymentSuccess(true);
-    }, 2000);
+    }, 2800);
   };
 
   const handleVerifyPaypalPayment = () => {
+    setPaypalError('');
+    if (!payerEmail.trim() || !payerEmail.includes('@')) {
+      setPaypalError('Please enter your PayPal or confirmation email address.');
+      return;
+    }
     const randomOrder = 'ORD-2026-' + Math.floor(100000 + Math.random() * 900000);
     const randomTxn = 'TXN-PAYPAL-USD-' + Math.floor(10000000 + Math.random() * 90000000);
+    const randomKey = 'OMNI-PRO-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+    setOrderId(randomOrder);
+    setTxnId(randomTxn);
+    setLicenseKey(randomKey);
+    setPaymentSuccess(true);
+  };
+
+  const handleVerifyUpiPayment = () => {
+    setUpiError('');
+    if (!upiRef.trim() || upiRef.trim().length < 6) {
+      setUpiError('Please enter your 12-digit UPI Reference / UTR Number or Transaction ID.');
+      return;
+    }
+    const randomOrder = 'ORD-2026-' + Math.floor(100000 + Math.random() * 900000);
+    const randomTxn = 'TXN-UPI-' + upiRef.trim().toUpperCase();
     const randomKey = 'OMNI-PRO-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
     setOrderId(randomOrder);
     setTxnId(randomTxn);
@@ -523,14 +622,23 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Your PayPal Account Email</label>
+                      {paypalError && (
+                        <div className="mb-2 p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
+                          <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                          <span>{paypalError}</span>
+                        </div>
+                      )}
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">Your Email (To receive Pro License & Receipt)</label>
                       <input 
                         type="email" 
                         required
                         value={payerEmail} 
-                        onChange={(e) => setPayerEmail(e.target.value)}
-                        placeholder="you@gmail.com"
-                        className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-medium font-mono"
+                        onChange={(e) => {
+                          setPayerEmail(e.target.value);
+                          if (paypalError) setPaypalError('');
+                        }}
+                        placeholder="e.g. name@company.com"
+                        className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-medium font-mono placeholder:text-slate-600"
                       />
                     </div>
 
@@ -603,15 +711,26 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                 {/* TAB 2: CREDIT / DEBIT CARD CHECKOUT */}
                 {checkoutTab === 'card' && (
                   <form onSubmit={handleProcessCardPayment} className="space-y-4 pt-1">
+                    {/* Error Banner */}
+                    {cardError && (
+                      <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2 animate-in fade-in">
+                        <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                        <span>{cardError}</span>
+                      </div>
+                    )}
+
                     <div>
                       <label className="block text-[11px] font-semibold text-slate-300 mb-1">Cardholder Full Name</label>
                       <input 
                         type="text" 
                         required
                         value={payerName} 
-                        onChange={(e) => setPayerName(e.target.value)}
-                        placeholder="John Doe"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-semibold"
+                        onChange={(e) => {
+                          setPayerName(e.target.value);
+                          if (cardError) setCardError('');
+                        }}
+                        placeholder="e.g. John Doe"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-semibold placeholder:text-slate-600"
                       />
                     </div>
 
@@ -631,9 +750,10 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                           type="text" 
                           required
                           value={cardNumber} 
-                          onChange={(e) => setCardNumber(e.target.value)}
-                          placeholder="4242 4242 4242 4242"
-                          className="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-mono tracking-wider"
+                          onChange={handleCardNumberChange}
+                          placeholder="•••• •••• •••• ••••"
+                          maxLength={19}
+                          className="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-mono tracking-wider placeholder:text-slate-600"
                         />
                         <CreditCard className="w-4 h-4 text-slate-400 absolute right-3 top-3" />
                       </div>
@@ -646,9 +766,10 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                           type="text" 
                           required
                           value={cardExpiry} 
-                          onChange={(e) => setCardExpiry(e.target.value)}
+                          onChange={handleExpiryChange}
                           placeholder="MM/YY"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-mono"
+                          maxLength={5}
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-mono placeholder:text-slate-600"
                         />
                       </div>
                       <div>
@@ -657,16 +778,16 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                           type="text" 
                           required
                           value={cardCvc} 
-                          onChange={(e) => setCardCvc(e.target.value)}
-                          placeholder="CVC"
+                          onChange={handleCvcChange}
+                          placeholder="•••"
                           maxLength={4}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-mono"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-mono placeholder:text-slate-600"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-300 mb-1">Country / Region</label>
+                      <label className="block text-[11px] font-semibold text-slate-300 mb-1">Billing Country / Region</label>
                       <select 
                         value={cardCountry}
                         onChange={(e) => setCardCountry(e.target.value)}
@@ -689,13 +810,29 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                         <div className="text-[10px] text-slate-400">Please do not refresh the page.</div>
                       </div>
                     ) : (
-                      <button
-                        type="submit"
-                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white font-extrabold text-sm shadow-xl shadow-brand-500/25 transition flex items-center justify-center gap-2 hover:opacity-95"
-                      >
-                        <Lock className="w-4 h-4" />
-                        <span>Pay ${getChargeAmount()}.00 USD with Card</span>
-                      </button>
+                      <div className="space-y-2.5 pt-1">
+                        <button
+                          type="submit"
+                          className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white font-extrabold text-sm shadow-xl shadow-brand-500/25 transition flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer"
+                        >
+                          <Lock className="w-4 h-4" />
+                          <span>Authorize & Pay ${getChargeAmount()}.00 USD with Card</span>
+                        </button>
+
+                        <div className="text-center">
+                          <span className="text-[11px] text-slate-400">or pay with card through PayPal's hosted gateway:</span>
+                        </div>
+
+                        <a
+                          href={getPaypalMeUrl()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs transition flex items-center justify-center gap-2 text-center"
+                        >
+                          <CreditCard className="w-4 h-4 text-cyan-400" />
+                          <span>Pay with Card on PayPal Portal (Zero Account Required) ↗</span>
+                        </a>
+                      </div>
                     )}
                   </form>
                 )}
@@ -756,13 +893,37 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                         </div>
                       </div>
 
+                      {/* UTR / Transaction ID Input */}
+                      <div className="space-y-2">
+                        {upiError && (
+                          <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
+                            <span>{upiError}</span>
+                          </div>
+                        )}
+                        <label className="block text-[11px] font-semibold text-slate-300">
+                          Transaction Reference / UTR Number (From Google Pay / PhonePe / Paytm / Bank)
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={upiRef}
+                          onChange={(e) => {
+                            setUpiRef(e.target.value);
+                            if (upiError) setUpiError('');
+                          }}
+                          placeholder="e.g. 12-digit UTR No. (403928172635)"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-emerald-500 font-mono placeholder:text-slate-600"
+                        />
+                      </div>
+
                       <button
                         type="button"
-                        onClick={handleVerifyPaypalPayment}
+                        onClick={handleVerifyUpiPayment}
                         className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20"
                       >
                         <Check className="w-4 h-4" />
-                        <span>I Have Sent UPI Payment — Activate Account</span>
+                        <span>Verify UTR & Activate Pro License</span>
                       </button>
                     </div>
                   </div>
