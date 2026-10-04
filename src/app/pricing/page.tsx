@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { 
-  CheckCircle2, 
+  CheckCircle2,
+  Copy, 
   Zap, 
   ArrowRight, 
   ShieldCheck, 
@@ -52,6 +53,13 @@ export default function PricingPage() {
   const [orderId, setOrderId] = useState('ORD-2026-8491');
   const [txnId, setTxnId] = useState('TXN-PAYPAL-USD-9182');
   const [licenseKey, setLicenseKey] = useState('OMNI-PRO-9842-8819-LIVE');
+  const [copiedUpi, setCopiedUpi] = useState(false);
+
+  const copyUpiId = () => {
+    navigator.clipboard.writeText('7901857685@ptyes');
+    setCopiedUpi(true);
+    setTimeout(() => setCopiedUpi(false), 2000);
+  };
 
   const plans = [
     {
@@ -211,10 +219,10 @@ ITEMIZED SERVICES:
 Product            : OmniStack AI 6-in-1 Premium SaaS Suite
 Plan Name          : ${selectedPlan.name}
 Billing Cycle      : ${annual ? 'Annual (20% Discount Applied)' : 'Monthly'}
-Subtotal           : $${amount}.00 USD
+Subtotal           : ${amount}.00 USD
 Tax (VAT / GST)    : $0.00 USD
 --------------------------------------------------------------------------------
-TOTAL CHARGED      : $${amount}.00 USD
+TOTAL CHARGED      : ${amount}.00 USD
 --------------------------------------------------------------------------------
 ACTIVATED LICENSE KEY:
 ${licenseKey}
@@ -315,7 +323,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                   {annual ? p.annualPrice : p.monthlyPrice}
                 </span>
                 <span className="text-xs font-semibold text-slate-400">
-                  {p.period} {annual && p.annualPrice !== '$0' && `(billed annually: $${p.annualPriceNum})`}
+                  {p.period} {annual && p.annualPrice !== '$0' && `(billed annually: ${p.annualPriceNum})`}
                 </span>
               </div>
 
@@ -436,7 +444,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                     </span>
                   </h3>
                   <div className="text-xs text-slate-400">
-                    {selectedPlan.name} · {annual ? `$${selectedPlan.annualPriceNum} USD / Year` : `$${selectedPlan.priceNum} USD / Month`}
+                    {selectedPlan.name} · {annual ? `${selectedPlan.annualPriceNum} USD / Year` : `${selectedPlan.priceNum} USD / Month`}
                   </div>
                 </div>
               </div>
@@ -501,7 +509,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                           <Lock className="w-3.5 h-3.5 text-cyan-400" />
                           <span>PayPal Buyer Protection Active</span>
                         </span>
-                        <span className="text-emerald-400 text-sm">$${getChargeAmount()}.00 USD</span>
+                        <span className="text-emerald-400 text-sm">${getChargeAmount()}.00 USD</span>
                       </div>
                       <p className="text-[11px] text-slate-400 leading-relaxed">
                         Click the button below to launch the official PayPal payment checkout window. You can pay with your PayPal balance, linked bank account, or any international debit/credit card.
@@ -658,7 +666,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                         className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white font-extrabold text-sm shadow-xl shadow-brand-500/25 transition flex items-center justify-center gap-2 hover:opacity-95"
                       >
                         <Lock className="w-4 h-4" />
-                        <span>Pay $${getChargeAmount()}.00 USD with Card</span>
+                        <span>Pay ${getChargeAmount()}.00 USD with Card</span>
                       </button>
                     )}
                   </form>
@@ -677,21 +685,56 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                       </p>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3">
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Direct UPI ID</div>
-                        <div className="font-mono text-sm font-bold text-emerald-300 mt-0.5">omnistack.ai@okhdfcbank</div>
+                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+                      {/* Copyable UPI ID Box */}
+                      <div className="flex items-center justify-between p-3.5 rounded-xl bg-black/40 border border-emerald-500/30">
+                        <div>
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Direct Official UPI ID</div>
+                          <div className="font-mono text-base font-black text-emerald-400 mt-0.5 tracking-wide select-all">
+                            7901857685@ptyes
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={copyUpiId}
+                          className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition flex items-center gap-1.5 shadow-sm"
+                        >
+                          {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedUpi ? 'Copied!' : 'Copy UPI'}</span>
+                        </button>
                       </div>
-                      <div>
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Amount Due</div>
-                        <div className="font-black text-white text-base">₹${(getChargeAmount() * 86).toLocaleString('en-IN')} INR (~$${getChargeAmount()}.00 USD)</div>
+
+                      {/* QR Code and Amount Section */}
+                      <div className="flex flex-col sm:flex-row items-center gap-4 p-3.5 rounded-xl bg-white/5 border border-white/10">
+                        <div className="bg-white p-2 rounded-xl shadow-md shrink-0">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img 
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${encodeURIComponent('upi://pay?pa=7901857685@ptyes&pn=OmniStack%20AI&am=' + (getChargeAmount() * 86) + '&cu=INR')}`}
+                            alt="Scan to Pay UPI: 7901857685@ptyes"
+                            className="w-24 h-24 object-contain"
+                          />
+                        </div>
+                        <div className="space-y-1.5 text-center sm:text-left">
+                          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Amount Due (INR)</div>
+                          <div className="font-black text-white text-lg">
+                            ₹{(getChargeAmount() * 86).toLocaleString('en-IN')} INR
+                          </div>
+                          <div className="text-[11px] text-slate-400">
+                            ≈ ${getChargeAmount()}.00 USD ({selectedPlan.name})
+                          </div>
+                          <div className="text-[10px] text-emerald-400 font-medium">
+                            Scan with Google Pay, PhonePe, Paytm, or BHIM
+                          </div>
+                        </div>
                       </div>
+
                       <button
                         type="button"
                         onClick={handleVerifyPaypalPayment}
-                        className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition"
+                        className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20"
                       >
-                        I Have Sent UPI Payment — Activate Account
+                        <Check className="w-4 h-4" />
+                        <span>I Have Sent UPI Payment — Activate Account</span>
                       </button>
                     </div>
                   </div>
@@ -710,7 +753,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                   </span>
                   <h4 className="text-2xl font-black text-white mt-2">Welcome to {selectedPlan.name}!</h4>
                   <p className="text-xs text-slate-300 mt-1">
-                    Your payment of <strong className="text-white">$${getChargeAmount()}.00 USD</strong> has been processed successfully.
+                    Your payment of <strong className="text-white">${getChargeAmount()}.00 USD</strong> has been processed successfully.
                   </p>
                 </div>
 
