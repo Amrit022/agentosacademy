@@ -46,7 +46,7 @@ export default function BioLinkPage() {
   const [handle, setHandle] = useState('elenarostova');
   const [displayName, setDisplayName] = useState('Elena Rostova');
   const [bio, setBio] = useState('Product Designer & Design Systems Lead. Building user-centered interfaces for global startups 🇩🇪 🌍');
-  const [theme, setTheme] = useState<'midnight' | 'sunset' | 'emerald' | 'minimal'>('midnight');
+  const [theme, setTheme] = useState<'midnight' | 'sunset' | 'emerald' | 'minimal' | 'cyberpunk' | 'gold'>('midnight');
   const [activeTab, setActiveTab] = useState<'editor' | 'analytics'>('editor');
   const [presetIndex, setPresetIndex] = useState(0);
   
@@ -56,6 +56,7 @@ export default function BioLinkPage() {
   const [proFeature, setProFeature] = useState('');
 
   const totalClicks = links.reduce((acc, curr) => acc + curr.clicks, 0);
+  const isProTheme = theme === 'cyberpunk' || theme === 'gold' || theme === 'sunset' || theme === 'emerald';
 
   const loadPreset = () => {
     const next = (presetIndex + 1) % SAMPLE_LINK_PRESETS.length;
@@ -99,6 +100,11 @@ export default function BioLinkPage() {
   };
 
   const copyUrl = () => {
+    if (isProTheme) {
+      setProFeature(`Publishing with Pro VIP Theme (${theme.toUpperCase()})`);
+      setShowProModal(true);
+      return;
+    }
     navigator.clipboard.writeText(`https://omnistack.ai/u/${handle}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -212,8 +218,11 @@ export default function BioLinkPage() {
 
             {/* Theme Selectors */}
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-2">Visual Theme</label>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-bold text-slate-300">Visual Theme</label>
+                <span className="text-[10px] text-amber-400 font-bold">2 Free · 4 Pro VIP Themes</span>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => setTheme('midnight')}
@@ -221,31 +230,7 @@ export default function BioLinkPage() {
                     theme === 'midnight' ? 'bg-purple-600/30 border-purple-500 text-white' : 'glass text-slate-400 border-white/5'
                   }`}
                 >
-                  Midnight Cyber
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setProFeature('Sunset Neon Theme');
-                    setShowProModal(true);
-                  }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
-                    theme === 'sunset' ? 'bg-pink-600/30 border-pink-500 text-white' : 'glass text-slate-400 border-white/5'
-                  }`}
-                >
-                  Sunset Neon (🔒 Pro)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setProFeature('Emerald Glass Theme');
-                    setShowProModal(true);
-                  }}
-                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
-                    theme === 'emerald' ? 'bg-emerald-600/30 border-emerald-500 text-white' : 'glass text-slate-400 border-white/5'
-                  }`}
-                >
-                  Emerald Glass (🔒 Pro)
+                  Midnight Cyber (Free)
                 </button>
                 <button
                   type="button"
@@ -254,7 +239,43 @@ export default function BioLinkPage() {
                     theme === 'minimal' ? 'bg-white/15 border-slate-300 text-white' : 'glass text-slate-400 border-white/5'
                   }`}
                 >
-                  Obsidian
+                  Obsidian (Free)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('sunset')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    theme === 'sunset' ? 'bg-pink-600/30 border-pink-500 text-white ring-1 ring-pink-500/40' : 'glass text-slate-400 border-white/5'
+                  }`}
+                >
+                  Sunset Neon (👑 Pro)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('emerald')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    theme === 'emerald' ? 'bg-emerald-600/30 border-emerald-500 text-white ring-1 ring-emerald-500/40' : 'glass text-slate-400 border-white/5'
+                  }`}
+                >
+                  Emerald Glass (👑 Pro)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('cyberpunk')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    theme === 'cyberpunk' ? 'bg-cyan-500/30 border-cyan-400 text-white ring-1 ring-cyan-500/40' : 'glass text-slate-400 border-white/5'
+                  }`}
+                >
+                  Cyberpunk (👑 Pro)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTheme('gold')}
+                  className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
+                    theme === 'gold' ? 'bg-amber-500/30 border-amber-400 text-white ring-1 ring-amber-500/40' : 'glass text-slate-400 border-white/5'
+                  }`}
+                >
+                  Nordic Gold (👑 Pro)
                 </button>
               </div>
             </div>
@@ -336,6 +357,10 @@ export default function BioLinkPage() {
                 ? 'bg-gradient-to-b from-[#2a0845] to-[#6441a5]'
                 : theme === 'emerald'
                 ? 'bg-gradient-to-b from-[#062925] to-[#041a17]'
+                : theme === 'cyberpunk'
+                ? 'bg-gradient-to-b from-[#0a051b] via-[#12072b] to-[#1a0a3a] border-cyan-500/30'
+                : theme === 'gold'
+                ? 'bg-gradient-to-b from-[#0b0c10] via-[#121318] to-[#1f1d19] border-amber-500/40'
                 : theme === 'minimal'
                 ? 'bg-[#0f1117]'
                 : 'bg-[#0a0c18]'
@@ -345,12 +370,22 @@ export default function BioLinkPage() {
 
               {/* Profile Header */}
               <div className="text-center space-y-3 px-3">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 mx-auto flex items-center justify-center text-2xl font-black text-white shadow-xl shadow-purple-500/30 border-2 border-white/20">
+                <div className={`w-20 h-20 rounded-full mx-auto flex items-center justify-center text-2xl font-black text-white shadow-xl border-2 ${
+                  theme === 'gold' 
+                    ? 'bg-gradient-to-tr from-amber-500 to-yellow-300 text-slate-950 border-amber-300 shadow-amber-500/30' 
+                    : theme === 'cyberpunk'
+                    ? 'bg-gradient-to-tr from-cyan-400 to-fuchsia-500 text-white border-cyan-300 shadow-cyan-500/30'
+                    : 'bg-gradient-to-tr from-purple-500 to-pink-500 text-white border-white/20 shadow-purple-500/30'
+                }`}>
                   {displayName.charAt(0)}
                 </div>
                 <div>
                   <h3 className="text-base font-black text-white tracking-tight">{displayName}</h3>
-                  <div className="text-[11px] text-purple-300 font-bold mt-0.5">@{handle}</div>
+                  <div className={`text-[11px] font-bold mt-0.5 ${
+                    theme === 'gold' ? 'text-amber-400' : theme === 'cyberpunk' ? 'text-cyan-400' : 'text-purple-300'
+                  }`}>
+                    @{handle}
+                  </div>
                 </div>
                 <p className="text-[11px] text-slate-200 leading-relaxed px-2 font-medium">{bio}</p>
               </div>
@@ -368,6 +403,10 @@ export default function BioLinkPage() {
                         ? 'bg-white/15 backdrop-blur-md text-white border border-white/20 hover:scale-105'
                         : theme === 'emerald'
                         ? 'bg-emerald-950/80 text-emerald-100 border border-emerald-500/30 hover:border-emerald-400'
+                        : theme === 'cyberpunk'
+                        ? 'bg-cyan-950/60 text-cyan-200 border border-cyan-400/40 hover:border-fuchsia-400 hover:shadow-cyan-500/20 shadow-md'
+                        : theme === 'gold'
+                        ? 'bg-amber-950/40 text-amber-100 border border-amber-500/30 hover:border-amber-400 hover:shadow-amber-500/20 shadow-md'
                         : theme === 'minimal'
                         ? 'bg-white/10 text-white border border-white/10 hover:bg-white/20'
                         : 'glass text-white border-white/15 hover:border-purple-400/50 hover:bg-white/10'
