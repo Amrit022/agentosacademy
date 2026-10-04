@@ -173,7 +173,7 @@ export default function AiAssistantModal() {
       {/* Modal Dialog */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-[9999] flex flex-col justify-start sm:justify-center items-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md overflow-y-auto overscroll-contain animate-in fade-in duration-150"
+          className="fixed inset-0 !m-0 z-[9999] flex flex-col justify-start sm:justify-center items-center p-2 sm:p-4 md:p-6 bg-black/85 backdrop-blur-md overflow-y-auto overscroll-contain animate-in fade-in duration-150"
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsOpen(false);
           }}

@@ -20,7 +20,7 @@ export default function ProUpgradeModal({
 
   return (
     <div 
-      className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-xl flex flex-col justify-start items-center p-2.5 sm:p-4 md:p-6 overflow-y-auto overscroll-contain animate-in fade-in duration-200"
+      className="fixed inset-0 !m-0 z-[9999] bg-black/90 backdrop-blur-xl flex flex-col justify-start items-center p-2.5 sm:p-4 md:p-6 overflow-y-auto overscroll-contain animate-in fade-in duration-200"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

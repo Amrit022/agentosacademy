@@ -357,8 +357,9 @@ Merchant Entity    : OmniStack AI Technologies Inc.
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-24">
-      {/* Header */}
+    <>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-24">
+        {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold text-accent-400 bg-accent-500/10 border border-accent-500/20">
           <Sparkles className="w-3.5 h-3.5" />
@@ -531,11 +532,12 @@ Merchant Entity    : OmniStack AI Technologies Inc.
           </div>
         </div>
       </div>
+      </div>
 
       {/* FULL INTERACTIVE GLOBAL PAYMENT GATEWAY & CHECKOUT WINDOW */}
       {showPaypalModal && (
         <div 
-          className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-xl flex flex-col justify-start items-center p-2.5 sm:p-4 md:p-6 overflow-y-auto overscroll-contain animate-in fade-in duration-200"
+          className="fixed inset-0 !m-0 z-[9999] bg-black/90 backdrop-blur-xl flex flex-col justify-start items-center p-2.5 sm:p-4 md:p-6 overflow-y-auto overscroll-contain animate-in fade-in duration-200"
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowPaypalModal(false);
           }}
@@ -1089,6 +1091,6 @@ Merchant Entity    : OmniStack AI Technologies Inc.
         </div>
       </div>
       )}
-    </div>
+    </>
   );
 }
