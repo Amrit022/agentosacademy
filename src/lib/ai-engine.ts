@@ -1,4 +1,4 @@
-// Comprehensive Universal AI Generation & Knowledge Engine for AgentOS Academy
+// Comprehensive Universal AI Generation & Knowledge Engine for OmniStack AI
 // Capable of answering ANY prompt (Coding, Math, Science, Business, Creative Writing, General Knowledge, Video Workflows)
 
 export interface GenerationParams {
@@ -33,29 +33,46 @@ function cleanTopic(raw: string): string {
 }
 
 // -------------------------------------------------------------
-// Live Wikipedia Real-Time Knowledge Fetcher
+// Live Wikipedia Real-Time Knowledge Fetcher (Filters Disambiguation)
 // -------------------------------------------------------------
 async function fetchWikiKnowledge(query: string): Promise<{ title: string; extract: string } | null> {
   try {
     const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&utf8=1&format=json`;
-    const searchRes = await fetch(searchUrl, { headers: { 'User-Agent': 'AgentOSAcademyBot/1.0 (support@agentosacademy.com)' }, next: { revalidate: 3600 } });
+    const searchRes = await fetch(searchUrl, { 
+      headers: { 'User-Agent': 'OmniStackAIBot/2.0 (support@omnistack.ai)' }, 
+      next: { revalidate: 3600 } 
+    });
     if (!searchRes.ok) return null;
     const searchData = await searchRes.json();
-    const firstResult = searchData?.query?.search?.[0];
-    if (!firstResult?.title) return null;
+    const results = searchData?.query?.search || [];
 
-    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(firstResult.title)}`;
-    const summaryRes = await fetch(summaryUrl, { headers: { 'User-Agent': 'AgentOSAcademyBot/1.0 (support@agentosacademy.com)' }, next: { revalidate: 3600 } });
-    if (!summaryRes.ok) return null;
-    const summaryData = await summaryRes.json();
-    if (summaryData?.extract && summaryData.extract.length > 50) {
-      return {
-        title: summaryData.title,
-        extract: summaryData.extract
-      };
+    for (const item of results) {
+      if (!item?.title) continue;
+      // Skip disambiguation lists and album/movie titles if searching for general concept
+      if (item.title.toLowerCase().includes('disambiguation')) continue;
+      if (item.title.toLowerCase().includes('(film)') || item.title.toLowerCase().includes('(song)') || item.title.toLowerCase().includes('(album)')) continue;
+
+      const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(item.title)}`;
+      const summaryRes = await fetch(summaryUrl, { 
+        headers: { 'User-Agent': 'OmniStackAIBot/2.0 (support@omnistack.ai)' }, 
+        next: { revalidate: 3600 } 
+      });
+      if (!summaryRes.ok) continue;
+      const summaryData = await summaryRes.json();
+      
+      // Reject disambiguation pages
+      if (summaryData?.type === 'disambiguation') continue;
+      if (summaryData?.extract?.includes('may refer to:')) continue;
+
+      if (summaryData?.extract && summaryData.extract.length > 50) {
+        return {
+          title: summaryData.title,
+          extract: summaryData.extract
+        };
+      }
     }
   } catch (err) {
-    // Graceful fallback to offline reasoning
+    // Graceful fallback to internal reasoning
   }
   return null;
 }
@@ -83,7 +100,7 @@ function trySolveMath(q: string): string | null {
 **Result**: **${result.toLocaleString()}**
 
 ---
-*Computed instantly by AgentOS Mathematical Engine.*`;
+*Computed instantly by OmniStack AI Mathematical Engine.*`;
       }
     }
   } catch (e) {
@@ -174,7 +191,7 @@ function reverseTwoPointer(str) {
   return reversed;
 }
 
-console.log(reverseString("AgentOS Academy")); // "ymedacA SOtnegA"
+console.log(reverseString("OmniStack AI")); // "ymedacA SOtnegA"
 \`\`\`
 
 #### 2. Python:
@@ -183,7 +200,7 @@ console.log(reverseString("AgentOS Academy")); // "ymedacA SOtnegA"
 def reverse_string(s: str) -> str:
     return s[::-1]
 
-print(reverse_string("AgentOS Academy")) # "ymedacA SOtnegA"
+print(reverse_string("OmniStack AI")) # "ymedacA SOtnegA"
 \`\`\``;
   }
 
@@ -288,23 +305,32 @@ export async function queryAgentOsAssistant(question: string, customApiKey?: str
   const apiKey = customApiKey || process.env.GEMINI_API_KEY;
   if (apiKey) {
     try {
-      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      let geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
       const payload = {
         contents: [
           {
             parts: [
               {
-                text: `You are AgentOS AI, an intelligent, helpful, high-performing AI assistant like ChatGPT and Claude. Answer this user request with extreme clarity, rich formatting, code blocks if applicable, and tactical steps: "${cleanQ}"`
+                text: `You are OmniStack AI, an intelligent, helpful, high-performing AI assistant like ChatGPT and Claude. Answer this user request with extreme clarity, rich formatting, code blocks if applicable, and tactical steps: "${cleanQ}"`
               }
             ]
           }
         ]
       };
-      const res = await fetch(geminiUrl, {
+      let res = await fetch(geminiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
+      if (!res.ok) {
+        // Fallback to gemini-2.0-flash
+        geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+        res = await fetch(geminiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+      }
       if (res.ok) {
         const data = await res.json();
         const geminiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -322,6 +348,27 @@ export async function queryAgentOsAssistant(question: string, customApiKey?: str
     } catch (err) {
       // Fallback to internal reasoning engine
     }
+  }
+
+  // Special Concept: What is time?
+  if (lowerQ === 'what is time' || lowerQ === 'what is time?' || lowerQ === 'explain time') {
+    return {
+      answer: `If you mean **"What is time?"** in the deeper sense:
+
+Time is the way we **order events and measure change** — past → present → future. In physics, it is treated as a dimension of spacetime, but its ultimate nature is still an open question.
+
+And the really strange part: **time doesn't pass at exactly the same rate for everyone**. According to Einstein's relativity, motion and gravity can change how much time passes for different observers.
+
+So, in one sentence:
+> **Time is what allows us to distinguish "what happened," "what is happening," and "what will happen."**
+
+If you meant *"What time is it right now?"*, tell me and I'll show you the live time.`,
+      suggestedFollowUps: [
+        'How does time dilation work in Einstein’s relativity?',
+        'Why does time only move forward and never backward?',
+        'What is spacetime?'
+      ]
+    };
   }
 
   // 2. Check Math
@@ -580,9 +627,9 @@ Would you be open to seeing the 30-second draft concept? No pitch, just wanted t
 
 Best regards,
 
-AgentOS Creative Studio
-support@agentosacademy.com
-https://agentosacademy.com`;
+OmniStack AI Creative Studio
+support@omnistack.ai
+https://omnistack.ai`;
     }
 
     if (format.includes('Script') || format.includes('Reel') || format.includes('YouTube')) {
@@ -724,5 +771,5 @@ Automate repetitive tasks using modern AI micro-tools, allowing you to focus you
 
 Success in **${topic}** is not a matter of luck; it is the natural byproduct of clear systems, modern tools, and consistent execution. 
 
-Explore the AgentOS Academy suite for interactive utilities to streamline your workflow and expand your global reach.`;
+Explore the OmniStack AI suite for interactive utilities to streamline your workflow and expand your global reach.`;
 }

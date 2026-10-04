@@ -36,7 +36,7 @@ export default function PricingPage() {
       ctaHref: '/tools/resume-builder',
       features: [
         'ATS Resume & Cover Letter Builder',
-        'Bio Link Page Creator (agentosacademy.com/u/)',
+        'Bio Link Page Creator (omnistack.ai/u/)',
         'HTML Email Signature Generator',
         'Standard URL Shortener + QR Codes',
         'Direct PDF & HTML Exports',
@@ -242,7 +242,7 @@ export default function PricingPage() {
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-2">
             <div className="font-bold text-white text-sm">2. Organic Viral Loop</div>
             <p className="text-slate-400 leading-relaxed">
-              When free users share their bio link pages or email signatures, it naturally spreads awareness for AgentOS Academy globally with $0 advertising spend.
+              When free users share their bio link pages or email signatures, it naturally spreads awareness for OmniStack AI globally with $0 advertising spend.
             </p>
           </div>
 

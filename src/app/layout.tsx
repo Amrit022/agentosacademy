@@ -5,31 +5,32 @@ import Footer from '@/components/Footer';
 import AiAssistantModal from '@/components/AiAssistantModal';
 
 export const metadata: Metadata = {
-  title: 'AgentOS Academy — 6 Powerful AI SaaS Tools Under One Roof',
-  description: 'AI Resume Builder, Bio Link Creator, AI Content Writer, Email Signature Generator, Testimonials Widget, and URL Shortener. Build from India, earn globally in USD.',
+  title: 'OmniStack AI — 6 Powerful AI SaaS & Productivity Tools Under One Roof',
+  description: 'Universal AI Assistant, AI Resume Builder, Bio Link Creator, AI Copywriting Suite, HTML Email Signature Generator, Testimonials Widget, and URL Shortener with Analytics.',
   keywords: [
+    'OmniStack AI',
     'AI resume builder',
+    'ChatGPT alternative',
     'bio link page',
     'Linktree alternative',
     'AI content writer',
     'HTML email signature',
     'testimonial collector widget',
-    'URL shortener analytics',
-    'AgentOS Academy'
+    'URL shortener analytics'
   ],
-  authors: [{ name: 'AgentOS Academy' }],
+  authors: [{ name: 'OmniStack AI' }],
   metadataBase: new URL('https://agentosacademy.com'),
   openGraph: {
-    title: 'AgentOS Academy — Complete AI SaaS Platform',
-    description: '6 high-impact micro-tools in one single dashboard. Designed for global freelancers and creators.',
+    title: 'OmniStack AI — The All-in-One Global AI SaaS Platform',
+    description: '6 high-impact micro-tools and universal AI assistant in one single dashboard. Designed for global freelancers, founders, and creators.',
     url: 'https://agentosacademy.com',
-    siteName: 'AgentOS Academy',
+    siteName: 'OmniStack AI',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AgentOS Academy — AI Tools for Global Earnings',
-    description: 'All-in-one suite: Resume Builder, Bio Links, AI Writer, Email Signatures, Testimonials & URL Shortener.',
+    title: 'OmniStack AI — 6-in-1 AI Productivity Suite',
+    description: 'All-in-one suite: Universal AI, Resume Builder, Bio Links, AI Writer, Email Signatures, Testimonials & URL Shortener.',
   },
 };
 

@@ -129,10 +129,10 @@ export default function Navbar() {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-xl font-extrabold tracking-tight text-white">AgentOS</span>
-              <span className="text-xl font-extrabold tracking-tight text-gradient">Academy</span>
+              <span className="text-xl font-extrabold tracking-tight text-white">OmniStack</span>
+              <span className="text-xl font-extrabold tracking-tight text-gradient">AI</span>
             </div>
-            <div className="text-[10px] text-slate-400 font-medium tracking-wide">6-in-1 Global SaaS Suite</div>
+            <div className="text-[10px] text-slate-400 font-medium tracking-wide">6-in-1 Premium SaaS Suite</div>
           </div>
         </Link>
 
@@ -287,7 +287,7 @@ export default function Navbar() {
               className="w-full text-center py-2.5 rounded-xl bg-brand-500/10 hover:bg-brand-500/20 text-xs font-bold text-brand-300 border border-brand-500/20 flex items-center justify-center gap-2"
             >
               <Bot className="w-4 h-4 text-brand-400" />
-              <span>Ask AgentOS AI Copilot</span>
+              <span>Ask OmniStack AI Copilot</span>
             </button>
             <Link 
               href="/pricing" 

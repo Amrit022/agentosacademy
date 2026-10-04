@@ -42,7 +42,7 @@ export default function AiAssistantModal() {
     {
       id: 'welcome',
       sender: 'assistant',
-      content: `👋 **Welcome to AgentOS AI!** I am your universal AI assistant — built just like ChatGPT and Claude.\n\nYou can ask me **ANYTHING in the world**:\n- 💻 **Coding & Debugging**: Python scrapers, React hooks, SQL queries, TypeScript\n- 🧮 **Math & Calculations**: Equations, formulas, and percentages\n- 🌐 **Science, History & Knowledge**: Explanations, Wikipedia-grounded facts, concepts\n- 🎬 **AI Video Workflows**: Runway Gen-3, Kling AI, Midjourney, ElevenLabs\n- 🚀 **Freelancing & SaaS**: How to earn in USD, pricing, cold emails, and ATS resumes`,
+      content: `👋 **Welcome to OmniStack AI!** I am your universal AI assistant — built just like ChatGPT and Claude.\n\nYou can ask me **ANYTHING in the world**:\n- 💻 **Coding & Debugging**: Python scrapers, React hooks, SQL queries, TypeScript\n- 🧮 **Math & Calculations**: Equations, formulas, and percentages\n- 🌐 **Science, History & Knowledge**: Explanations, concepts (e.g. "what is time"), facts\n- 🎬 **AI Video Workflows**: Runway Gen-3, Kling AI, Midjourney, ElevenLabs\n- 🚀 **Freelancing & SaaS**: How to earn in USD, pricing, cold emails, and ATS resumes`,
       followUps: [
         'Write a Python script to scrape website headlines',
         'How to make AI videos with Runway and ElevenLabs?',
@@ -160,7 +160,7 @@ export default function AiAssistantModal() {
           <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-[#030712] animate-pulse" />
         </div>
         <div className="text-left hidden sm:block">
-          <div className="text-xs font-black tracking-tight leading-none">Ask AgentOS AI</div>
+          <div className="text-xs font-black tracking-tight leading-none">Ask OmniStack AI</div>
           <div className="text-[10px] text-white/75 font-medium leading-tight">Answers Any Question Like ChatGPT</div>
         </div>
         <span className="text-[10px] bg-black/30 px-1.5 py-0.5 rounded text-white/80 font-mono hidden md:inline">
@@ -183,7 +183,7 @@ export default function AiAssistantModal() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-extrabold text-white tracking-tight">AgentOS AI — Universal Assistant</h3>
+                    <h3 className="text-sm font-extrabold text-white tracking-tight">OmniStack AI — Universal Assistant</h3>
                     <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Ready
                     </span>
@@ -219,7 +219,7 @@ export default function AiAssistantModal() {
                     <Cpu className="w-3.5 h-3.5 text-brand-400" /> Connect Free Gemini API Key (Optional)
                   </div>
                   <div className="text-[10px] text-slate-400">
-                    Works 100% out-of-the-box without key! Add your key for direct Google Gemini 1.5 Flash streaming.
+                    Works 100% out-of-the-box! Add your free key for direct Google Gemini 2.5 Flash / Pro inference.
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -255,7 +255,7 @@ export default function AiAssistantModal() {
                       <span>You</span>
                     ) : (
                       <span className="flex items-center gap-1 text-brand-300">
-                        <Sparkles className="w-3 h-3" /> AgentOS AI
+                        <Sparkles className="w-3 h-3" /> OmniStack AI
                       </span>
                     )}
                   </div>
@@ -314,7 +314,7 @@ export default function AiAssistantModal() {
               {loading && (
                 <div className="flex items-center gap-2 text-slate-400 text-xs py-2">
                   <RefreshCw className="w-3.5 h-3.5 animate-spin text-brand-400" />
-                  <span>AgentOS AI is thinking and generating answer...</span>
+                  <span>OmniStack AI is thinking and generating answer...</span>
                 </div>
               )}
               <div ref={messagesEndRef} />

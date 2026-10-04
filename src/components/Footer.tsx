@@ -10,13 +10,13 @@ export default function Footer() {
             <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-500 to-accent-500 flex items-center justify-center text-white">
               <Sparkles className="w-4 h-4" />
             </div>
-            <span className="font-extrabold text-white text-base tracking-tight">agentosacademy.com</span>
+            <span className="font-extrabold text-white text-base tracking-tight">OmniStack AI</span>
           </div>
           <p className="text-xs text-slate-400 leading-relaxed">
-            The multi-purpose AI productivity platform for freelancers, founders, and creators looking to build in India and monetize globally in USD.
+            The multi-purpose AI productivity platform for freelancers, founders, and creators to build, automate, and monetize globally in USD.
           </p>
           <div className="pt-2 text-xs text-brand-400 font-medium">
-            support@agentosacademy.com
+            support@omnistack.ai
           </div>
         </div>
 
@@ -88,7 +88,7 @@ export default function Footer() {
           <h4 className="text-white text-xs font-bold uppercase tracking-wider mb-4">Domain Mapped</h4>
           <div className="glass p-4 rounded-2xl border border-white/5 space-y-2">
             <div className="text-xs font-semibold text-slate-200">Custom Domain Ready:</div>
-            <div className="text-xs text-brand-300 font-mono">https://agentosacademy.com</div>
+            <div className="text-xs text-brand-300 font-mono">https://omnistack.ai</div>
             <p className="text-[11px] text-slate-400 leading-normal pt-1">
               Optimized for global search engines with automated SSL encryption and fast edge CDN.
             </p>
@@ -97,7 +97,7 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 gap-4">
-        <div>© {new Date().getFullYear()} AgentOS Academy. Built to launch from India and earn globally.</div>
+        <div>© {new Date().getFullYear()} OmniStack AI. Built for global builders and solo founders.</div>
         <div className="flex gap-6">
           <Link href="/pricing" className="hover:text-slate-300">Pricing</Link>
           <Link href="/tools/resume-builder" className="hover:text-slate-300">Tools</Link>

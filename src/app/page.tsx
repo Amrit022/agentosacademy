@@ -57,7 +57,7 @@ export default function HomePage() {
       badge: 'Creator Economy',
       gradient: 'from-purple-500/20 to-pink-500/20',
       iconColor: 'text-purple-400',
-      previewHeading: 'agentosacademy.com/u/yourname',
+      previewHeading: 'omnistack.ai/u/yourname',
       previewDetails: 'Mobile-first Bento grid layouts, Spotify/YouTube embeds, custom neon themes, and live click tracking.',
       metrics: 'Sell Custom Bio Portfolios: $30 - $75 each',
     },
@@ -142,7 +142,7 @@ export default function HomePage() {
         </h1>
 
         <p className="mt-7 text-base sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
-          Stop paying $190/month across fragmented subscriptions. <strong className="text-white font-semibold">AgentOS Academy</strong> packs 
+          Stop paying $190/month across fragmented subscriptions. <strong className="text-white font-semibold">OmniStack AI</strong> packs 
           6 high-demand tools into one sleek platform: Resume Builder, Bio Links, AI Writer, Email Signatures, Testimonials, and URL Shortener.
         </p>
 
@@ -259,7 +259,7 @@ export default function HomePage() {
 
               <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 text-[11px] text-emerald-300 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Optimized for agentosacademy.com with 100% clean deployment</span>
+                <span>Optimized for OmniStack AI with 100% clean deployment</span>
               </div>
             </div>
           </div>
@@ -325,7 +325,7 @@ export default function HomePage() {
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/5 text-xs text-slate-400 space-y-1">
                 <div className="font-bold text-slate-200">How to deliver this:</div>
-                <div>Use AgentOS Academy to produce the deliverables in minutes, and charge foreign clients on Upwork, Fiverr, or PayPal.</div>
+                <div>Use OmniStack AI to produce the deliverables in minutes, and charge foreign clients on Upwork, Fiverr, or PayPal.</div>
               </div>
             </div>
 
@@ -368,7 +368,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-brand-400">Subscription Consolidation</span>
-          <h2 className="text-3xl sm:text-4xl font-black text-white mt-1">AgentOS Academy vs Buying Separately</h2>
+          <h2 className="text-3xl sm:text-4xl font-black text-white mt-1">OmniStack AI vs Buying Separately</h2>
           <p className="text-slate-400 text-xs sm:text-sm mt-2">See how much you save every single month.</p>
         </div>
 
@@ -379,7 +379,7 @@ export default function HomePage() {
                 <tr className="bg-white/5 border-b border-white/10 text-slate-300">
                   <th className="p-4 sm:p-5 font-bold">Tool Functionality</th>
                   <th className="p-4 sm:p-5 font-bold">Separate SaaS Subscriptions</th>
-                  <th className="p-4 sm:p-5 font-bold text-brand-300">AgentOS Academy</th>
+                  <th className="p-4 sm:p-5 font-bold text-brand-300">OmniStack AI</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 text-slate-300">
@@ -452,7 +452,7 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="rounded-3xl p-10 sm:p-16 bg-gradient-to-r from-brand-600 via-indigo-600 to-accent-600 text-center text-white shadow-2xl relative overflow-hidden">
           <h2 className="text-3xl sm:text-5xl font-black tracking-tight">
-            Ready to Launch on agentosacademy.com?
+            Ready to Launch with OmniStack AI?
           </h2>
           <p className="text-sm sm:text-base text-slate-100 max-w-2xl mx-auto mt-4 leading-relaxed">
             Join developers, creators, and freelancers building high-margin digital assets for the global economy.
