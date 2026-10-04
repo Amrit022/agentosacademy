@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Crown, CheckCircle2, ShieldCheck, X, Zap, ArrowLeft } from 'lucide-react';
+import { Crown, CheckCircle2, ShieldCheck, X, Zap, ArrowLeft, ExternalLink } from 'lucide-react';
+import { getDodoPlan, getDodoCheckoutUrl } from '@/lib/dodo-config';
 
 interface ProUpgradeModalProps {
   isOpen: boolean;
@@ -215,33 +216,48 @@ export default function ProUpgradeModal({
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-            <Link 
-              href="/pricing"
-              onClick={onClose}
-              className={`w-full sm:w-auto flex-1 py-3.5 px-6 rounded-xl ${
-                isAgency
-                  ? 'bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white shadow-cyan-500/25'
-                  : 'bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-slate-950 shadow-emerald-500/25'
-              } font-black text-xs shadow-lg text-center transition flex items-center justify-center gap-2 cursor-pointer active:scale-98`}
-            >
-              {isAgency ? (
-                <>
-                  <Zap className="w-4 h-4" />
-                  <span>Upgrade to Agency Unlimited ($29/mo) ↗</span>
-                </>
-              ) : (
-                <>
-                  <span>🦤 Instant Card / Apple Pay Checkout ($9/mo) ↗</span>
-                </>
-              )}
-            </Link>
+            {isAgency ? (
+              (() => {
+                const agencyUrl = getDodoCheckoutUrl('agency', false);
+                return agencyUrl ? (
+                  <a
+                    href={agencyUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white shadow-cyan-500/25 font-black text-xs shadow-lg text-center transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  >
+                    <Zap className="w-4 h-4" />
+                    <span>Instant Dodo Checkout ($29/mo) ↗</span>
+                  </a>
+                ) : (
+                  <Link 
+                    href="/pricing"
+                    onClick={onClose}
+                    className="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white shadow-cyan-500/25 font-black text-xs shadow-lg text-center transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                  >
+                    <Zap className="w-4 h-4" />
+                    <span>Upgrade to Agency Unlimited ($29/mo) ↗</span>
+                  </Link>
+                );
+              })()
+            ) : (
+              <a
+                href={getDodoCheckoutUrl('pro', false) || 'https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 text-slate-950 shadow-emerald-500/25 font-black text-xs shadow-lg text-center transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+              >
+                <span>🦤 Instant Card / Apple Pay Checkout ($9/mo) ↗</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            )}
             <Link 
               href="/pricing"
               onClick={onClose}
               className="w-full sm:w-auto py-3.5 px-5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs text-center transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
             >
               <Crown className="w-3.5 h-3.5 text-amber-300" />
-              <span>All Payment Options</span>
+              <span>All Payment Options (Cards / PayPal)</span>
             </Link>
           </div>
 

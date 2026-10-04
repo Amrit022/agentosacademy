@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { getDodoPlan, getDodoCheckoutUrl } from '@/lib/dodo-config';
 import { 
   CheckCircle2,
   Copy, 
@@ -451,19 +452,48 @@ Merchant Entity    : OmniStack AI Technologies Inc.
               </div>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-8 space-y-2.5">
               {p.ctaHref.startsWith('#') ? (
-                <button
-                  onClick={() => handleOpenCheckout(p)}
-                  className={`w-full py-3.5 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg ${
-                    p.popular
-                      ? 'bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white shadow-brand-500/25 hover:opacity-90'
-                      : 'glass hover:bg-white/10 text-white border border-white/10'
-                  }`}
-                >
-                  <CreditCard className="w-4 h-4" />
-                  <span>{p.ctaText}</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => handleOpenCheckout(p)}
+                    className={`w-full py-3.5 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg cursor-pointer ${
+                      p.popular
+                        ? 'bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white shadow-brand-500/25 hover:opacity-90'
+                        : 'glass hover:bg-white/10 text-white border border-white/10'
+                    }`}
+                  >
+                    <CreditCard className="w-4 h-4" />
+                    <span>{p.ctaText}</span>
+                  </button>
+
+                  {/* 1-Click Fast Dodo Payments Button */}
+                  {(() => {
+                    const tier = p.name.includes('Agency') ? 'agency' : 'pro';
+                    const dodoUrl = getDodoCheckoutUrl(tier, annual);
+                    const amount = annual ? p.annualPriceNum : p.priceNum;
+
+                    return dodoUrl ? (
+                      <a
+                        href={dodoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-2.5 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-bold text-[11px] transition flex items-center justify-center gap-1.5 cursor-pointer text-center group"
+                      >
+                        <span>🦤 Instant 1-Click Pay (${amount}.00 USD)</span>
+                        <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition" />
+                      </a>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => handleOpenCheckout(p)}
+                        className="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-bold text-[11px] transition flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                      >
+                        <span>🦤 Instant Pay with Dodo (${amount}.00 USD)</span>
+                      </button>
+                    );
+                  })()}
+                </>
               ) : (
                 <Link
                   href={p.ctaHref}
@@ -738,32 +768,59 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                 {/* TAB 2: CREDIT / DEBIT CARD CHECKOUT */}
                 {checkoutTab === 'card' && (
                   <form onSubmit={handleProcessCardPayment} className="space-y-3.5 pt-0.5">
-                    {/* Featured 1-Click Fast Hosted Checkout via Dodo Payments */}
-                    <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-brand-500/15 border border-emerald-500/30 space-y-2.5">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-base shrink-0 border border-emerald-500/30">
-                          🦤
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                            <span>Instant 1-Click Fast Checkout</span>
-                            <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">Recommended</span>
+                    {/* Dynamic 1-Click Fast Hosted Checkout via Dodo Payments */}
+                    {(() => {
+                      const currentTier = selectedPlan.name.includes('Agency') ? 'agency' : 'pro';
+                      const dodoPlan = getDodoPlan(currentTier, annual);
+                      const dodoUrl = getDodoCheckoutUrl(currentTier, annual);
+                      const amount = getChargeAmount();
+
+                      return (
+                        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-brand-500/15 border border-emerald-500/30 space-y-2.5">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-base shrink-0 border border-emerald-500/30">
+                              🦤
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                                <span>Dodo Payments: {dodoPlan.name}</span>
+                                <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">1-Click Fast</span>
+                              </div>
+                              <div className="text-[10px] text-slate-300 truncate">
+                                Apple Pay • Google Pay • Cards • Instant Tax Invoice (${amount}.00 USD)
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-[10px] text-slate-300 truncate">
-                            Apple Pay • Google Pay • Cards • Instant Tax Invoice
-                          </div>
+                          {dodoUrl ? (
+                            <a
+                              href={dodoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-98 cursor-pointer text-center"
+                            >
+                              <span>Launch Dodo Checkout (${amount}.00 USD) ↗</span>
+                              <ExternalLink className="w-3.5 h-3.5" />
+                            </a>
+                          ) : (
+                            <div className="space-y-1.5">
+                              <div className="text-[11px] text-amber-300/90 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2 leading-relaxed">
+                                Dodo checkout link for <strong>{dodoPlan.name}</strong> is ready to activate! You can also complete instant payment below using our 256-Bit SSL card gateway or PayPal.
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const el = document.getElementById('card-name-input');
+                                  if (el) el.focus();
+                                }}
+                                className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-white font-bold text-xs transition text-center cursor-pointer"
+                              >
+                                Continue with 256-Bit SSL Card Form Below (${amount}.00 USD) ↓
+                              </button>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                      <a
-                        href="https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-98 cursor-pointer text-center"
-                      >
-                        <span>Launch 1-Click Checkout (${getChargeAmount()}.00 USD) ↗</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-                    </div>
+                      );
+                    })()}
 
                     <div className="relative flex py-0.5 items-center">
                       <div className="flex-grow border-t border-white/10"></div>
@@ -782,6 +839,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                     <div>
                       <label className="block text-[11px] font-semibold text-slate-300 mb-1">Cardholder Full Name</label>
                       <input 
+                        id="card-name-input"
                         type="text" 
                         required
                         autoComplete="cc-name"
