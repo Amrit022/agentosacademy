@@ -20,8 +20,7 @@ import {
   RefreshCw,
   Check,
   AlertCircle,
-  Receipt,
-  Coins
+  Receipt
 } from 'lucide-react';
 
 export default function PricingPage() {
@@ -36,13 +35,7 @@ export default function PricingPage() {
   });
 
   // Checkout modal states
-  const [checkoutTab, setCheckoutTab] = useState<'card' | 'crypto' | 'upi' | 'paypal'>('card');
-  
-  // Crypto Web3 State - 100% Zero-KYC
-  const [cryptoNetwork, setCryptoNetwork] = useState<'TRC20' | 'POLYGON' | 'BINANCE'>('TRC20');
-  const [cryptoTxid, setCryptoTxid] = useState('');
-  const [cryptoError, setCryptoError] = useState('');
-  const [copiedCrypto, setCopiedCrypto] = useState(false);
+  const [checkoutTab, setCheckoutTab] = useState<'card' | 'upi' | 'paypal'>('card');
   const [payerEmail, setPayerEmail] = useState('');
   const [payerName, setPayerName] = useState('');
   
@@ -166,8 +159,6 @@ export default function PricingPage() {
     setUpiRef('');
     setUpiError('');
     setPaypalError('');
-    setCryptoTxid('');
-    setCryptoError('');
   };
 
   const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -299,51 +290,6 @@ export default function PricingPage() {
     setPaymentSuccess(true);
   };
 
-  const CRYPTO_CONFIG = {
-    TRC20: {
-      name: 'USDT (TRC-20 Tron)',
-      symbol: 'USDT-TRC20',
-      address: 'TMK9s8Y4fG2vF1jQp7wXz9R2cB5eA8dL3m',
-      network: 'Tron Blockchain (TRC-20)',
-      explorer: 'TronScan'
-    },
-    POLYGON: {
-      name: 'USDT / USDC (Polygon)',
-      symbol: 'USDT-POLYGON',
-      address: '0x71C8395562093223126786828236186832361868',
-      network: 'Polygon PoS (Zero Gas)',
-      explorer: 'PolygonScan'
-    },
-    BINANCE: {
-      name: 'Binance Pay ID (Zero Fee)',
-      symbol: 'BINANCE-PAY',
-      address: '7901857685',
-      network: 'Binance Mobile App',
-      explorer: 'Binance Internal'
-    }
-  };
-
-  const copyCryptoAddress = () => {
-    navigator.clipboard.writeText(CRYPTO_CONFIG[cryptoNetwork].address);
-    setCopiedCrypto(true);
-    setTimeout(() => setCopiedCrypto(false), 2000);
-  };
-
-  const handleVerifyCryptoPayment = () => {
-    setCryptoError('');
-    if (!cryptoTxid.trim() || cryptoTxid.trim().length < 8) {
-      setCryptoError('Please enter your 10+ character Blockchain Transaction Hash / TXID / Binance Order ID.');
-      return;
-    }
-    const randomOrder = 'ORD-2026-' + Math.floor(100000 + Math.random() * 900000);
-    const randomTxn = 'TXN-CRYPTO-' + cryptoTxid.trim().substring(0, 16).toUpperCase();
-    const randomKey = 'OMNI-PRO-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-    setOrderId(randomOrder);
-    setTxnId(randomTxn);
-    setLicenseKey(randomKey);
-    setPaymentSuccess(true);
-  };
-
   const handleVerifyUpiPayment = () => {
     setUpiError('');
     if (!upiRef.trim() || upiRef.trim().length < 6) {
@@ -367,7 +313,7 @@ export default function PricingPage() {
 Invoice / Order ID : ${orderId}
 Transaction ID     : ${txnId}
 Date & Time        : ${new Date().toUTCString()}
-Payment Gateway    : ${checkoutTab === 'paypal' ? 'PayPal Global (USD)' : checkoutTab === 'crypto' ? 'USDT Blockchain (Web3 Zero-KYC)' : checkoutTab === 'upi' ? 'UPI Bank Direct Transfer' : 'Visa/Mastercard 256-Bit SSL'}
+Payment Gateway    : ${checkoutTab === 'paypal' ? 'PayPal Global (USD)' : checkoutTab === 'upi' ? 'UPI Bank Direct Transfer' : 'Visa/Mastercard / Dodo Payments 256-Bit SSL'}
 Status             : PAID & VERIFIED (Authorized)
 --------------------------------------------------------------------------------
 BILLED TO:
@@ -618,57 +564,44 @@ Merchant Entity    : OmniStack AI Technologies Inc.
             {!paymentSuccess ? (
               <div className="space-y-5">
                 {/* Payment Method Selector Tabs */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-1.5 rounded-2xl bg-black/40 border border-white/10">
+                <div className="grid grid-cols-3 gap-2 p-1.5 rounded-2xl bg-black/40 border border-white/10">
                   <button
                     type="button"
                     onClick={() => setCheckoutTab('card')}
-                    className={`py-2.5 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                       checkoutTab === 'card'
                         ? 'bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-md'
                         : 'text-slate-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     <CreditCard className="w-3.5 h-3.5" />
-                    <span>Card (Visa/MC)</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setCheckoutTab('crypto')}
-                    className={`py-2.5 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                      checkoutTab === 'crypto'
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-md'
-                        : 'text-slate-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    <Coins className="w-3.5 h-3.5" />
-                    <span>Crypto (0-KYC)</span>
+                    <span>Card & Apple Pay</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setCheckoutTab('upi')}
-                    className={`py-2.5 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                       checkoutTab === 'upi'
                         ? 'bg-emerald-600 text-white shadow-md'
                         : 'text-slate-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     <QrCode className="w-3.5 h-3.5" />
-                    <span>UPI / QR</span>
+                    <span>UPI / QR Transfer</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setCheckoutTab('paypal')}
-                    className={`py-2.5 px-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                    className={`py-2.5 px-3 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
                       checkoutTab === 'paypal'
                         ? 'bg-[#0070ba] text-white shadow-md'
                         : 'text-slate-400 hover:text-white hover:bg-white/5'
                     }`}
                   >
                     <span className="font-black text-xs">P</span>
-                    <span>PayPal</span>
+                    <span>PayPal Portal</span>
                   </button>
                 </div>
 
@@ -886,30 +819,46 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                           <span>Authorize & Pay ${getChargeAmount()}.00 USD with Card</span>
                         </button>
 
-                        <div className="text-center">
-                          <span className="text-[11px] text-slate-400">or choose zero-friction hosted checkout alternatives:</span>
-                        </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {/* Dodo Payments Integration Highlight */}
+                        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-brand-500/10 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-sm shrink-0 border border-emerald-500/30">
+                              🦤
+                            </div>
+                            <div>
+                              <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                                <span>Dodo Payments Global Checkout</span>
+                                <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">Recommended MoR</span>
+                              </div>
+                              <div className="text-[10px] text-slate-300 mt-0.5">
+                                100% Zero-Friction: Cards, Apple Pay, Google Pay with instant automated VAT/tax invoice.
+                              </div>
+                            </div>
+                          </div>
                           <a
-                            href={getPaypalMeUrl()}
+                            href="https://test.dodopayments.com"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs transition flex items-center justify-center gap-1.5 text-center"
+                            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 shrink-0"
                           >
-                            <CreditCard className="w-3.5 h-3.5 text-cyan-400" />
-                            <span>PayPal Hosted Card ↗</span>
+                            <span>Launch Dodo Checkout ↗</span>
+                            <ExternalLink className="w-3.5 h-3.5" />
                           </a>
-
-                          <button
-                            type="button"
-                            onClick={() => setCheckoutTab('crypto')}
-                            className="py-2.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 hover:text-white font-bold text-xs transition flex items-center justify-center gap-1.5 text-center cursor-pointer"
-                          >
-                            <Coins className="w-3.5 h-3.5 text-amber-400" />
-                            <span>Zero-KYC USDT Pay ↗</span>
-                          </button>
                         </div>
+
+                        <div className="text-center pt-1">
+                          <span className="text-[11px] text-slate-400">or pay with card through PayPal's hosted card gateway:</span>
+                        </div>
+
+                        <a
+                          href={getPaypalMeUrl()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs transition flex items-center justify-center gap-2 text-center"
+                        >
+                          <CreditCard className="w-4 h-4 text-cyan-400" />
+                          <span>Pay with Card on PayPal Portal (Zero Account Required) ↗</span>
+                        </a>
                       </div>
                     )}
                   </form>
@@ -1002,123 +951,6 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                       >
                         <Check className="w-4 h-4" />
                         <span>Verify UTR & Activate Pro License</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {/* TAB 4: CRYPTO / WEB3 (100% ZERO KYC GLOBAL) */}
-                {checkoutTab === 'crypto' && (
-                  <div className="space-y-4 pt-1 text-xs text-slate-300">
-                    <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-2">
-                      <div className="font-bold text-amber-300 flex items-center gap-1.5">
-                        <Coins className="w-4 h-4" />
-                        <span>100% Zero-KYC Global Crypto Checkout</span>
-                      </div>
-                      <p className="text-[11px] text-slate-300 leading-relaxed">
-                        Pay with USDT or Binance Pay from any wallet or exchange worldwide (Binance, Bybit, TrustWallet, MetaMask, OKX). Instant activation, zero identity checks, zero country blocks.
-                      </p>
-                    </div>
-
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-4">
-                      {/* Network Switcher */}
-                      <div>
-                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Select Blockchain Network</div>
-                        <div className="grid grid-cols-3 gap-2">
-                          {(['TRC20', 'POLYGON', 'BINANCE'] as const).map((net) => (
-                            <button
-                              key={net}
-                              type="button"
-                              onClick={() => {
-                                setCryptoNetwork(net);
-                                if (cryptoError) setCryptoError('');
-                              }}
-                              className={`py-2 px-2.5 rounded-xl text-xs font-bold transition text-center cursor-pointer ${
-                                cryptoNetwork === net
-                                  ? 'bg-amber-500 text-slate-950 shadow-md font-black'
-                                  : 'bg-black/40 text-slate-300 hover:bg-white/10 border border-white/10'
-                              }`}
-                            >
-                              {net === 'TRC20' ? 'USDT (TRC20)' : net === 'POLYGON' ? 'Polygon (USDT)' : 'Binance Pay'}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Deposit Address Box */}
-                      <div className="flex items-center justify-between p-3.5 rounded-xl bg-black/40 border border-amber-500/30">
-                        <div className="overflow-hidden mr-2">
-                          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                            Official {CRYPTO_CONFIG[cryptoNetwork].name} Address
-                          </div>
-                          <div className="font-mono text-xs sm:text-sm font-bold text-amber-300 mt-1 truncate select-all">
-                            {CRYPTO_CONFIG[cryptoNetwork].address}
-                          </div>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={copyCryptoAddress}
-                          className="px-3.5 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold border border-amber-500/30 transition flex items-center gap-1.5 shrink-0 cursor-pointer"
-                        >
-                          {copiedCrypto ? <Check className="w-3.5 h-3.5 text-amber-400" /> : <Copy className="w-3.5 h-3.5" />}
-                          <span>{copiedCrypto ? 'Copied!' : 'Copy Address'}</span>
-                        </button>
-                      </div>
-
-                      {/* QR Code and Exact Amount */}
-                      <div className="flex flex-col sm:flex-row items-center gap-4 p-3.5 rounded-xl bg-white/5 border border-white/10">
-                        <div className="bg-white p-2 rounded-xl shadow-md shrink-0">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img 
-                            src={`https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${encodeURIComponent(CRYPTO_CONFIG[cryptoNetwork].address)}`}
-                            alt="Scan Crypto Address"
-                            className="w-24 h-24 object-contain"
-                          />
-                        </div>
-                        <div className="space-y-1.5 text-center sm:text-left">
-                          <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Exact Deposit Amount</div>
-                          <div className="font-black text-amber-400 text-xl font-mono">
-                            ${getChargeAmount()}.00 USDT
-                          </div>
-                          <div className="text-[11px] text-slate-300">
-                            Network: <strong className="text-white">{CRYPTO_CONFIG[cryptoNetwork].network}</strong>
-                          </div>
-                          <div className="text-[10px] text-slate-400">
-                            Transfer exact amount. After sending, paste your Transaction Hash below for instant license generation.
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* TXID Input */}
-                      <div className="space-y-2">
-                        {cryptoError && (
-                          <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
-                            <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
-                            <span>{cryptoError}</span>
-                          </div>
-                        )}
-                        <label className="block text-[11px] font-semibold text-slate-300">
-                          Transaction Hash / TXID / Binance Internal Order ID
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={cryptoTxid}
-                          onChange={(e) => {
-                            setCryptoTxid(e.target.value);
-                            if (cryptoError) setCryptoError('');
-                          }}
-                          placeholder="e.g. 0x8f2a9e... or TronScan TXID (c41e8...)"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-amber-500 font-mono placeholder:text-slate-600"
-                        />
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={handleVerifyCryptoPayment}
-                        className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:opacity-95 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-amber-500/20 cursor-pointer"
-                      >
-                        <Check className="w-4 h-4" />
-                        <span>Verify TXID & Activate Pro Commercial License</span>
                       </button>
                     </div>
                   </div>

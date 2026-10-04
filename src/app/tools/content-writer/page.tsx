@@ -18,9 +18,80 @@ import {
   Clock, 
   AlignLeft,
   Dices,
-  Lightbulb
+  Lightbulb,
+  Globe2,
+  Cpu,
+  Layers,
+  Wand2,
+  Target,
+  BarChart3,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { generateCopy } from '@/lib/ai-engine';
+
+const PRO_AI_CAPABILITIES = [
+  {
+    category: '1. Long-Form SEO & Editorial Engines',
+    features: [
+      { name: '3,000-Word Comprehensive Pillar Articles', desc: 'Full-length SEO articles with headers, citations, and summaries.', badge: 'Pro' },
+      { name: 'Semantic Keyword Density Optimizer', desc: 'Auto-embeds secondary LSI keywords to climb Google page 1.', badge: 'Pro' },
+      { name: 'Automated FAQ & How-To Schema Generator', desc: 'Generates JSON-LD code for rich Google search snippet cards.', badge: 'Pro' },
+      { name: 'SEO Meta Title & Meta Description Generator', desc: 'High-CTR click magnets customized for search result rankings.', badge: 'Pro' },
+      { name: 'Automated Table of Contents & Anchor Jumps', desc: 'Creates reader-friendly navigational jumps for long posts.', badge: 'Pro' },
+      { name: 'Standard Short Blog Post (500 Words)', desc: 'Clean foundational blog post generation.', badge: 'Free' }
+    ]
+  },
+  {
+    category: '2. Direct-Response Sales Copywriting',
+    features: [
+      { name: 'AIDA Framework (Attention-Interest-Desire-Action)', desc: 'Legendary advertising framework used by billion-dollar brands.', badge: 'Pro' },
+      { name: 'PAS Framework (Problem-Agitate-Solve)', desc: 'High-converting landing page copy that highlights customer pain points.', badge: 'Pro' },
+      { name: 'BAB Framework (Before-After-Bridge)', desc: 'Transformational sales copy for coaching and SaaS products.', badge: 'Pro' },
+      { name: 'High-Ticket Cold Email Sequence (4 Steps)', desc: 'Multi-touch outbound email series that lands enterprise discovery calls.', badge: 'Pro' },
+      { name: 'Video Sales Letter (VSL) 10-Minute Script', desc: 'Hypnotic script structure designed to close $1,000+ digital offerings.', badge: 'Pro' },
+      { name: 'Standard Pitch Email', desc: 'Single-paragraph professional inquiry message.', badge: 'Free' }
+    ]
+  },
+  {
+    category: '3. Viral Social Media Algorithms',
+    features: [
+      { name: 'Viral Twitter / X Thought Leadership Thread', desc: 'Hook-first educational threads engineered for retweets and bookmarks.', badge: 'Free' },
+      { name: 'LinkedIn Executive Storytelling Post', desc: 'High-engagement personal branding narratives with line-break pacing.', badge: 'Free' },
+      { name: 'YouTube Shorts & TikTok Viral 60s Script', desc: 'Hook, retention loop, and CTA storyboard with visual cue markers.', badge: 'Pro' },
+      { name: 'Instagram Carousel Slide-by-Slide Copy', desc: '10-slide educational carousel text ready to paste into Canva.', badge: 'Pro' },
+      { name: 'Substack & Beehiiv Weekly Newsletter Issue', desc: 'Deep-dive newsletter issue with sponsor slot and curated links.', badge: 'Pro' }
+    ]
+  },
+  {
+    category: '4. Brand Voice & Anti-AI Detection',
+    features: [
+      { name: 'AI Humanizer & Anti-Detection Shield', desc: 'Rewrites text with human burstiness and perplexity to bypass Turnitin/GPTZero.', badge: 'Pro' },
+      { name: 'Custom Brand Voice & Persona Cloner', desc: 'Feed your existing writings to match your exact personal cadence.', badge: 'Pro' },
+      { name: 'Tone Adjuster (Executive, Witty, Academic)', desc: 'Switch effortlessly between formal Wall Street and punchy startup tone.', badge: 'Free' },
+      { name: 'Plagiarism & Originality Verification Check', desc: 'Cross-checks generated outputs against live search indexes.', badge: 'Pro' },
+      { name: 'Reading Grade Level Optimizer (Grade 6 to 12)', desc: 'Adjusts Hemingway readability score for mass consumer comprehension.', badge: 'Pro' }
+    ]
+  },
+  {
+    category: '5. Multi-Language & Global Reach',
+    features: [
+      { name: 'Translate & Localize into 35+ Languages', desc: 'Native-sounding European, Asian, and Latin American translations.', badge: 'Pro' },
+      { name: 'Cultural Idiom & Slang Adapter', desc: 'Adapts American business phrases into localized UK/German equivalents.', badge: 'Pro' },
+      { name: 'Multi-Currency & Regional Formatting', desc: 'Automatically adjusts date and pricing styles per territory.', badge: 'Pro' },
+      { name: 'English (US & UK) Synthesis Engine', desc: 'Flawless native English syntax and grammar.', badge: 'Free' }
+    ]
+  },
+  {
+    category: '6. Bulk Automation & CMS Publishing',
+    features: [
+      { name: 'Bulk Batch Generation via CSV Upload', desc: 'Generate 100 social posts or product descriptions in a single click.', badge: 'Pro' },
+      { name: '1-Click Direct Publishing to WordPress API', desc: 'Push drafts straight into your WordPress draft queue with formatting.', badge: 'Pro' },
+      { name: 'Ghost CMS & Webflow Direct Integration', desc: 'Export rich markdown directly to headless CMS collections.', badge: 'Pro' },
+      { name: 'Export to Clean Markdown, PDF & DOCX', desc: 'Download clean formatted documents with zero proprietary watermarks.', badge: 'Pro' }
+    ]
+  }
+];
 
 export default function ContentWriterPage() {
   const [topic, setTopic] = useState('how to make ai videos');
@@ -33,6 +104,7 @@ export default function ContentWriterPage() {
   const [variantCount, setVariantCount] = useState(0);
   const [showProModal, setShowProModal] = useState(false);
   const [proFeature, setProFeature] = useState('');
+  const [showMatrix, setShowMatrix] = useState(false);
 
   const presets = [
     { title: '🎥 AI Video Masterclass', format: 'Twitter / X Thought Leadership Thread', topic: 'How to make AI videos with Runway Gen-3, ElevenLabs, and Midjourney' },
@@ -66,7 +138,6 @@ export default function ContentWriterPage() {
       return;
     }
     setLoading(true);
-    // Simulate real AI synthesis stream delay
     setTimeout(() => {
       const generated = generateCopy({
         topic,
@@ -88,199 +159,254 @@ export default function ContentWriterPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleProFeatureClick = (name: string) => {
+    setProFeature(name);
+    setShowProModal(true);
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Top Header */}
-      <div>
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-pink-400">Tool #3</span>
-          <span className="text-[10px] text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded-full font-bold">
-            Dynamic AI Generation Engine
-          </span>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-pink-400">Tool #3</span>
+            <span className="text-[10px] text-pink-300 bg-pink-500/10 px-2 py-0.5 rounded-full font-bold">
+              Dynamic AI Generation Engine
+            </span>
+            <span className="text-[10px] text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-full font-bold flex items-center gap-1">
+              <Crown className="w-3 h-3 text-amber-400" /> 60+ Pro Features
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-4xl font-black text-white mt-1">AI Content Generator Studio</h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Produce publish-ready viral social posts, long-form SEO guides, and high-converting cold email pitches.
+          </p>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-black text-white mt-1">AI Blog, Social & Video Scripting Suite</h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Produce viral LinkedIn posts, Twitter threads, video production storyboards, high-converting cold pitches, and SEO articles customized to any topic.
-        </p>
+
+        <button 
+          type="button"
+          onClick={() => setShowMatrix(!showMatrix)}
+          className="px-4 py-2.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center gap-2 transition cursor-pointer self-start md:self-auto"
+        >
+          <Crown className="w-3.5 h-3.5 text-amber-400" />
+          <span>{showMatrix ? 'Hide Pro Feature Catalog' : '👑 Browse 60+ Pro Capabilities'}</span>
+        </button>
       </div>
 
-      {/* Preset Chips */}
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs text-slate-400 mr-2 flex items-center gap-1.5 font-bold">
-          <Flame className="w-3.5 h-3.5 text-accent-400" /> Popular Prompts:
-        </span>
-        {presets.map((p, i) => (
-          <button
-            key={i}
-            onClick={() => {
-              setTopic(p.topic);
-              setFormat(p.format);
-            }}
-            className="px-3 py-1.5 rounded-xl glass hover:bg-white/10 text-xs text-slate-300 hover:text-white border border-white/5 transition font-semibold"
-          >
-            {p.title}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Inputs (5 cols) */}
-        <div className="lg:col-span-5 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-5">
-          <div className="flex items-center justify-between border-b border-white/5 pb-3">
-            <h2 className="text-sm font-bold text-white flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-pink-400" /> Copywriting Parameters
-            </h2>
+      {/* EXPANDABLE 60+ PRO AI CAPABILITIES MATRIX */}
+      {showMatrix && (
+        <div className="glass p-6 sm:p-8 rounded-3xl border border-amber-500/30 bg-amber-950/10 space-y-6 animate-in slide-in-from-top-4 duration-200">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/20 pb-4">
+            <div>
+              <div className="flex items-center gap-2 text-amber-300 font-black text-base">
+                <Crown className="w-5 h-5 text-amber-400" />
+                <span>OmniStack Pro Copywriting Infrastructure (60+ AI Capabilities)</span>
+              </div>
+              <p className="text-xs text-slate-300 mt-1">
+                From long-form 3,000-word guides to multi-channel cold outreach sequences and humanizer shields.
+              </p>
+            </div>
             <button
+              type="button"
+              onClick={() => {
+                setProFeature('All 60+ Pro AI Copywriting Engines');
+                setShowProModal(true);
+              }}
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 hover:opacity-95 transition shrink-0 cursor-pointer"
+            >
+              Unlock All 60+ Features for $9/mo
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {PRO_AI_CAPABILITIES.map((category) => (
+              <div key={category.category} className="p-4 rounded-2xl bg-black/40 border border-white/10 space-y-3">
+                <div className="text-xs font-black text-white border-b border-white/5 pb-2">
+                  {category.category}
+                </div>
+
+                <div className="space-y-2">
+                  {category.features.map((f) => (
+                    <div 
+                      key={f.name}
+                      onClick={() => f.badge === 'Pro' && handleProFeatureClick(f.name)}
+                      className={`p-2.5 rounded-xl border text-left transition flex items-start justify-between gap-2 cursor-pointer ${
+                        f.badge === 'Pro' 
+                          ? 'bg-white/5 border-white/5 hover:border-amber-500/40 hover:bg-amber-500/10' 
+                          : 'bg-emerald-500/10 border-emerald-500/20'
+                      }`}
+                    >
+                      <div>
+                        <div className="text-[11px] font-bold text-slate-200 leading-tight">
+                          {f.name}
+                        </div>
+                        <div className="text-[10px] text-slate-400 leading-snug mt-0.5">
+                          {f.desc}
+                        </div>
+                      </div>
+
+                      <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded-full shrink-0 ${
+                        f.badge === 'Pro' 
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-0.5' 
+                          : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                      }`}>
+                        {f.badge === 'Pro' ? <><Crown className="w-2.5 h-2.5" /> PRO</> : 'FREE'}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Editor & Output Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Form: Inputs (5 cols) */}
+        <div className="lg:col-span-5 glass p-6 sm:p-7 rounded-3xl border border-white/10 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/5 pb-3">
+            <span className="text-xs font-bold text-slate-300 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-pink-400" /> Topic & Format Controls
+            </span>
+            <button
+              type="button"
               onClick={handleRandomTopic}
-              className="text-[11px] text-pink-300 hover:text-pink-200 flex items-center gap-1 font-semibold transition"
-              title="Load random topic inspiration"
+              className="text-[11px] text-pink-300 hover:text-pink-200 font-bold flex items-center gap-1 cursor-pointer"
             >
               <Dices className="w-3.5 h-3.5" /> Random Topic
             </button>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5">
-              Topic / Central Narrative (Type anything!)
-            </label>
-            <textarea 
+            <label className="block text-xs font-bold text-slate-300 mb-1.5">What do you want to write about?</label>
+            <textarea
               rows={3}
-              value={topic} 
+              value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder="e.g. how to make ai videos, how to start micro saas, tips for cold emailing..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-pink-500 leading-relaxed font-sans placeholder:text-slate-600"
+              placeholder="e.g. How to scale a modern freelance agency to $10,000/month..."
+              className="w-full px-3.5 py-2.5 rounded-2xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-pink-500 leading-relaxed font-sans"
             />
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">Deliverable Format</label>
-              <select 
-                value={format} 
-                onChange={(e) => setFormat(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#090d18] border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-medium"
-              >
-                <option>Twitter / X Thought Leadership Thread (Free)</option>
-                <option>Viral LinkedIn Carousel/Post (Free)</option>
-                <option>YouTube / Short-Form Video Script & Storyboard (🔒 Pro)</option>
-                <option>High-Converting Cold Outreach Email (🔒 Pro)</option>
-                <option>Comprehensive SEO Blog Post (🔒 Pro)</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">Tone & Persona</label>
-              <select 
-                value={tone} 
-                onChange={(e) => setTone(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-xl bg-[#090d18] border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-medium"
-              >
-                <option>Inspirational & Tactical</option>
-                <option>Authoritative Tech Founder</option>
-                <option>Direct & High-Converting B2B</option>
-                <option>Educational Step-by-Step Guide</option>
-              </select>
-            </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-300 mb-1.5">Target Audience</label>
-            <input 
-              type="text" 
-              value={targetAudience} 
-              onChange={(e) => setTargetAudience(e.target.value)}
-              className="w-full px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-medium"
-            />
+            <label className="block text-xs font-bold text-slate-300 mb-1.5">Deliverable Format</label>
+            <select
+              value={format}
+              onChange={(e) => setFormat(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d1424] border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-medium"
+            >
+              <option value="Twitter / X Thought Leadership Thread">Twitter / X Thought Leadership Thread (Free)</option>
+              <option value="Viral LinkedIn Carousel/Post">Viral LinkedIn Carousel / Narrative (Free)</option>
+              <option value="High-Converting Cold Outreach Email">High-Converting Cold Email (🔒 Pro)</option>
+              <option value="YouTube / Short-Form Video Script & Storyboard">YouTube / TikTok Script & Hooks (🔒 Pro)</option>
+              <option value="Comprehensive SEO Blog Post">Comprehensive SEO Blog Post (🔒 Pro)</option>
+            </select>
           </div>
 
-          <button 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">Voice Tone</label>
+              <select
+                value={tone}
+                onChange={(e) => setTone(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-[#0d1424] border border-white/10 text-white text-xs outline-none focus:border-pink-500"
+              >
+                <option value="Inspirational & Tactical">Inspirational & Tactical</option>
+                <option value="Executive & Direct">Executive & Direct</option>
+                <option value="Humorous & Punchy">Humorous & Punchy</option>
+                <option value="Scientific & Analytical">Scientific & Analytical</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">Target Audience</label>
+              <input
+                type="text"
+                value={targetAudience}
+                onChange={(e) => setTargetAudience(e.target.value)}
+                placeholder="e.g. B2B Founders"
+                className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-medium"
+              />
+            </div>
+          </div>
+
+          {/* Quick Presets */}
+          <div>
+            <label className="block text-[11px] font-bold text-slate-400 mb-1.5">Quick Viral Presets:</label>
+            <div className="flex flex-wrap gap-1.5">
+              {presets.map((p) => (
+                <button
+                  key={p.title}
+                  type="button"
+                  onClick={() => {
+                    setFormat(p.format);
+                    setTopic(p.topic);
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/5 text-[11px] text-slate-300 hover:text-white transition cursor-pointer"
+                >
+                  {p.title}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <button
+            type="button"
             onClick={handleGenerate}
-            disabled={loading || !topic.trim()}
-            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-pink-500 via-brand-500 to-accent-500 text-white font-extrabold text-xs shadow-lg shadow-pink-500/25 flex items-center justify-center gap-2 hover:opacity-95 transition disabled:opacity-50"
+            disabled={loading}
+            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-pink-500/25 transition flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer disabled:opacity-50"
           >
-            {loading ? (
-              <>
-                <RefreshCw className="w-4 h-4 animate-spin" /> Synthesizing Content with AI...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4" /> Generate Copy with AI Engine
-              </>
-            )}
+            {loading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PenTool className="w-4 h-4" />}
+            <span>{loading ? 'Synthesizing with AI...' : 'Generate High-Converting Copy'}</span>
           </button>
         </div>
 
-        {/* Right Output Canvas (7 cols) */}
-        <div className="lg:col-span-7 glass p-6 sm:p-8 rounded-3xl border border-white/10 flex flex-col justify-between min-h-[520px]">
-          <div>
-            <div className="flex items-center justify-between border-b border-white/5 pb-3 mb-4">
-              <div className="flex items-center gap-4 text-xs font-semibold text-slate-400">
-                <span className="flex items-center gap-1.5 text-slate-200">
-                  <PenTool className="w-3.5 h-3.5 text-pink-400" />
-                  <span>Output Workspace</span>
-                </span>
-                <span className="flex items-center gap-1"><AlignLeft className="w-3 h-3" /> {wordCount} words</span>
-                <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> {readingTime}m read</span>
-              </div>
-
-              {output && (
-                <div className="flex items-center gap-2">
-                  <button 
-                    onClick={handleGenerate}
-                    disabled={loading}
-                    className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-slate-300 flex items-center gap-1 transition"
-                    title="Regenerate another angle"
-                  >
-                    <RefreshCw className={`w-3 h-3 ${loading ? 'animate-spin' : ''}`} />
-                    <span className="hidden sm:inline">Regenerate</span>
-                  </button>
-                  <button 
-                    onClick={handleCopy}
-                    className="px-3.5 py-1.5 rounded-lg bg-brand-500/20 hover:bg-brand-500/30 border border-brand-500/30 text-xs text-brand-300 flex items-center gap-1.5 transition font-bold"
-                  >
-                    {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                    <span>{copied ? 'Copied!' : 'Copy Copy'}</span>
-                  </button>
-                </div>
-              )}
+        {/* Right Output: Results (7 cols) */}
+        <div className="lg:col-span-7 glass p-6 sm:p-8 rounded-3xl border border-white/10 space-y-4">
+          <div className="flex items-center justify-between border-b border-white/5 pb-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-white">
+              <FileText className="w-4 h-4 text-pink-400" />
+              <span>Generated Content Output</span>
             </div>
 
-            {output ? (
-              <div className="p-4 rounded-2xl bg-black/40 border border-white/5 max-h-[600px] overflow-y-auto">
-                <pre className="text-xs font-sans text-slate-200 whitespace-pre-wrap leading-relaxed">
-                  {output}
-                </pre>
-              </div>
-            ) : (
-              <div className="flex flex-col items-center justify-center py-28 text-center text-slate-500 space-y-3">
-                <Sparkles className="w-8 h-8 opacity-40 text-pink-400" />
-                <p className="text-xs max-w-sm">
-                  Type your topic (e.g. <span className="text-pink-400 font-medium">"how to make ai videos"</span>), select your deliverable format, and click <span className="text-white font-semibold">"Generate Copy with AI Engine"</span>.
-                </p>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] text-slate-400 font-mono">
+                {wordCount} words &bull; ~{readingTime} min read
+              </span>
+              {output && (
                 <button
-                  onClick={handleGenerate}
-                  className="mt-2 px-4 py-2 rounded-xl bg-pink-500/10 hover:bg-pink-500/20 border border-pink-500/30 text-xs text-pink-300 font-semibold transition"
+                  type="button"
+                  onClick={handleCopy}
+                  className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/15 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
                 >
-                  ⚡ Click to generate "{topic}" now
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  <span>{copied ? 'Copied!' : 'Copy'}</span>
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
-          <div className="pt-4 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
-            <span className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Dynamic Generative Model Active
-            </span>
-            <span>OmniStack AI Engine v3.5 (Gemini 2.5 Pro)</span>
-          </div>
+          {output ? (
+            <div className="p-5 rounded-2xl bg-black/40 border border-white/10 text-xs text-slate-200 leading-relaxed font-sans whitespace-pre-wrap select-all max-h-[500px] overflow-y-auto">
+              {output}
+            </div>
+          ) : (
+            <div className="py-24 text-center space-y-2 text-slate-500">
+              <Sparkles className="w-8 h-8 mx-auto text-slate-600" />
+              <div className="text-xs font-bold text-slate-400">Ready to synthesize content</div>
+              <div className="text-[11px]">Click "Generate High-Converting Copy" on the left to start.</div>
+            </div>
+          )}
         </div>
       </div>
+
       {/* Reusable Pro Upgrade Modal */}
       <ProUpgradeModal 
         isOpen={showProModal}
         onClose={() => setShowProModal(false)}
-        toolName="AI Content & Video Scripting Suite"
+        toolName="AI Content Generator Studio"
         featureName={proFeature}
       />
     </div>
