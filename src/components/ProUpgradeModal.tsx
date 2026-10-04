@@ -257,7 +257,7 @@ export default function ProUpgradeModal({
               className="w-full sm:w-auto py-3.5 px-5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs text-center transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
             >
               <Crown className="w-3.5 h-3.5 text-amber-300" />
-              <span>All Payment Options (Cards / PayPal)</span>
+              <span>More Payment Options (Cards / UPI)</span>
             </Link>
           </div>
 

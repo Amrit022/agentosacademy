@@ -107,8 +107,8 @@ export default function PricingPage() {
       period: '/month',
       badge: 'Most Popular',
       popular: true,
-      ctaText: 'Upgrade with PayPal / Card',
-      ctaHref: '#paypal',
+      ctaText: 'More Payment Options (Cards / UPI)',
+      ctaHref: '#card',
       features: [
         'All 6 Micro-SaaS Tools Unlocked',
         'Unlimited AI Content & Copy Generation',
@@ -130,8 +130,8 @@ export default function PricingPage() {
       period: '/month',
       badge: 'Power Agency',
       popular: false,
-      ctaText: 'Start Agency Plan with PayPal',
-      ctaHref: '#paypal-agency',
+      ctaText: 'More Payment Options (Cards / UPI)',
+      ctaHref: '#card-agency',
       features: [
         'Everything in Pro Tier Included',
         'Unlimited Client Workspaces & Sub-Accounts',
@@ -371,7 +371,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
           <span className="text-gradient">All 6 Micro-SaaS Engines.</span>
         </h1>
         <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
-          Pay with PayPal or any global credit/debit card. Zero paperwork, zero hidden platform fees.
+          Instant 1-click registration & checkout with Apple Pay, Google Pay, or any international card. Zero paperwork, zero hidden fees.
         </p>
 
         {/* Monthly / Annual Toggle */}
@@ -455,44 +455,38 @@ Merchant Entity    : OmniStack AI Technologies Inc.
             <div className="mt-8 space-y-2.5">
               {p.ctaHref.startsWith('#') ? (
                 <>
-                  <button
-                    onClick={() => handleOpenCheckout(p)}
-                    className={`w-full py-3.5 rounded-2xl font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg cursor-pointer ${
-                      p.popular
-                        ? 'bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white shadow-brand-500/25 hover:opacity-90'
-                        : 'glass hover:bg-white/10 text-white border border-white/10'
-                    }`}
-                  >
-                    <CreditCard className="w-4 h-4" />
-                    <span>{p.ctaText}</span>
-                  </button>
-
-                  {/* 1-Click Fast Dodo Payments Button */}
+                  {/* Primary 1-Click Fast Register & Checkout Button */}
                   {(() => {
                     const tier = p.name.includes('Agency') ? 'agency' : 'pro';
                     const dodoUrl = getDodoCheckoutUrl(tier, annual);
                     const amount = annual ? p.annualPriceNum : p.priceNum;
 
-                    return dodoUrl ? (
+                    return (
                       <a
                         href={dodoUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-2.5 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 font-bold text-[11px] transition flex items-center justify-center gap-1.5 cursor-pointer text-center group"
+                        className={`w-full py-3.5 sm:py-4 rounded-2xl font-black text-xs sm:text-sm transition flex items-center justify-center gap-2 shadow-xl cursor-pointer text-center active:scale-98 ${
+                          p.popular
+                            ? 'bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white shadow-brand-500/30 hover:opacity-95'
+                            : 'bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-600 text-white shadow-cyan-500/25 hover:opacity-95'
+                        }`}
                       >
-                        <span>🦤 Instant 1-Click Pay (${amount}.00 USD)</span>
-                        <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition" />
+                        <Zap className="w-4 h-4 fill-current" />
+                        <span>Click to Register & Upgrade (${amount}.00 USD) ↗</span>
                       </a>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => handleOpenCheckout(p)}
-                        className="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-bold text-[11px] transition flex items-center justify-center gap-1.5 cursor-pointer text-center"
-                      >
-                        <span>🦤 Instant Pay with Dodo (${amount}.00 USD)</span>
-                      </button>
                     );
                   })()}
+
+                  {/* Secondary: More Payment Options */}
+                  <button
+                    type="button"
+                    onClick={() => handleOpenCheckout(p)}
+                    className="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10 font-bold text-[11px] transition flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                  >
+                    <CreditCard className="w-3.5 h-3.5" />
+                    <span>{p.ctaText}</span>
+                  </button>
                 </>
               ) : (
                 <Link
@@ -945,15 +939,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                           <span>Authorize & Pay ${getChargeAmount()}.00 USD with Card</span>
                         </button>
 
-                        <a
-                          href={getPaypalMeUrl()}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-medium text-[11px] transition flex items-center justify-center gap-1.5 text-center border border-white/5"
-                        >
-                          <CreditCard className="w-3.5 h-3.5 text-cyan-400" />
-                          <span>Alternative: Pay with Card on PayPal Hosted Portal ↗</span>
-                        </a>
+                        
                       </div>
                     )}
                   </form>
