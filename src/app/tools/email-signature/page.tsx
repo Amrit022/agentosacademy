@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import ProUpgradeModal from '@/components/ProUpgradeModal';
 import { 
-  Mail, 
+  Mail,
+  Lock,
+  Crown, 
   Copy, 
   Check, 
   Sparkles, 
@@ -79,6 +82,9 @@ export default function EmailSignaturePage() {
   const [themeColor, setThemeColor] = useState(SAMPLE_PROFILES[0].themeColor);
   const [calendarUrl, setCalendarUrl] = useState(SAMPLE_PROFILES[0].calendarUrl);
   const [copied, setCopied] = useState(false);
+  const [showProModal, setShowProModal] = useState(false);
+  const [proFeature, setProFeature] = useState('');
+  const [includeCalendar, setIncludeCalendar] = useState(false);
 
   const colors = [
     { label: 'Indigo', value: '#6366f1' },
@@ -137,7 +143,7 @@ export default function EmailSignaturePage() {
         <span style="color: #64748b; font-size: 11px;">🌐</span>
         <a href="https://${website}" target="_blank" style="color: ${themeColor}; text-decoration: none; font-weight: 700; margin-left: 4px;">${website}</a>
       </div>` : ''}
-      ${calendarUrl ? `
+      ${includeCalendar && calendarUrl ? `
       <div>
         <a href="${calendarUrl}" target="_blank" style="display: inline-block; background-color: ${themeColor}; color: #ffffff; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; text-decoration: none; letter-spacing: 0.3px;">
           📅 Book a 15-Min Meeting
@@ -389,6 +395,13 @@ export default function EmailSignaturePage() {
           </div>
         </div>
       </div>
+      {/* Reusable Pro Upgrade Modal */}
+      <ProUpgradeModal 
+        isOpen={showProModal}
+        onClose={() => setShowProModal(false)}
+        toolName="HTML Email Signature Studio"
+        featureName={proFeature}
+      />
     </div>
   );
 }

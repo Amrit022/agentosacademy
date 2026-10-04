@@ -434,29 +434,29 @@ Here is the exact end-to-end stack used by solo creators to produce cinematic, h
   }
 
   // 5. Topic: Freelance & USD Earnings
-  if (lowerQ.includes('earn') || lowerQ.includes('money') || lowerQ.includes('freelance') || lowerQ.includes('client') || lowerQ.includes('dollar') || lowerQ.includes('usd') || lowerQ.includes('india')) {
+  if (lowerQ.includes('earn') || lowerQ.includes('money') || lowerQ.includes('freelance') || lowerQ.includes('client') || lowerQ.includes('dollar') || lowerQ.includes('usd') || lowerQ.includes('remote')) {
     return {
-      answer: `### 🚀 How to Earn $3,000–$5,000/Month from India in Global USD
+      answer: `### 🚀 How to Earn $3,000–$5,000/Month Serving Global Remote Clients
 
-The key to high earnings is **Currency Arbitrage**: charging in USD ($) while spending in INR (₹).
+The key to high earnings is **Specialized Digital Deliverables**: packaging high-ticket outcomes (landing pages, ATS resumes, content systems) for international businesses.
 
 #### The 4-Step Roadmap:
 1. **Position as a Specialist, Not a Generic Freelancer**
-   - Don't say "I am a web developer." Say: *"I build high-converting Next.js landing pages with integrated analytics and email collection for US B2B startups."*
+   - Don't say "I am a web developer." Say: *"I build high-converting Next.js landing pages with integrated analytics and email collection for B2B tech startups."*
    
 2. **Build an ATS-Optimized Portfolio & Resume**
-   - US recruiters and remote agencies use ATS (Applicant Tracking Systems) that reject 75% of non-standard resumes.
-   - Use our Harvard Classic or Modern Tech layout with high-impact action verbs.
+   - Modern recruiters and remote companies use ATS (Applicant Tracking Systems) that reject 75% of non-standard resumes.
+   - Use our Harvard Classic, Modern Tech, or Executive layouts with high-impact action verbs.
 
 3. **Share Social Proof with a Branded Bio Link Page**
-   - Replace messy PDF portfolios with a clean, branded Bio Link page showcasing your best projects, live links, and booking calendar.
+   - Replace messy attachments with a clean, branded Bio Link page showcasing your verified work, live demos, and booking calendar.
 
 4. **Frictionless International Payments**
-   - Use **PayPal / PayPal.me** or **Lemon Squeezy** to collect USD without needing complex US incorporation or tedious banking paperwork.`,
+   - Use **PayPal / PayPal.me** or **Lemon Squeezy** to collect USD and EUR without needing complex overseas incorporation or tedious banking paperwork.`,
       suggestedFollowUps: [
         'How do I write a high-converting cold email for US clients?',
         'How do I test my ATS resume score?',
-        'How does PayPal work for receiving USD in India?'
+        'How do international payments work with PayPal and Stripe?'
       ],
       relevantTool: {
         name: 'AI Resume & Cover Letter Builder',
@@ -603,7 +603,7 @@ Assemble in CapCut Desktop or DaVinci Resolve:
 • Emphasize key punchlines with kinetic typography.
 
 💡 The Global Opportunity:
-US and European companies are scrambling to produce short-form video for TikTok, LinkedIn, and Instagram. An Indian creator or developer mastering this stack can easily charge $500 - $2,500 per marketing campaign.
+US and European companies are scrambling to produce short-form video for TikTok, LinkedIn, and Instagram. A skilled creator or developer mastering this stack can easily charge $500 - $2,500 per marketing campaign.
 
 Are you incorporating AI video into your marketing stack yet?
 

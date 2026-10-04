@@ -47,7 +47,7 @@ export default function AiAssistantModal() {
         'Write a Python script to scrape website headlines',
         'How to make AI videos with Runway and ElevenLabs?',
         'Solve math: 45 * 24 + 150',
-        'How can I earn $5,000/month freelancing from India in USD?'
+        'How can I scale to $5,000/month freelancing for global remote clients?'
       ]
     }
   ]);
@@ -56,15 +56,16 @@ export default function AiAssistantModal() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const savedKey = localStorage.getItem('agentos_gemini_key') || '';
+    const savedKey = localStorage.getItem('omnistack_gemini_key') || localStorage.getItem('agentos_gemini_key') || '';
     if (savedKey) setApiKey(savedKey);
   }, []);
 
   const handleSaveKey = (key: string) => {
     setApiKey(key);
     if (key.trim()) {
-      localStorage.setItem('agentos_gemini_key', key.trim());
+      localStorage.setItem('omnistack_gemini_key', key.trim());
     } else {
+      localStorage.removeItem('omnistack_gemini_key');
       localStorage.removeItem('agentos_gemini_key');
     }
   };

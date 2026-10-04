@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import ProUpgradeModal from '@/components/ProUpgradeModal';
 import { 
-  Star, 
+  Star,
+  Lock,
+  Crown, 
   MessageSquareQuote, 
   Copy, 
   Check, 
@@ -22,7 +25,7 @@ export default function TestimonialsPage() {
       id: '1',
       name: 'Sarah Jenkins',
       role: 'Growth Lead, SaaSForge (San Francisco, USA)',
-      text: 'AgentOS Academy replaced 3 separate tools for our team. The ATS resume builder alone helped our candidates score interview invitations at Stripe, Linear, and Vercel.',
+      text: 'OmniStack AI replaced 3 separate tools for our team. The ATS resume builder alone helped our candidates score interview invitations at Stripe, Linear, and Vercel.',
       stars: 5,
       date: '2 days ago',
       verified: true,
@@ -31,7 +34,7 @@ export default function TestimonialsPage() {
     {
       id: '2',
       name: 'Rohan Sharma',
-      role: 'Freelance Cloud Engineer (Bengaluru, India)',
+      role: 'Senior Cloud Consultant (Toronto, Canada)',
       text: 'Using the Bio Link and Email Signature tools gave my consulting practice an instant executive finish. Closed two overseas contracts worth $3,800 this month.',
       stars: 5,
       date: '1 week ago',
@@ -64,14 +67,21 @@ export default function TestimonialsPage() {
   const [authorRole, setAuthorRole] = useState('');
   const [reviewText, setReviewText] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showProModal, setShowProModal] = useState(false);
+  const [proFeature, setProFeature] = useState('');
   const [selectedStars, setSelectedStars] = useState(5);
   const [widgetTheme, setWidgetTheme] = useState<'dark' | 'light' | 'glass'>('dark');
 
-  const embedScript = `<script src="https://agentosacademy.com/api/widget.js" data-project="agentos" data-theme="${widgetTheme}" defer></script>\n<div id="agentos-testimonials"></div>`;
+  const embedScript = `<script src="https://omnistack.ai/api/widget.js" data-project="omnistack" data-theme="${widgetTheme}" defer></script>\n<div id="omnistack-testimonials"></div>`;
 
   const handleAddReview = (e: React.FormEvent) => {
     e.preventDefault();
     if (!authorName || !reviewText) return;
+    if (reviews.length >= 4) {
+      setProFeature('Unlimited Client Testimonials & Review Moderation');
+      setShowProModal(true);
+      return;
+    }
     setReviews([
       {
         id: Date.now().toString(),
@@ -91,9 +101,8 @@ export default function TestimonialsPage() {
   };
 
   const copyEmbed = () => {
-    navigator.clipboard.writeText(embedScript);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setProFeature('External Web Widget Embed Script (WordPress / Webflow / Shopify)');
+    setShowProModal(true);
   };
 
   return (
@@ -256,6 +265,13 @@ export default function TestimonialsPage() {
           </div>
         </div>
       </div>
+      {/* Reusable Pro Upgrade Modal */}
+      <ProUpgradeModal 
+        isOpen={showProModal}
+        onClose={() => setShowProModal(false)}
+        toolName="Client Testimonials & Wall of Love"
+        featureName={proFeature}
+      />
     </div>
   );
 }

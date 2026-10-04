@@ -32,7 +32,7 @@ export default function HomePage() {
   const [pricePerProject, setPricePerProject] = useState(40);
 
   const monthlyUsd = clientsCount * pricePerProject;
-  const monthlyInr = monthlyUsd * 86; // approximate exchange rate in INR
+  const annualUsd = monthlyUsd * 12;
 
   const tools = [
     {
@@ -137,8 +137,8 @@ export default function HomePage() {
         </div>
 
         <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.12] max-w-5xl mx-auto">
-          Start in India. <br />
-          <span className="text-gradient">Monetize & Scale Globally.</span>
+          Build Faster. <br />
+          <span className="text-gradient">Scale Globally. Monetize Smarter.</span>
         </h1>
 
         <p className="mt-7 text-base sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal">
@@ -266,16 +266,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Global Earning Calculator (India to World) */}
+      {/* Global SaaS Revenue Simulator */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="glass rounded-3xl p-8 sm:p-14 border border-white/10 bg-gradient-to-br from-[#0c1224] via-[#090e1c] to-[#120e28] shadow-2xl">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="text-xs font-bold uppercase tracking-wider text-accent-400 flex items-center justify-center gap-1.5">
-              <Calculator className="w-4 h-4" /> Global Currency Arbitrage
+              <Calculator className="w-4 h-4" /> Global Monetization Model
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mt-2">Freelance Revenue Simulator</h2>
+            <h2 className="text-3xl sm:text-4xl font-black text-white mt-2">Digital Revenue Simulator</h2>
             <p className="text-xs sm:text-sm text-slate-400 mt-2">
-              Calculate how much you can make from India by selling these outputs to overseas clients.
+              Calculate your projected revenue by packaging and delivering automated digital deliverables to global clients.
             </p>
           </div>
 
@@ -324,32 +324,32 @@ export default function HomePage() {
               </div>
 
               <div className="p-4 rounded-2xl bg-white/5 border border-white/5 text-xs text-slate-400 space-y-1">
-                <div className="font-bold text-slate-200">How to deliver this:</div>
-                <div>Use OmniStack AI to produce the deliverables in minutes, and charge foreign clients on Upwork, Fiverr, or PayPal.</div>
+                <div className="font-bold text-slate-200">How to monetize this:</div>
+                <div>Use OmniStack AI to generate polished client assets in minutes, and bill international clients via Stripe, PayPal, or Wise.</div>
               </div>
             </div>
 
             {/* Calculations Card */}
             <div className="glass p-8 sm:p-10 rounded-3xl border border-white/10 bg-[#080c16] text-center space-y-6">
-              <span className="text-xs uppercase font-bold text-slate-400 tracking-wider">Estimated Monthly Income</span>
+              <span className="text-xs uppercase font-bold text-slate-400 tracking-wider">Estimated Monthly Run-Rate</span>
 
               <div>
                 <div className="text-4xl sm:text-6xl font-black text-white tracking-tight">
                   ${monthlyUsd.toLocaleString()} <span className="text-lg font-bold text-slate-400">USD</span>
                 </div>
                 <div className="text-xl sm:text-2xl font-bold text-emerald-400 mt-2">
-                  ≈ ₹{monthlyInr.toLocaleString('en-IN')} INR / month
+                  ${annualUsd.toLocaleString()} USD / year ARR
                 </div>
               </div>
 
               <div className="pt-6 border-t border-white/5 grid grid-cols-2 gap-4 text-left">
                 <div className="p-3 rounded-xl bg-white/5">
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">Annual USD</div>
-                  <div className="text-base font-bold text-white">${(monthlyUsd * 12).toLocaleString()}</div>
+                  <div className="text-[10px] text-slate-400 uppercase font-bold">Estimated Time Saved</div>
+                  <div className="text-base font-bold text-white">~{clientsCount * 6} hrs/mo</div>
                 </div>
                 <div className="p-3 rounded-xl bg-white/5">
-                  <div className="text-[10px] text-slate-400 uppercase font-bold">Annual INR</div>
-                  <div className="text-base font-bold text-emerald-300">₹{((monthlyInr * 12) / 100000).toFixed(1)} Lakhs</div>
+                  <div className="text-[10px] text-slate-400 uppercase font-bold">Gross Margin</div>
+                  <div className="text-base font-bold text-emerald-300">96.8% Profit</div>
                 </div>
               </div>
 
@@ -357,7 +357,7 @@ export default function HomePage() {
                 href="/tools/resume-builder"
                 className="block w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-500 to-accent-500 text-white font-bold text-xs shadow-lg shadow-brand-500/25 hover:opacity-90 transition"
               >
-                Start Generating Projects Now
+                Start Generating Deliverables Now
               </Link>
             </div>
           </div>
@@ -394,7 +394,7 @@ export default function HomePage() {
                 ))}
                 <tr className="bg-white/[0.04] font-black text-sm">
                   <td className="p-4 sm:p-5 text-white">TOTAL MONTHLY COST</td>
-                  <td className="p-4 sm:p-5 text-rose-400">$196 / month (~₹16,800)</td>
+                  <td className="p-4 sm:p-5 text-rose-400">$196 / month ($2,352/yr)</td>
                   <td className="p-4 sm:p-5 text-emerald-400 text-base">$0 Free / $9 Pro</td>
                 </tr>
               </tbody>

@@ -1,8 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import ProUpgradeModal from '@/components/ProUpgradeModal';
 import { 
-  PenTool, 
+  PenTool,
+  Lock,
+  Crown, 
   Sparkles, 
   Copy, 
   Check, 
@@ -28,10 +31,12 @@ export default function ContentWriterPage() {
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [variantCount, setVariantCount] = useState(0);
+  const [showProModal, setShowProModal] = useState(false);
+  const [proFeature, setProFeature] = useState('');
 
   const presets = [
     { title: '🎥 AI Video Masterclass', format: 'Twitter / X Thought Leadership Thread', topic: 'How to make AI videos with Runway Gen-3, ElevenLabs, and Midjourney' },
-    { title: '🚀 Micro-SaaS Playbook', format: 'Viral LinkedIn Carousel/Post', topic: 'How to build and launch a $5k/month Micro-SaaS tool with zero budget from India' },
+    { title: '🚀 Micro-SaaS Playbook', format: 'Viral LinkedIn Carousel/Post', topic: 'How to build and launch a $5k/month Micro-SaaS tool with zero upfront budget' },
     { title: '📩 High-Ticket Cold Email', format: 'High-Converting Cold Outreach Email', topic: 'Pitching automated AI workflows and web development retainers to US tech agencies' },
     { title: '🎬 YouTube Reel Script', format: 'YouTube / Short-Form Video Script & Storyboard', topic: 'The step-by-step secret to creating faceless viral AI videos in 2026' },
     { title: '📝 Comprehensive SEO Guide', format: 'Comprehensive SEO Blog Post', topic: 'Top 7 AI automation tools every remote business needs to scale in 2026' },
@@ -39,7 +44,7 @@ export default function ContentWriterPage() {
 
   const randomTopics = [
     'How to make viral AI videos for YouTube Shorts and TikTok',
-    'How freelancers in India can earn $4,000/month in USD from US clients',
+    'How modern freelancers scale to $5,000/month serving international remote clients',
     'Why the next generation of profitable SaaS apps will be built by 1-person teams',
     'Step-by-step guide to building an ATS-friendly tech resume that gets interviews',
     'How to generate passive income selling automated Notion templates and micro-tools',
@@ -54,6 +59,12 @@ export default function ContentWriterPage() {
   const readingTime = Math.ceil(wordCount / 200) || 1;
 
   const handleGenerate = () => {
+    const isProFormat = format.includes('YouTube') || format.includes('Cold') || format.includes('SEO');
+    if (isProFormat) {
+      setProFeature(`${format} (Pro Deliverable Engine)`);
+      setShowProModal(true);
+      return;
+    }
     setLoading(true);
     // Simulate real AI synthesis stream delay
     setTimeout(() => {
@@ -149,11 +160,11 @@ export default function ContentWriterPage() {
                 onChange={(e) => setFormat(e.target.value)}
                 className="w-full px-3 py-2.5 rounded-xl bg-[#090d18] border border-white/10 text-white text-xs outline-none focus:border-pink-500 font-medium"
               >
-                <option>Twitter / X Thought Leadership Thread</option>
-                <option>Viral LinkedIn Carousel/Post</option>
-                <option>YouTube / Short-Form Video Script & Storyboard</option>
-                <option>High-Converting Cold Outreach Email</option>
-                <option>Comprehensive SEO Blog Post</option>
+                <option>Twitter / X Thought Leadership Thread (Free)</option>
+                <option>Viral LinkedIn Carousel/Post (Free)</option>
+                <option>YouTube / Short-Form Video Script & Storyboard (🔒 Pro)</option>
+                <option>High-Converting Cold Outreach Email (🔒 Pro)</option>
+                <option>Comprehensive SEO Blog Post (🔒 Pro)</option>
               </select>
             </div>
 
@@ -261,10 +272,17 @@ export default function ContentWriterPage() {
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               Dynamic Generative Model Active
             </span>
-            <span>AgentOS Engine v2</span>
+            <span>OmniStack AI Engine v3.5 (Gemini 2.5 Pro)</span>
           </div>
         </div>
       </div>
+      {/* Reusable Pro Upgrade Modal */}
+      <ProUpgradeModal 
+        isOpen={showProModal}
+        onClose={() => setShowProModal(false)}
+        toolName="AI Content & Video Scripting Suite"
+        featureName={proFeature}
+      />
     </div>
   );
 }

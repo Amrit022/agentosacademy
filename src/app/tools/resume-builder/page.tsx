@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import { 
   Sparkles,
   Lock, 
@@ -20,7 +21,13 @@ import {
   Crown,
   X,
   ShieldCheck,
-  CheckCircle2
+  CheckCircle2,
+  Terminal,
+  TrendingUp,
+  Code2,
+  Layers,
+  Compass,
+  Loader2
 } from 'lucide-react';
 
 const RANDOM_PROFILES = [
@@ -98,8 +105,8 @@ const RANDOM_PROFILES = [
     name: 'Priya Sharma',
     title: 'Growth Marketing Director & Acquisition Specialist',
     email: 'priya.sharma.growth@gmail.com',
-    phone: '+91 98112 34567',
-    location: 'Bengaluru, India (Global Remote)',
+    phone: '+44 20 7946 0912',
+    location: 'London, UK (Remote Worldwide)',
     linkedin: 'linkedin.com/in/priya-growth-marketer',
     github: 'priyasharma.marketing',
     summary: 'Performance marketing and organic growth leader with 7 years scaling B2B SaaS ARR from $500k to $6M+. Expert in Google Ads, LinkedIn outbound automation, programmatic SEO, and data-driven customer lifecycle retention.',
@@ -109,7 +116,7 @@ const RANDOM_PROFILES = [
         role: 'Head of Growth Marketing',
         company: 'RevEngine B2B',
         period: '2023 - Present',
-        location: 'Bengaluru / Remote',
+        location: 'London / Remote',
         points: '• Scaled pipeline revenue from $1.2M to $4.8M ARR while reducing customer acquisition cost (CAC) by 31%.\n• Built programmatic SEO cluster producing 120,000 organic monthly search visits and 1,400 monthly inbound demos.\n• Managed $80,000 monthly paid search budget across North American and European enterprise buyer personas.'
       },
       {
@@ -122,20 +129,23 @@ const RANDOM_PROFILES = [
     ],
     education: [
       {
-        degree: 'MBA in Marketing & Analytics',
-        institution: 'Indian Institute of Management (IIM)',
+        degree: 'M.Sc. in Marketing & Data Analytics',
+        institution: 'London School of Economics (LSE)',
         period: '2018 - 2020',
-        gpa: 'Top 5% Merit'
+        gpa: 'First Class Honours'
       }
     ]
   }
 ];
 
+export type ResumeTemplate = 'modern' | 'harvard' | 'minimal' | 'executive' | 'creative' | 'techlead' | 'finance' | 'nordic';
+
 export default function ResumeBuilderPage() {
   const [activeTab, setActiveTab] = useState<'resume' | 'cover-letter'>('resume');
-  const [template, setTemplate] = useState<'harvard' | 'modern' | 'minimal' | 'executive' | 'creative'>('modern');
+  const [template, setTemplate] = useState<ResumeTemplate>('modern');
   const [showProInfo, setShowProInfo] = useState(false);
-  const isProTemplate = template === 'executive' || template === 'creative';
+  const [isExporting, setIsExporting] = useState(false);
+  const isProTemplate = template === 'executive' || template === 'creative' || template === 'techlead' || template === 'finance' || template === 'nordic';
 
   // Candidate State
   const [profileIndex, setProfileIndex] = useState(0);
@@ -206,385 +216,55 @@ export default function ResumeBuilderPage() {
 
   const atsScore = calculateAtsScore();
 
-    const handleDownloadPdf = () => {
+    const handleDownloadPdf = async () => {
     if (isProTemplate) {
       setShowProInfo(true);
       return;
     }
 
+    const canvasElem = document.getElementById('resume-canvas-printable');
+    if (!canvasElem) return;
+
     try {
+      setIsExporting(true);
+      const canvas = await html2canvas(canvasElem, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff'
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.98);
       const doc = new jsPDF({
         orientation: 'p',
         unit: 'mm',
         format: 'a4'
       });
 
-      const fileName = `${(name || 'Professional').replace(/\s+/g, '_')}_${template.toUpperCase()}_Resume.pdf`;
+      const pdfWidth = 210;
+      const pdfHeight = 297;
+      const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
-      if (template === 'harvard') {
-        // -------------------------------------------------------------
-        // STYLE B: HARVARD CLASSIC (Traditional Academic Centered Serif)
-        // -------------------------------------------------------------
-        let y = 20;
-        doc.setFont('times', 'bold');
-        doc.setFontSize(18);
-        doc.setTextColor(15, 23, 42);
-        doc.text((name || 'Your Full Name').toUpperCase(), 105, y, { align: 'center' });
+      let heightLeft = imgHeight;
+      let position = 0;
 
-        y += 5.5;
-        doc.setFont('times', 'normal');
-        doc.setFontSize(10.5);
-        doc.setTextColor(51, 65, 85);
-        doc.text((title || 'Professional Title').toUpperCase(), 105, y, { align: 'center' });
+      doc.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
+      heightLeft -= pdfHeight;
 
-        y += 5;
-        doc.setFontSize(9);
-        doc.setTextColor(100, 116, 139);
-        const contactParts = [email, phone, location, linkedin, github].filter(Boolean);
-        doc.text(contactParts.join('   •   '), 105, y, { align: 'center' });
-
-        y += 3.5;
-        doc.setDrawColor(15, 23, 42);
-        doc.setLineWidth(0.6);
-        doc.line(15, y, 195, y);
-
-        const addHarvardSection = (titleText: string) => {
-          y += 6.5;
-          doc.setFont('times', 'bold');
-          doc.setFontSize(10.5);
-          doc.setTextColor(15, 23, 42);
-          doc.text(titleText.toUpperCase(), 15, y);
-          y += 1.5;
-          doc.setDrawColor(203, 213, 225);
-          doc.setLineWidth(0.3);
-          doc.line(15, y, 195, y);
-          y += 4;
-        };
-
-        if (summary) {
-          addHarvardSection('Professional Summary');
-          doc.setFont('times', 'normal');
-          doc.setFontSize(9.5);
-          doc.setTextColor(30, 41, 59);
-          const splitSummary = doc.splitTextToSize(summary, 180);
-          doc.text(splitSummary, 15, y);
-          y += splitSummary.length * 4.3 + 2;
-        }
-
-        if (skills) {
-          addHarvardSection('Areas of Expertise');
-          doc.setFont('times', 'normal');
-          doc.setFontSize(9.5);
-          doc.setTextColor(30, 41, 59);
-          const splitSkills = doc.splitTextToSize(skills, 180);
-          doc.text(splitSkills, 15, y);
-          y += splitSkills.length * 4.3 + 2;
-        }
-
-        if (experiences.length > 0) {
-          addHarvardSection('Professional Experience');
-          experiences.forEach((exp) => {
-            if (y > 255) { doc.addPage(); y = 18; }
-            doc.setFont('times', 'bold');
-            doc.setFontSize(10);
-            doc.setTextColor(15, 23, 42);
-            doc.text(exp.role, 15, y);
-
-            doc.setFont('times', 'italic');
-            doc.setFontSize(9);
-            doc.setTextColor(100, 116, 139);
-            doc.text(exp.period, 195, y, { align: 'right' });
-
-            y += 4.5;
-            doc.setFont('times', 'normal');
-            doc.setTextColor(51, 65, 85);
-            doc.text(`${exp.company} — ${exp.location}`, 15, y);
-
-            y += 4;
-            doc.setFont('times', 'normal');
-            doc.setFontSize(9);
-            doc.setTextColor(51, 65, 85);
-            const splitPoints = doc.splitTextToSize(exp.points, 180);
-            doc.text(splitPoints, 15, y);
-            y += splitPoints.length * 4 + 3.5;
-          });
-        }
-
-        if (education.length > 0) {
-          if (y > 250) { doc.addPage(); y = 18; }
-          addHarvardSection('Education');
-          education.forEach((edu) => {
-            doc.setFont('times', 'bold');
-            doc.setFontSize(9.5);
-            doc.setTextColor(15, 23, 42);
-            doc.text(`${edu.institution} — ${edu.degree}`, 15, y);
-
-            doc.setFont('times', 'italic');
-            doc.setFontSize(9);
-            doc.setTextColor(100, 116, 139);
-            doc.text(edu.period, 195, y, { align: 'right' });
-            y += 6;
-          });
-        }
-
-      } else if (template === 'minimal') {
-        // -------------------------------------------------------------
-        // STYLE C: MINIMAL CLEAN (Two-Column Sidebar Layout in PDF)
-        // -------------------------------------------------------------
-        let yLeft = 18;
-        let yRight = 18;
-
-        // Vertical divider
-        doc.setDrawColor(226, 232, 240);
-        doc.setLineWidth(0.4);
-        doc.line(70, 15, 70, 280);
-
-        // LEFT COLUMN: (x = 15, width = 52)
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(13);
-        doc.setTextColor(15, 23, 42);
-        const splitName = doc.splitTextToSize(name || 'Your Name', 52);
-        doc.text(splitName, 15, yLeft);
-        yLeft += splitName.length * 5 + 1;
-
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(8.5);
-        doc.setTextColor(100, 116, 139);
-        const splitTitle = doc.splitTextToSize((title || 'Professional Title').toUpperCase(), 52);
-        doc.text(splitTitle, 15, yLeft);
-        yLeft += splitTitle.length * 4 + 4;
-
-        doc.setDrawColor(203, 213, 225);
-        doc.line(15, yLeft, 67, yLeft);
-        yLeft += 5;
-
-        // Contact
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(15, 23, 42);
-        doc.text('CONTACT', 15, yLeft);
-        yLeft += 4;
-
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7.5);
-        doc.setTextColor(71, 85, 105);
-        const contactItems = [email, phone, location, linkedin, github].filter(Boolean);
-        contactItems.forEach((c) => {
-          const splitContact = doc.splitTextToSize(c, 52);
-          doc.text(splitContact, 15, yLeft);
-          yLeft += splitContact.length * 3.5 + 1;
-        });
-        yLeft += 4;
-
-        // Skills
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(15, 23, 42);
-        doc.text('KEY SKILLS', 15, yLeft);
-        yLeft += 4;
-
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(7.5);
-        doc.setTextColor(51, 65, 85);
-        skills.split(',').forEach((s) => {
-          if (s.trim()) {
-            doc.text(`• ${s.trim()}`, 15, yLeft);
-            yLeft += 3.8;
-          }
-        });
-        yLeft += 4;
-
-        // Education
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(8);
-        doc.setTextColor(15, 23, 42);
-        doc.text('EDUCATION', 15, yLeft);
-        yLeft += 4;
-
-        education.forEach((edu) => {
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(7.5);
-          doc.setTextColor(15, 23, 42);
-          const splitDeg = doc.splitTextToSize(edu.degree, 52);
-          doc.text(splitDeg, 15, yLeft);
-          yLeft += splitDeg.length * 3.5;
-
-          doc.setFont('helvetica', 'normal');
-          doc.setTextColor(100, 116, 139);
-          doc.text(`${edu.institution} (${edu.period})`, 15, yLeft);
-          yLeft += 5.5;
-        });
-
-        // RIGHT COLUMN: Summary and Work Experience (x = 75, width = 120)
-        if (summary) {
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(9);
-          doc.setTextColor(15, 23, 42);
-          doc.text('EXECUTIVE PROFILE', 75, yRight);
-          yRight += 1.5;
-          doc.setDrawColor(226, 232, 240);
-          doc.line(75, yRight, 195, yRight);
-          yRight += 4.5;
-
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(8.5);
-          doc.setTextColor(51, 65, 85);
-          const splitSumm = doc.splitTextToSize(summary, 120);
-          doc.text(splitSumm, 75, yRight);
-          yRight += splitSumm.length * 4 + 5;
-        }
-
-        if (experiences.length > 0) {
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(9);
-          doc.setTextColor(15, 23, 42);
-          doc.text('PROFESSIONAL EXPERIENCE', 75, yRight);
-          yRight += 1.5;
-          doc.setDrawColor(226, 232, 240);
-          doc.line(75, yRight, 195, yRight);
-          yRight += 5;
-
-          experiences.forEach((exp) => {
-            if (yRight > 260) { doc.addPage(); yRight = 18; }
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9.5);
-            doc.setTextColor(15, 23, 42);
-            doc.text(exp.role, 75, yRight);
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(100, 116, 139);
-            doc.text(exp.period, 195, yRight, { align: 'right' });
-            yRight += 4;
-
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(79, 70, 229);
-            doc.text(`${exp.company} — ${exp.location}`, 75, yRight);
-            yRight += 4;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(51, 65, 85);
-            const splitPoints = doc.splitTextToSize(exp.points, 120);
-            doc.text(splitPoints, 75, yRight);
-            yRight += splitPoints.length * 3.8 + 4.5;
-          });
-        }
-
-      } else {
-        // -------------------------------------------------------------
-        // STYLE A: MODERN TECH (Indigo Header Rule, Clean Modern Layout)
-        // -------------------------------------------------------------
-        let y = 18;
-        // Top indigo accent
-        doc.setDrawColor(79, 70, 229);
-        doc.setLineWidth(1.8);
-        doc.line(15, 12, 195, 12);
-
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(18);
-        doc.setTextColor(15, 23, 42);
-        doc.text(name || 'Your Full Name', 15, y);
-
-        y += 6;
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(11);
-        doc.setTextColor(79, 70, 229);
-        doc.text(title || 'Professional Title', 15, y);
-
-        y += 5;
-        doc.setFontSize(9);
-        doc.setTextColor(100, 116, 139);
-        const contactParts = [email, phone, location, linkedin, github].filter(Boolean);
-        doc.text(contactParts.join('  •  '), 15, y);
-
-        y += 4;
-        doc.setDrawColor(203, 213, 225);
-        doc.setLineWidth(0.4);
-        doc.line(15, y, 195, y);
-
-        const addModernSection = (titleText: string) => {
-          y += 7;
-          doc.setFont('helvetica', 'bold');
-          doc.setFontSize(10.5);
-          doc.setTextColor(67, 56, 202);
-          doc.text(titleText.toUpperCase(), 15, y);
-          y += 1.5;
-          doc.setDrawColor(226, 232, 240);
-          doc.line(15, y, 195, y);
-          y += 4;
-        };
-
-        if (summary) {
-          addModernSection('Executive Profile');
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          doc.setTextColor(51, 65, 85);
-          const splitSummary = doc.splitTextToSize(summary, 180);
-          doc.text(splitSummary, 15, y);
-          y += splitSummary.length * 4.3 + 2;
-        }
-
-        if (skills) {
-          addModernSection('Technical Competencies');
-          doc.setFont('helvetica', 'normal');
-          doc.setFontSize(9);
-          doc.setTextColor(51, 65, 85);
-          const splitSkills = doc.splitTextToSize(skills, 180);
-          doc.text(splitSkills, 15, y);
-          y += splitSkills.length * 4.3 + 2;
-        }
-
-        if (experiences.length > 0) {
-          addModernSection('Work History');
-          experiences.forEach((exp) => {
-            if (y > 260) { doc.addPage(); y = 18; }
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9.5);
-            doc.setTextColor(15, 23, 42);
-            doc.text(exp.role, 15, y);
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8.5);
-            doc.setTextColor(100, 116, 139);
-            doc.text(exp.period, 195, y, { align: 'right' });
-
-            y += 4;
-            doc.setFont('helvetica', 'bold');
-            doc.setTextColor(67, 56, 202);
-            doc.text(`${exp.company} — ${exp.location}`, 15, y);
-
-            y += 4.5;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8.5);
-            doc.setTextColor(51, 65, 85);
-            const splitPoints = doc.splitTextToSize(exp.points, 180);
-            doc.text(splitPoints, 15, y);
-            y += splitPoints.length * 4 + 4;
-          });
-        }
-
-        if (education.length > 0) {
-          if (y > 250) { doc.addPage(); y = 18; }
-          addModernSection('Education');
-          education.forEach((edu) => {
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9);
-            doc.setTextColor(15, 23, 42);
-            doc.text(edu.degree, 15, y);
-
-            doc.setFont('helvetica', 'normal');
-            doc.setTextColor(100, 116, 139);
-            doc.text(`${edu.institution}  •  ${edu.period}`, 15, y + 4);
-            y += 8;
-          });
-        }
+      while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        doc.addPage();
+        doc.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
       }
 
+      const fileName = `${(name || 'Professional').replace(/\s+/g, '_')}_${template.toUpperCase()}_Resume.pdf`;
       doc.save(fileName);
     } catch (err) {
       console.error('PDF generation error, falling back to print:', err);
       window.print();
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -736,8 +416,8 @@ export default function ResumeBuilderPage() {
             }`}
             title={isProTemplate ? "Pro Layout Locked — Upgrade to Download" : "Download PDF directly to your computer"}
           >
-            {isProTemplate ? <Lock className="w-4 h-4 text-amber-400" /> : <Download className="w-4 h-4" />}
-            <span>{isProTemplate ? 'Download PDF (🔒 Pro Locked)' : 'Download PDF'}</span>
+            {isExporting ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : isProTemplate ? <Lock className="w-4 h-4 text-amber-400" /> : <Download className="w-4 h-4" />}
+            <span>{isExporting ? 'Generating 1:1 PDF...' : isProTemplate ? 'Download PDF (🔒 Pro Locked)' : 'Download PDF (1:1 Exact)'}</span>
           </button>
 
           <button 
@@ -820,7 +500,7 @@ export default function ResumeBuilderPage() {
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-white flex items-center gap-1.5">
                   <Palette className="w-3.5 h-3.5 text-brand-400" />
-                  <span>Choose Visual Layout (5 Layouts):</span>
+                  <span>Choose Visual Layout (8 Total: 3 Free · 5 Pro):</span>
                 </label>
                 <button
                   type="button"
@@ -830,66 +510,102 @@ export default function ResumeBuilderPage() {
                   <Crown className="w-3 h-3" /> Pro Specs
                 </button>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <button
                   type="button"
                   onClick={() => setTemplate('modern')}
-                  className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                  className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
                     template === 'modern' 
                       ? 'bg-brand-500 text-white border-brand-400 shadow-md' 
                       : 'glass text-slate-300 hover:text-white border-white/10'
                   }`}
                 >
-                  <div className="text-[10px] opacity-80 uppercase tracking-wider">Style A</div>
-                  <div>Modern Tech</div>
+                  <div className="text-[9px] text-emerald-300 font-extrabold uppercase tracking-wider">Style A · Free</div>
+                  <div className="text-[11px] truncate">Modern Tech</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setTemplate('harvard')}
-                  className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                  className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
                     template === 'harvard' 
                       ? 'bg-brand-500 text-white border-brand-400 shadow-md' 
                       : 'glass text-slate-300 hover:text-white border-white/10'
                   }`}
                 >
-                  <div className="text-[10px] opacity-80 uppercase tracking-wider">Style B</div>
-                  <div>Harvard Classic</div>
+                  <div className="text-[9px] text-emerald-300 font-extrabold uppercase tracking-wider">Style B · Free</div>
+                  <div className="text-[11px] truncate">Harvard Classic</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setTemplate('minimal')}
-                  className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                  className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
                     template === 'minimal' 
                       ? 'bg-brand-500 text-white border-brand-400 shadow-md' 
                       : 'glass text-slate-300 hover:text-white border-white/10'
                   }`}
                 >
-                  <div className="text-[10px] opacity-80 uppercase tracking-wider">Style C</div>
-                  <div>Minimal Clean</div>
+                  <div className="text-[9px] text-emerald-300 font-extrabold uppercase tracking-wider">Style C · Free</div>
+                  <div className="text-[11px] truncate">Minimal Column</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setTemplate('executive')}
-                  className={`p-2.5 rounded-xl text-xs font-bold border transition text-center ${
+                  className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
                     template === 'executive' 
                       ? 'bg-indigo-600 text-white border-indigo-400 shadow-md' 
                       : 'glass text-slate-300 hover:text-white border-white/10'
                   }`}
                 >
-                  <div className="text-[10px] text-amber-300 font-extrabold uppercase tracking-wider">Style D · Pro</div>
-                  <div>Executive Leader</div>
+                  <div className="text-[9px] text-amber-300 font-extrabold uppercase tracking-wider">Style D · 🔒 Pro</div>
+                  <div className="text-[11px] truncate">Executive Leader</div>
                 </button>
                 <button
                   type="button"
                   onClick={() => setTemplate('creative')}
-                  className={`p-2.5 rounded-xl text-xs font-bold border transition text-center col-span-2 sm:col-span-1 ${
+                  className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
                     template === 'creative' 
                       ? 'bg-emerald-600 text-white border-emerald-400 shadow-md' 
                       : 'glass text-slate-300 hover:text-white border-white/10'
                   }`}
                 >
-                  <div className="text-[10px] text-emerald-300 font-extrabold uppercase tracking-wider">Style E · Pro</div>
-                  <div>Creative Studio</div>
+                  <div className="text-[9px] text-amber-300 font-extrabold uppercase tracking-wider">Style E · 🔒 Pro</div>
+                  <div className="text-[11px] truncate">Creative Studio</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('techlead')}
+                  className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                    template === 'techlead' 
+                      ? 'bg-cyan-600 text-white border-cyan-400 shadow-md' 
+                      : 'glass text-slate-300 hover:text-white border-white/10'
+                  }`}
+                >
+                  <div className="text-[9px] text-amber-300 font-extrabold uppercase tracking-wider">Style F · 🔒 Pro</div>
+                  <div className="text-[11px] truncate">Tech Lead & Arch</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('finance')}
+                  className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                    template === 'finance' 
+                      ? 'bg-amber-600 text-white border-amber-400 shadow-md' 
+                      : 'glass text-slate-300 hover:text-white border-white/10'
+                  }`}
+                >
+                  <div className="text-[9px] text-amber-300 font-extrabold uppercase tracking-wider">Style G · 🔒 Pro</div>
+                  <div className="text-[11px] truncate">Wall St Finance</div>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTemplate('nordic')}
+                  className={`p-2 rounded-xl text-xs font-bold border transition text-center ${
+                    template === 'nordic' 
+                      ? 'bg-stone-700 text-white border-stone-500 shadow-md' 
+                      : 'glass text-slate-300 hover:text-white border-white/10'
+                  }`}
+                >
+                  <div className="text-[9px] text-amber-300 font-extrabold uppercase tracking-wider">Style H · 🔒 Pro</div>
+                  <div className="text-[11px] truncate">Nordic Luxury</div>
                 </button>
               </div>
             </div>
@@ -1074,7 +790,7 @@ export default function ResumeBuilderPage() {
                 <div className="flex items-center gap-2">
                   <Eye className="w-4 h-4 text-brand-400" />
                   <span className="text-xs font-bold text-white">
-                    Live Canvas: {template === 'modern' ? 'Modern Tech (Style A)' : template === 'harvard' ? 'Harvard Classic (Style B)' : template === 'minimal' ? 'Minimal Clean (Style C)' : template === 'executive' ? 'Executive Leader (Style D · 🔒 Pro Locked)' : 'Creative Studio (Style E · 🔒 Pro Locked)'}
+                    Live Canvas: {template === 'modern' ? 'Modern Tech (Style A · Free)' : template === 'harvard' ? 'Harvard Classic (Style B · Free)' : template === 'minimal' ? 'Minimal Column (Style C · Free)' : template === 'executive' ? 'Executive Leader (Style D · 🔒 Pro Locked)' : template === 'creative' ? 'Creative Studio (Style E · 🔒 Pro Locked)' : template === 'techlead' ? 'Tech Lead Architect (Style F · 🔒 Pro Locked)' : template === 'finance' ? 'Wall Street Finance (Style G · 🔒 Pro Locked)' : 'Nordic Luxury (Style H · 🔒 Pro Locked)'}
                   </span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono">Format: A4 Print Ready</span>
@@ -1093,7 +809,7 @@ export default function ResumeBuilderPage() {
                         </span>
                       </div>
                       <div className="text-[11px] text-slate-300 mt-0.5">
-                        Style D & Style E require OmniStack AI Pro ($19/mo). Upgrade to download vector PDF & plain-text ATS export.
+                        Styles D, E, F, G, and H require OmniStack AI Pro ($19/mo). Upgrade to download unwatermarked vector PDF, ATS plain-text, and print exports.
                       </div>
                     </div>
                   </div>
@@ -1352,6 +1068,258 @@ export default function ResumeBuilderPage() {
                 </div>
               )}
 
+              {/* TEMPLATE F: TECH LEAD & PRINCIPAL ARCHITECT (Pro) */}
+              {template === 'techlead' && (
+                <div className="bg-[#0b0f19] text-slate-100 p-8 sm:p-12 rounded-xl shadow-2xl font-sans min-h-[780px] space-y-6 border border-cyan-500/30 relative">
+                  {/* Tech Terminal Header */}
+                  <div className="border-b border-cyan-500/20 pb-5">
+                    <div className="flex items-center justify-between text-[10px] font-mono text-cyan-400 mb-2">
+                      <span className="flex items-center gap-1.5"><Terminal className="w-3.5 h-3.5" /> ARCHITECT_CLUSTER // US-EAST-1</span>
+                      <span className="bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/30">SYSTEM_VER 2026.4</span>
+                    </div>
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                      <div>
+                        <h2 className="text-3xl font-black text-white tracking-tight font-mono">{name || 'Your Full Name'}</h2>
+                        <div className="text-sm font-bold text-cyan-400 mt-0.5 font-mono">// {title || 'Principal Software Architect'}</div>
+                      </div>
+                      <div className="text-[11px] text-slate-400 space-y-0.5 font-mono md:text-right">
+                        <div>net: {email}</div>
+                        <div>tel: {phone}</div>
+                        <div>loc: {location}</div>
+                        {linkedin && <div className="text-cyan-400">{linkedin}</div>}
+                        {github && <div className="text-emerald-400">{github}</div>}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Architecture Directive Banner */}
+                  <div className="bg-slate-900/90 border border-slate-800 p-4 rounded-xl">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 mb-1 flex items-center gap-1.5 font-mono">
+                      <Code2 className="w-3.5 h-3.5" /> Architectural Directive & Mandate
+                    </div>
+                    <p className="text-xs text-slate-300 leading-relaxed font-sans">{summary}</p>
+                  </div>
+
+                  {/* Core Tech Stack Matrix */}
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 mb-2 font-mono flex items-center gap-1.5">
+                      <Layers className="w-3.5 h-3.5" /> Distributed Systems & Infrastructure Stack
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {skills.split(',').map((s, idx) => (
+                        <span key={idx} className="text-[10px] font-mono font-semibold bg-cyan-950/60 text-cyan-300 px-2.5 py-1 rounded border border-cyan-800/60">
+                          {s.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Engineering Record & Scale Milestones */}
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 mb-3 font-mono flex items-center gap-1.5">
+                      <Terminal className="w-3.5 h-3.5" /> Production Engineering Track Record
+                    </div>
+                    <div className="space-y-4">
+                      {experiences.map((exp, idx) => (
+                        <div key={idx} className="p-3.5 rounded-xl bg-slate-900/50 border border-slate-800/80 space-y-1.5">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 font-mono">
+                            <span className="text-xs font-bold text-white flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+                              {exp.role}
+                            </span>
+                            <span className="text-[10px] text-cyan-400 bg-cyan-950/80 px-2 py-0.5 rounded border border-cyan-800/50">
+                              {exp.period}
+                            </span>
+                          </div>
+                          <div className="text-[11px] font-mono text-slate-400">{exp.company} // {exp.location}</div>
+                          <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap font-sans">{exp.points}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Education & Systems Credentials */}
+                  <div>
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-cyan-400 mb-2 font-mono">
+                      Academic & System Credentials
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {education.map((edu, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-slate-900/60 border border-slate-800 font-mono text-xs">
+                          <div className="font-bold text-white">{edu.degree}</div>
+                          <div className="text-[11px] text-cyan-400 mt-0.5">{edu.institution}</div>
+                          <div className="text-[10px] text-slate-400 mt-0.5">{edu.period} · {edu.gpa}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TEMPLATE G: WALL STREET INVESTMENT ANALYST & CAPITAL MARKETS (Pro) */}
+              {template === 'finance' && (
+                <div className="bg-white text-slate-950 p-8 sm:p-12 rounded-xl shadow-2xl font-serif min-h-[780px] space-y-5 border-2 border-slate-800">
+                  {/* Wall Street Masthead */}
+                  <div className="border-b-2 border-slate-900 pb-4 text-center">
+                    <div className="text-[10px] font-sans font-extrabold tracking-widest text-amber-700 uppercase mb-1">
+                      CONFIDENTIAL CANDIDATE DOSSIER
+                    </div>
+                    <h2 className="text-2xl font-black text-slate-950 tracking-tight uppercase">{name || 'Your Full Name'}</h2>
+                    <div className="text-xs font-bold text-slate-700 tracking-wider uppercase mt-0.5 font-sans">
+                      {title || 'Private Equity & M&A Investment Analyst'}
+                    </div>
+                    <div className="text-[10px] text-slate-600 mt-2 flex flex-wrap justify-center gap-x-3 gap-y-1 font-sans">
+                      <span>{email}</span>
+                      <span>|</span>
+                      <span>{phone}</span>
+                      <span>|</span>
+                      <span>{location}</span>
+                      {linkedin && <span>| {linkedin}</span>}
+                    </div>
+                  </div>
+
+                  {/* Investment Thesis & Executive Mandate */}
+                  <div className="border border-slate-300 p-3.5 bg-slate-50/60">
+                    <div className="text-[10px] font-sans font-bold uppercase tracking-wider text-slate-900 mb-1 flex items-center gap-1.5">
+                      <TrendingUp className="w-3.5 h-3.5 text-amber-700" /> Mandate & Financial Core Competency
+                    </div>
+                    <p className="text-xs text-slate-800 leading-relaxed font-sans">{summary}</p>
+                  </div>
+
+                  {/* Financial Modeling & Capital Tooling */}
+                  <div>
+                    <div className="text-[10px] font-sans font-black uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-0.5 mb-2">
+                      Financial Modeling, M&A & Quantitative Competencies
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 font-sans">
+                      {skills.split(',').map((s, idx) => (
+                        <div key={idx} className="text-[10px] font-semibold text-slate-800 bg-slate-100 p-1.5 border border-slate-300 text-center">
+                          {s.trim()}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Transaction History & Deal Experience */}
+                  <div>
+                    <div className="text-[10px] font-sans font-black uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-0.5 mb-3">
+                      Professional Engagement & Deal History
+                    </div>
+                    <div className="space-y-4 font-sans">
+                      {experiences.map((exp, idx) => (
+                        <div key={idx} className="space-y-1">
+                          <div className="flex justify-between items-baseline">
+                            <span className="text-xs font-bold text-slate-950 uppercase">{exp.role}</span>
+                            <span className="text-[10px] font-bold text-slate-600">{exp.period}</span>
+                          </div>
+                          <div className="text-[11px] font-semibold text-amber-900 italic">{exp.company} — {exp.location}</div>
+                          <p className="text-[11px] text-slate-800 leading-relaxed whitespace-pre-wrap">{exp.points}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Academic Degrees & Honors */}
+                  <div>
+                    <div className="text-[10px] font-sans font-black uppercase tracking-wider text-slate-900 border-b border-slate-900 pb-0.5 mb-2">
+                      Academic Credentials & Certifications
+                    </div>
+                    <div className="space-y-1.5 font-sans">
+                      {education.map((edu, idx) => (
+                        <div key={idx} className="flex justify-between items-baseline text-xs">
+                          <div>
+                            <span className="font-bold text-slate-950">{edu.institution}</span> — <span className="text-slate-800">{edu.degree}</span>
+                          </div>
+                          <div className="text-[10px] font-bold text-slate-600">{edu.period} | {edu.gpa}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TEMPLATE H: NORDIC LUXURY MINIMALIST (Pro) */}
+              {template === 'nordic' && (
+                <div className="bg-[#fafaf8] text-slate-900 p-10 sm:p-14 rounded-xl shadow-2xl font-sans min-h-[780px] space-y-7 border border-stone-200">
+                  {/* Architectural Monolith Header */}
+                  <div className="border-b border-stone-300 pb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                    <div>
+                      <div className="text-[9px] font-mono uppercase tracking-[0.3em] text-stone-500 mb-1">CURRICULUM VITAE</div>
+                      <h2 className="text-3xl font-light tracking-tight text-stone-900 uppercase">{name || 'Your Full Name'}</h2>
+                      <div className="text-xs font-medium tracking-wide text-stone-600 mt-1 uppercase">{title || 'Creative Director'}</div>
+                    </div>
+                    <div className="text-[10px] text-stone-600 font-mono space-y-1 md:text-right tracking-tight">
+                      <div>{email}</div>
+                      <div>{phone}</div>
+                      <div>{location}</div>
+                      {linkedin && <div className="text-stone-900 underline">{linkedin}</div>}
+                    </div>
+                  </div>
+
+                  {/* Pure Whitespace Narrative */}
+                  <div className="grid grid-cols-12 gap-6">
+                    <div className="col-span-12 sm:col-span-3 text-[10px] font-mono uppercase tracking-widest text-stone-500">
+                      01 / Overview
+                    </div>
+                    <div className="col-span-12 sm:col-span-9">
+                      <p className="text-xs text-stone-800 leading-relaxed font-normal">{summary}</p>
+                    </div>
+                  </div>
+
+                  {/* Disciplines & Core Competencies */}
+                  <div className="grid grid-cols-12 gap-6 pt-2 border-t border-stone-200">
+                    <div className="col-span-12 sm:col-span-3 text-[10px] font-mono uppercase tracking-widest text-stone-500">
+                      02 / Competencies
+                    </div>
+                    <div className="col-span-12 sm:col-span-9">
+                      <div className="flex flex-wrap gap-2">
+                        {skills.split(',').map((s, idx) => (
+                          <span key={idx} className="text-[10px] text-stone-800 bg-white px-3 py-1 rounded border border-stone-200 tracking-wide">
+                            {s.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Chronology */}
+                  <div className="grid grid-cols-12 gap-6 pt-2 border-t border-stone-200">
+                    <div className="col-span-12 sm:col-span-3 text-[10px] font-mono uppercase tracking-widest text-stone-500">
+                      03 / Experience
+                    </div>
+                    <div className="col-span-12 sm:col-span-9 space-y-6">
+                      {experiences.map((exp, idx) => (
+                        <div key={idx} className="space-y-1.5">
+                          <div className="flex justify-between items-baseline">
+                            <span className="text-xs font-medium text-stone-900 tracking-wide uppercase">{exp.role}</span>
+                            <span className="text-[10px] text-stone-500 font-mono">{exp.period}</span>
+                          </div>
+                          <div className="text-[11px] text-stone-600 italic">{exp.company} — {exp.location}</div>
+                          <p className="text-xs text-stone-700 leading-relaxed whitespace-pre-wrap">{exp.points}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Academics */}
+                  <div className="grid grid-cols-12 gap-6 pt-2 border-t border-stone-200">
+                    <div className="col-span-12 sm:col-span-3 text-[10px] font-mono uppercase tracking-widest text-stone-500">
+                      04 / Education
+                    </div>
+                    <div className="col-span-12 sm:col-span-9 space-y-2">
+                      {education.map((edu, idx) => (
+                        <div key={idx} className="flex justify-between items-baseline text-xs">
+                          <div>
+                            <span className="font-medium text-stone-900">{edu.institution}</span>, <span className="text-stone-600">{edu.degree}</span>
+                          </div>
+                          <div className="text-[10px] text-stone-500 font-mono">{edu.period}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* TEMPLATE B: HARVARD CLASSIC (Traditional Centered Serif Layout) */}
               {template === 'harvard' && (
                 <div className="bg-white text-slate-900 p-8 sm:p-12 rounded-xl shadow-2xl font-serif min-h-[780px] space-y-5">
@@ -1569,10 +1537,10 @@ export default function ResumeBuilderPage() {
               <div className="p-3.5 rounded-2xl bg-white/5 border border-white/5 space-y-1">
                 <div className="font-bold text-white flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>5 Vector Resume Layouts</span>
+                  <span>8 Vector Resume Layouts (5 Pro Styles)</span>
                 </div>
                 <p className="text-[11px] text-slate-400">
-                  Executive Leader, Creative Studio, Modern Tech, Harvard Classic, and Minimal Clean with unlimited unwatermarked PDF & ATS txt exports.
+                  Unlock Tech Lead Architect, Wall Street Finance, Nordic Luxury, Executive Leader, and Creative Studio with unlimited unwatermarked 1:1 vector PDF & ATS exports.
                 </p>
               </div>
 

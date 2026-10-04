@@ -414,13 +414,13 @@ Merchant Entity    : OmniStack AI Technologies Inc.
           <h2 className="text-lg font-bold text-white">How You Can Accept Global Payments with Zero Paperwork</h2>
         </div>
         <p className="text-xs text-slate-300 leading-relaxed">
-          If you are starting from India and selling freelance deliverables to clients in the USA, Europe, or Australia, you don't need complicated business registration:
+          If you are selling digital assets and freelance deliverables to clients in the USA, Europe, UK, Canada, Australia, or worldwide, you can collect payments seamlessly with zero paperwork:
         </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300 pt-2">
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
             <div className="font-bold text-white">PayPal.me (Free & Instant)</div>
             <p className="text-slate-400 mt-1 leading-relaxed">
-              Create a free account at PayPal.com. You get a link like <code>paypal.me/yourname</code>. Send it to any client globally and they can pay with any credit/debit card in USD or EUR. Money auto-transfers to your Indian bank in 24 hours.
+              Create a free account at PayPal.com. You get a direct link like <code>paypal.me/yourname</code>. Send it to any client globally and they can pay with any credit/debit card in USD or EUR. Money auto-transfers to your local bank account in 24 hours.
             </p>
           </div>
           <div className="p-4 rounded-2xl bg-white/5 border border-white/5">
@@ -673,7 +673,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                         className="w-full px-3.5 py-2.5 rounded-xl bg-[#0d1424] border border-white/10 text-white text-xs outline-none focus:border-brand-500"
                       >
                         <option value="United States">United States (USD)</option>
-                        <option value="India">India (INR & USD International)</option>
+                        <option value="Worldwide">Worldwide / International (USD)</option>
                         <option value="United Kingdom">United Kingdom (GBP)</option>
                         <option value="Canada">Canada (CAD)</option>
                         <option value="Australia">Australia (AUD)</option>
@@ -709,7 +709,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                         <span>Instant UPI & Global Settlement</span>
                       </div>
                       <p className="text-[11px] text-slate-300 leading-relaxed">
-                        For users in India or international creators who prefer UPI / QR or Lemon Squeezy Merchant of Record:
+                        For users who prefer Instant Direct Bank Transfer, UPI, or QR Checkout (Zero Processing Fees):
                       </p>
                     </div>
 

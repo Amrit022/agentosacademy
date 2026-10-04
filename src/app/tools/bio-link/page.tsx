@@ -2,8 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import ProUpgradeModal from '@/components/ProUpgradeModal';
 import { 
-  Link2, 
+  Link2,
+  Lock,
+  Crown, 
   Plus, 
   Trash2, 
   ExternalLink, 
@@ -49,6 +52,8 @@ export default function BioLinkPage() {
   
   const [links, setLinks] = useState(SAMPLE_LINK_PRESETS[0]);
   const [copied, setCopied] = useState(false);
+  const [showProModal, setShowProModal] = useState(false);
+  const [proFeature, setProFeature] = useState('');
 
   const totalClicks = links.reduce((acc, curr) => acc + curr.clicks, 0);
 
@@ -57,9 +62,9 @@ export default function BioLinkPage() {
     setPresetIndex(next);
     setLinks(SAMPLE_LINK_PRESETS[next]);
     if (next === 0) {
-      setHandle('amritdev');
-      setDisplayName('Amrit Gupta');
-      setBio('Full Stack SaaS Architect & Developer. Shipping micro-tools globally from India 🇮🇳');
+      setHandle('alexdev');
+      setDisplayName('Alex Rivera');
+      setBio('Full Stack SaaS Architect & Product Engineer. Shipping modern web apps and micro-tools globally 🚀');
     } else if (next === 1) {
       setHandle('elenadesign');
       setDisplayName('Elena Rostova');
@@ -72,6 +77,11 @@ export default function BioLinkPage() {
   };
 
   const addLink = () => {
+    if (links.length >= 3) {
+      setProFeature('Unlimited Bio Link Buttons (Free tier includes 3 links)');
+      setShowProModal(true);
+      return;
+    }
     setLinks([
       ...links,
       { 
@@ -89,7 +99,7 @@ export default function BioLinkPage() {
   };
 
   const copyUrl = () => {
-    navigator.clipboard.writeText(`https://agentosacademy.com/u/${handle}`);
+    navigator.clipboard.writeText(`https://omnistack.ai/u/${handle}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -107,7 +117,7 @@ export default function BioLinkPage() {
           </div>
           <h1 className="text-2xl sm:text-4xl font-black text-white mt-1">Bio Link Page Creator</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Host your customized, zero-commission portfolio link under <strong className="text-white">agentosacademy.com/u/{handle}</strong>.
+            Host your customized, zero-commission portfolio link under <strong className="text-white">omnistack.ai/u/{handle}</strong>.
           </p>
         </div>
 
@@ -146,15 +156,14 @@ export default function BioLinkPage() {
           <span>Page Builder & Buttons</span>
         </button>
         <button
-          onClick={() => setActiveTab('analytics')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 ${
-            activeTab === 'analytics' 
-              ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20' 
-              : 'glass text-slate-400 hover:text-white'
-          }`}
+          onClick={() => {
+            setProFeature('Real-Time Traffic & Click Analytics');
+            setShowProModal(true);
+          }}
+          className="glass text-slate-400 hover:text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2"
         >
-          <BarChart2 className="w-4 h-4" />
-          <span>Traffic & Click Analytics</span>
+          <Lock className="w-3.5 h-3.5 text-amber-400" />
+          <span>Traffic & Click Analytics (🔒 Pro)</span>
         </button>
       </div>
 
@@ -216,21 +225,27 @@ export default function BioLinkPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTheme('sunset')}
+                  onClick={() => {
+                    setProFeature('Sunset Neon Theme');
+                    setShowProModal(true);
+                  }}
                   className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
                     theme === 'sunset' ? 'bg-pink-600/30 border-pink-500 text-white' : 'glass text-slate-400 border-white/5'
                   }`}
                 >
-                  Sunset Neon
+                  Sunset Neon (🔒 Pro)
                 </button>
                 <button
                   type="button"
-                  onClick={() => setTheme('emerald')}
+                  onClick={() => {
+                    setProFeature('Emerald Glass Theme');
+                    setShowProModal(true);
+                  }}
                   className={`py-2 px-3 rounded-xl text-xs font-bold border transition ${
                     theme === 'emerald' ? 'bg-emerald-600/30 border-emerald-500 text-white' : 'glass text-slate-400 border-white/5'
                   }`}
                 >
-                  Emerald Glass
+                  Emerald Glass (🔒 Pro)
                 </button>
                 <button
                   type="button"
@@ -369,7 +384,7 @@ export default function BioLinkPage() {
 
               {/* Watermark */}
               <div className="text-center text-[10px] text-slate-400 pb-3 border-t border-white/10 pt-3 font-mono">
-                agentosacademy.com/u/{handle}
+                omnistack.ai/u/{handle}
               </div>
             </div>
           </div>
@@ -396,6 +411,13 @@ export default function BioLinkPage() {
           </div>
         </div>
       )}
+      {/* Reusable Pro Upgrade Modal */}
+      <ProUpgradeModal 
+        isOpen={showProModal}
+        onClose={() => setShowProModal(false)}
+        toolName="Bio Link Page Creator"
+        featureName={proFeature}
+      />
     </div>
   );
 }
