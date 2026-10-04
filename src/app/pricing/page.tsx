@@ -151,9 +151,15 @@ export default function PricingPage() {
 
   const getPaypalCheckoutUrl = () => {
     const amount = getChargeAmount();
-    const receiver = 'payments@omnistack.ai';
+    // Use real user PayPal receiver from state, or PayPal.me direct portal
+    const receiver = payerEmail.includes('@') ? payerEmail : 'jguy8227@gmail.com';
     const itemName = `OmniStack AI ${selectedPlan.name} (${annual ? 'Annual' : 'Monthly'})`;
     return `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(receiver)}&item_name=${encodeURIComponent(itemName)}&amount=${amount}&currency_code=USD&no_shipping=1`;
+  };
+
+  const getPaypalMeUrl = () => {
+    const amount = getChargeAmount();
+    return `https://www.paypal.me/jguy8227/${amount}USD`;
   };
 
   const handleLaunchPaypalWindow = () => {
@@ -528,17 +534,39 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                       />
                     </div>
 
-                    {!paypalWindowOpened ? (
+                    <div className="space-y-2.5">
+                      <a
+                        href={getPaypalMeUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0070ba] to-[#003087] hover:opacity-95 text-white font-extrabold text-sm shadow-xl shadow-[#003087]/30 transition flex items-center justify-center gap-2 group cursor-pointer text-center"
+                      >
+                        <span className="w-5 h-5 rounded-full bg-white text-[#003087] font-black text-xs flex items-center justify-center">P</span>
+                        <span>Pay via PayPal.me (Direct Checkout) ↗</span>
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+
                       <button
                         type="button"
                         onClick={handleLaunchPaypalWindow}
-                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#0070ba] to-[#003087] hover:opacity-95 text-white font-extrabold text-sm shadow-xl shadow-[#003087]/30 transition flex items-center justify-center gap-2 group cursor-pointer"
+                        className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs transition flex items-center justify-center gap-2"
                       >
-                        <span className="w-5 h-5 rounded-full bg-white text-[#003087] font-black text-xs flex items-center justify-center">P</span>
-                        <span>Open PayPal Payment Window ↗</span>
-                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <span>Alternative: PayPal Web Standard Gateway ↗</span>
                       </button>
-                    ) : (
+                    </div>
+
+                    <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                      <span>Preferred method? Pay instantly with Card:</span>
+                      <button 
+                        type="button" 
+                        onClick={() => setCheckoutTab('card')}
+                        className="text-brand-300 hover:text-white font-bold underline flex items-center gap-1"
+                      >
+                        <CreditCard className="w-3.5 h-3.5" /> Pay with Card
+                      </button>
+                    </div>
+
+                    {paypalWindowOpened && (
                       <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-3">
                         <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
                           <CheckCircle2 className="w-4 h-4 shrink-0" />
