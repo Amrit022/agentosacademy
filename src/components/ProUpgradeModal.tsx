@@ -38,7 +38,7 @@ export default function ProUpgradeModal({
             <span className="text-[10px] font-extrabold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">
               OmniStack AI Pro
             </span>
-            <h3 className="text-xl font-black text-white mt-1">Unlock Pro ($19/mo or $149 Lifetime)</h3>
+            <h3 className="text-xl font-black text-white mt-1">Unlock Pro ($9/mo or $84/year)</h3>
           </div>
         </div>
 
@@ -101,20 +101,29 @@ export default function ProUpgradeModal({
 
         {/* Actions */}
         <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+          <a 
+            href="https://test.checkout.dodopayments.com/buy/pdt_0NoyxO4EGBfBBwuqgIVlj?quantity=1"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onClose}
+            className="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs shadow-lg shadow-emerald-500/25 text-center transition flex items-center justify-center gap-2"
+          >
+            <span>🦤 Instant Card / Apple Pay Checkout ($9/mo) ↗</span>
+          </a>
           <Link 
             href="/pricing"
             onClick={onClose}
-            className="w-full sm:w-auto flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-brand-500 to-accent-500 text-white font-extrabold text-xs shadow-lg shadow-brand-500/25 hover:opacity-95 text-center transition flex items-center justify-center gap-2"
+            className="w-full sm:w-auto py-3.5 px-5 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs text-center transition flex items-center justify-center gap-1.5"
           >
-            <Crown className="w-4 h-4 text-amber-200" />
-            <span>Upgrade to Pro ($19/mo)</span>
+            <Crown className="w-3.5 h-3.5 text-amber-300" />
+            <span>All Payment Options</span>
           </Link>
           <button
             type="button"
             onClick={onClose}
-            className="w-full sm:w-auto py-3.5 px-6 rounded-xl bg-white/10 hover:bg-white/15 text-slate-300 hover:text-white font-bold text-xs text-center transition"
+            className="w-full sm:w-auto py-3.5 px-4 rounded-xl text-slate-400 hover:text-white text-xs font-semibold text-center transition"
           >
-            Keep Using Free
+            Close
           </button>
         </div>
       </div>

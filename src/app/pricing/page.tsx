@@ -711,6 +711,37 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                 {/* TAB 2: CREDIT / DEBIT CARD CHECKOUT */}
                 {checkoutTab === 'card' && (
                   <form onSubmit={handleProcessCardPayment} className="space-y-4 pt-1">
+                    {/* Featured 1-Click Hosted Checkout via Dodo Payments */}
+                    <a
+                      href="https://test.checkout.dodopayments.com/buy/pdt_0NoyxO4EGBfBBwuqgIVlj?quantity=1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full p-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs shadow-xl shadow-emerald-500/25 transition flex items-center justify-between group cursor-pointer"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-xl">🦤</span>
+                        <div className="text-left">
+                          <div className="font-black text-slate-950 flex items-center gap-1.5">
+                            <span>1-Click Instant Card & Apple Pay Checkout</span>
+                            <span className="text-[9px] bg-slate-950 text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">Fastest</span>
+                          </div>
+                          <div className="text-[10px] text-emerald-950 font-medium">
+                            Zero-friction hosted checkout powered by Dodo Payments
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 font-black text-xs text-slate-950 shrink-0">
+                        <span>Pay ${getChargeAmount()}.00 USD ↗</span>
+                        <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </div>
+                    </a>
+
+                    <div className="relative flex py-1 items-center">
+                      <div className="flex-grow border-t border-white/10"></div>
+                      <span className="flex-shrink mx-3 text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Or enter card details manually below</span>
+                      <div className="flex-grow border-t border-white/10"></div>
+                    </div>
+
                     {/* Error Banner */}
                     {cardError && (
                       <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2 animate-in fade-in">
@@ -836,12 +867,12 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                             </div>
                           </div>
                           <a
-                            href="https://test.dodopayments.com"
+                            href="https://test.checkout.dodopayments.com/buy/pdt_0NoyxO4EGBfBBwuqgIVlj?quantity=1"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 shrink-0"
+                            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 shrink-0"
                           >
-                            <span>Launch Dodo Checkout ↗</span>
+                            <span>Launch Dodo Checkout ($9.00 USD) ↗</span>
                             <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                         </div>
