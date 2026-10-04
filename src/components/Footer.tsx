@@ -16,7 +16,7 @@ export default function Footer() {
             The multi-purpose AI productivity platform for freelancers, founders, and creators to build, automate, and monetize globally in USD.
           </p>
           <div className="pt-2 text-xs text-brand-400 font-medium">
-            support@omnistack.ai
+            support@agentosacademy.com
           </div>
         </div>
 
@@ -88,7 +88,7 @@ export default function Footer() {
           <h4 className="text-white text-xs font-bold uppercase tracking-wider mb-4">Domain Mapped</h4>
           <div className="glass p-4 rounded-2xl border border-white/5 space-y-2">
             <div className="text-xs font-semibold text-slate-200">Custom Domain Ready:</div>
-            <div className="text-xs text-brand-300 font-mono">https://omnistack.ai</div>
+            <div className="text-xs text-brand-300 font-mono">https://agentosacademy.com</div>
             <p className="text-[11px] text-slate-400 leading-normal pt-1">
               Optimized for global search engines with automated SSL encryption and fast edge CDN.
             </p>
