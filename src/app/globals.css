@@ -96,10 +96,260 @@ button, a {
   -webkit-text-fill-color: transparent;
 }
 
+/* Fluid Animated Gradient Text */
+.text-gradient-animated {
+  background: linear-gradient(90deg, #818cf8 0%, #e879f9 25%, #38bdf8 50%, #f472b6 75%, #818cf8 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 6s linear infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
 .text-gradient-cyan {
   background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* High-Impact Button Shimmer Effect */
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    60deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 65%
+  );
+  transform: rotate(30deg);
+  animation: shimmerSweep 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmerSweep {
+  0% { transform: translateX(-150%) rotate(30deg); }
+  25%, 100% { transform: translateX(150%) rotate(30deg); }
+}
+
+/* Subtle Tech Matrix Background for Hero */
+.bg-grid-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px);
+  background-size: 28px 28px;
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 35%, #000 70%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 35%, #000 70%, transparent 100%);
+}
+
+/* Interactive Card Hover Glow */
+.card-glow {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-glow:hover {
+  box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.25), 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Multi-Layer Ambient Aurora Waves */
+@keyframes auroraDrift1 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    opacity: 0.65;
+  }
+  50% {
+    transform: translate3d(60px, -40px, 0) scale(1.24) rotate(8deg);
+    opacity: 0.90;
+  }
+}
+
+@keyframes auroraDrift2 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1.1) rotate(0deg);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate3d(-70px, 45px, 0) scale(0.92) rotate(-10deg);
+    opacity: 0.80;
+  }
+}
+
+@keyframes auroraDrift3 {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+    opacity: 0.50;
+  }
+  50% {
+    transform: translate3d(50px, 60px, 0) scale(1.18) rotate(15deg);
+    opacity: 0.75;
+  }
+}
+
+.animate-aurora-1 {
+  animation: auroraDrift1 14s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-aurora-2 {
+  animation: auroraDrift2 18s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.animate-aurora-3 {
+  animation: auroraDrift3 22s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Luminous Starlight / Floating Particle Sparkles */
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-22px) scale(1.4);
+    opacity: 1;
+    box-shadow: 0 0 14px 3px rgba(168, 85, 247, 0.9);
+  }
+}
+
+.animate-particle {
+  animation: particleFloat var(--duration, 4s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+}
+
+/* Apple/Linear Spring Easing for Silky Micro-Interactions */
+.spring-smooth {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spring-hover {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spring-hover:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Live Radial Horizon Glow */
+.horizon-glow {
+  background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99, 102, 241, 0.22), transparent);
+}
+
+/* Luminous Cyber Grid Background with Animated Scanline */
+.cyber-grid-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cyber-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 35%, transparent 85%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 35%, transparent 85%);
+}
+
+/* Glowing Energy Beam Line */
+@keyframes beamTravel {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.animate-beam {
+  animation: beamTravel 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* Custom Sleek FinTech Range Slider Styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #6366f1;
+  border: 3px solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.8), 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+  box-shadow: 0 0 22px rgba(99, 102, 241, 1), 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #6366f1;
+  border: 3px solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 16px rgba(99, 102, 241, 0.8);
+  transition: transform 0.15s ease;
+}
+
+/* High-Tech Glowing Card Border */
+.border-gradient-glow {
+  position: relative;
+}
+
+.border-gradient-glow::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.4), rgba(217, 70, 239, 0.2), transparent 70%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 /* Custom Scrollbar */
