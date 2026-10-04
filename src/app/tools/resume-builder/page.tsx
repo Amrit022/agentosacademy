@@ -1542,17 +1542,17 @@ export default function ResumeBuilderPage() {
       {/* Pro Features Modal */}
       {showProInfo && (
         <div 
-          className="fixed inset-0 !m-0 z-[9999] bg-black/90 backdrop-blur-xl flex flex-col justify-start items-center p-2.5 sm:p-4 md:p-6 overflow-y-auto overscroll-contain animate-in fade-in duration-200"
+          className="fixed inset-0 !m-0 z-[9999] bg-black/85 backdrop-blur-md flex flex-col justify-center items-center p-2.5 sm:p-4 md:p-6 overflow-hidden animate-in fade-in duration-200"
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowProInfo(false);
           }}
         >
           <div 
-            className="w-full max-w-2xl bg-[#0c1020] border border-amber-500/40 rounded-3xl shadow-2xl relative my-auto sm:my-8 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+            className="w-full max-w-2xl bg-[#0c1020] border border-amber-500/40 rounded-2xl sm:rounded-3xl shadow-2xl relative flex flex-col max-h-[92dvh] sm:max-h-[88dvh] overflow-hidden animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Sticky Header with Back Button */}
-            <div className="sticky top-0 z-50 bg-[#0c1020]/98 backdrop-blur-xl px-4 sm:px-6 py-3 border-b border-white/10 flex items-center justify-between gap-2 shadow-lg">
+            {/* Sticky Header with Clean Back Button */}
+            <div className="shrink-0 bg-[#0c1020] px-4 sm:px-6 py-3 border-b border-white/10 flex items-center justify-between gap-2 shadow-sm z-20">
               <button 
                 type="button"
                 onClick={() => setShowProInfo(false)}
@@ -1560,7 +1560,7 @@ export default function ResumeBuilderPage() {
                 title="Back to Resume Builder"
               >
                 <ArrowLeft className="w-4 h-4 text-amber-400" />
-                <span>← Back</span>
+                <span>Back</span>
               </button>
 
               <div className="text-center min-w-0 flex-1 px-1">
@@ -1585,8 +1585,8 @@ export default function ResumeBuilderPage() {
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-5 sm:p-8 space-y-6">
+            {/* Modal Body (Smoothly scrollable without clipping) */}
+            <div className="flex-1 overflow-y-auto overscroll-contain p-5 sm:p-8 space-y-6 -webkit-overflow-scrolling-touch">
               {/* Header */}
               <div className="flex items-center gap-3">
                 <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/30 shrink-0">

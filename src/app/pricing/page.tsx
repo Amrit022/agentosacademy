@@ -537,17 +537,17 @@ Merchant Entity    : OmniStack AI Technologies Inc.
       {/* FULL INTERACTIVE GLOBAL PAYMENT GATEWAY & CHECKOUT WINDOW */}
       {showPaypalModal && (
         <div 
-          className="fixed inset-0 !m-0 z-[9999] bg-black/90 backdrop-blur-xl flex flex-col justify-start items-center p-2.5 sm:p-4 md:p-6 overflow-y-auto overscroll-contain animate-in fade-in duration-200"
+          className="fixed inset-0 !m-0 z-[9999] bg-black/85 backdrop-blur-md flex flex-col justify-center items-center p-2.5 sm:p-4 md:p-6 overflow-hidden animate-in fade-in duration-200"
           onClick={(e) => {
             if (e.target === e.currentTarget) setShowPaypalModal(false);
           }}
         >
           <div 
-            className="w-full max-w-xl bg-[#0a0f1d] border border-white/20 rounded-3xl shadow-2xl relative my-auto sm:my-8 overflow-hidden flex flex-col animate-in zoom-in-95 duration-200"
+            className="w-full max-w-xl bg-[#0a0f1d] border border-white/20 rounded-2xl sm:rounded-3xl shadow-2xl relative flex flex-col max-h-[92dvh] sm:max-h-[88dvh] overflow-hidden animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Sticky Navigation & Header Bar (Always pinned at top of viewport on mobile & desktop) */}
-            <div className="sticky top-0 z-50 bg-[#0a0f1d]/98 backdrop-blur-xl px-4 sm:px-6 py-3 border-b border-white/10 flex items-center justify-between gap-2 shadow-lg">
+            {/* Sticky Navigation & Header Bar (Always pinned at top on all mobile & tablet screens) */}
+            <div className="shrink-0 bg-[#0a0f1d] px-4 sm:px-6 py-3 border-b border-white/10 flex items-center justify-between gap-2 shadow-sm z-20">
               <button 
                 type="button"
                 onClick={() => setShowPaypalModal(false)}
@@ -555,7 +555,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                 title="Back to Pricing Plans"
               >
                 <ArrowLeft className="w-4 h-4 text-brand-400" />
-                <span>← Back</span>
+                <span>Back</span>
               </button>
 
               <div className="text-center min-w-0 flex-1 px-1">
@@ -580,78 +580,84 @@ Merchant Entity    : OmniStack AI Technologies Inc.
               </button>
             </div>
 
-            {/* Modal Body */}
-            <div className="p-4 sm:p-7 space-y-6">
+            {/* Sticky Payment Method Selector Tabs (Pinned directly under header) */}
+            {!paymentSuccess && (
+              <div className="shrink-0 px-3 sm:px-6 pt-3 pb-2.5 bg-[#0a0f1d] border-b border-white/10 z-10">
+                <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-black/50 border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutTab('card')}
+                    className={`py-2 px-1 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 ${
+                      checkoutTab === 'card'
+                        ? 'bg-gradient-to-r from-brand-500 to-indigo-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <CreditCard className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">Card & Pay</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutTab('upi')}
+                    className={`py-2 px-1 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 ${
+                      checkoutTab === 'upi'
+                        ? 'bg-emerald-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <QrCode className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">UPI / QR</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setCheckoutTab('paypal')}
+                    className={`py-2 px-1 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 ${
+                      checkoutTab === 'paypal'
+                        ? 'bg-[#0070ba] text-white shadow-md'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    <span className="font-black text-xs shrink-0">P</span>
+                    <span className="truncate">PayPal</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Smooth Scrollable Modal Body (Never cut off on any phone or tablet) */}
+            <div className="flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6 space-y-4 -webkit-overflow-scrolling-touch">
               {!paymentSuccess ? (
-                <div className="space-y-5">
-                  {/* Payment Method Selector Tabs */}
-                  <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-black/40 border border-white/10">
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutTab('card')}
-                      className={`py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
-                        checkoutTab === 'card'
-                          ? 'bg-gradient-to-r from-brand-500 to-accent-500 text-white shadow-md'
-                          : 'text-slate-400 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      <CreditCard className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">Card & Pay</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutTab('upi')}
-                      className={`py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
-                        checkoutTab === 'upi'
-                          ? 'bg-emerald-600 text-white shadow-md'
-                          : 'text-slate-400 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      <QrCode className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">UPI / QR</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setCheckoutTab('paypal')}
-                      className={`py-2 px-1.5 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold transition flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 cursor-pointer ${
-                        checkoutTab === 'paypal'
-                          ? 'bg-[#0070ba] text-white shadow-md'
-                          : 'text-slate-400 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      <span className="font-black text-xs shrink-0">P</span>
-                      <span className="truncate">PayPal</span>
-                    </button>
-                  </div>
-
+                <div className="space-y-4">
                 {/* TAB 1: PAYPAL OFFICIAL CHECKOUT */}
                 {checkoutTab === 'paypal' && (
-                  <div className="space-y-4 pt-1">
-                    <div className="p-4 rounded-2xl bg-[#003087]/15 border border-[#003087]/40 text-xs text-slate-300 space-y-2">
+                  <div className="space-y-3.5 pt-0.5">
+                    <div className="p-3.5 rounded-2xl bg-[#003087]/20 border border-[#003087]/40 text-xs text-slate-300 space-y-1.5">
                       <div className="flex items-center justify-between text-white font-bold">
                         <span className="flex items-center gap-1.5">
                           <Lock className="w-3.5 h-3.5 text-cyan-400" />
                           <span>PayPal Buyer Protection Active</span>
                         </span>
-                        <span className="text-emerald-400 text-sm">${getChargeAmount()}.00 USD</span>
+                        <span className="text-emerald-400 text-sm font-black">${getChargeAmount()}.00 USD</span>
                       </div>
-                      <p className="text-[11px] text-slate-400 leading-relaxed">
-                        Click the button below to launch the official PayPal payment checkout window. You can pay with your PayPal balance, linked bank account, or any international debit/credit card.
+                      <p className="text-[10px] text-slate-400 leading-relaxed">
+                        Click below to launch official PayPal payment window. Supports PayPal balance, linked bank account, or any international card.
                       </p>
                     </div>
 
                     <div>
                       {paypalError && (
-                        <div className="mb-2 p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
+                        <div className="mb-2 p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
                           <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                           <span>{paypalError}</span>
                         </div>
                       )}
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Your Email (To receive Pro License & Receipt)</label>
+                      <label className="block text-[11px] font-semibold text-slate-300 mb-1">Your Email (To receive Pro License & Receipt)</label>
                       <input 
                         type="email" 
+                        inputMode="email"
+                        autoComplete="email"
                         required
                         value={payerEmail} 
                         onChange={(e) => {
@@ -659,57 +665,57 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                           if (paypalError) setPaypalError('');
                         }}
                         placeholder="e.g. name@company.com"
-                        className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-medium font-mono placeholder:text-slate-600"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-xs outline-none focus:border-brand-500 font-medium font-mono placeholder:text-slate-600"
                       />
                     </div>
 
-                    <div className="space-y-2.5">
+                    <div className="space-y-2">
                       <a
                         href={getPaypalMeUrl()}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0070ba] to-[#003087] hover:opacity-95 text-white font-extrabold text-sm shadow-xl shadow-[#003087]/30 transition flex items-center justify-center gap-2 group cursor-pointer text-center"
+                        className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#0070ba] to-[#003087] hover:opacity-95 text-white font-extrabold text-xs sm:text-sm shadow-xl shadow-[#003087]/30 transition flex items-center justify-center gap-2 group cursor-pointer text-center active:scale-98"
                       >
                         <span className="w-5 h-5 rounded-full bg-white text-[#003087] font-black text-xs flex items-center justify-center">P</span>
-                        <span>Pay via PayPal.me (Direct Checkout) ↗</span>
-                        <ExternalLink className="w-4 h-4" />
+                        <span>Pay via PayPal.me (${getChargeAmount()}.00 USD) ↗</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
                       </a>
 
                       <button
                         type="button"
                         onClick={handleLaunchPaypalWindow}
-                        className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs transition flex items-center justify-center gap-2"
+                        className="w-full py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs transition flex items-center justify-center gap-2 active:scale-98"
                       >
                         <span>Alternative: PayPal Web Standard Gateway ↗</span>
                       </button>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                    <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-[11px] text-slate-400">
                       <span>Preferred method? Pay instantly with Card:</span>
                       <button 
                         type="button" 
                         onClick={() => setCheckoutTab('card')}
-                        className="text-brand-300 hover:text-white font-bold underline flex items-center gap-1"
+                        className="text-brand-300 hover:text-white font-bold underline flex items-center gap-1 cursor-pointer"
                       >
                         <CreditCard className="w-3.5 h-3.5" /> Pay with Card
                       </button>
                     </div>
 
                     {paypalWindowOpened && (
-                      <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-3">
+                      <div className="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-2.5">
                         <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">
                           <CheckCircle2 className="w-4 h-4 shrink-0" />
                           <span>PayPal Payment Window Opened!</span>
                         </div>
-                        <p className="text-[11px] text-slate-300 leading-relaxed">
-                          The official PayPal payment window was launched in a separate window. Complete your payment on PayPal, then click the button below to activate your license immediately.
+                        <p className="text-[10px] text-slate-300 leading-relaxed">
+                          The official PayPal window was launched. Complete your payment, then tap below to activate your Pro license immediately.
                         </p>
                         
                         <div className="flex flex-col sm:flex-row gap-2 pt-1">
                           <button
                             type="button"
                             onClick={handleVerifyPaypalPayment}
-                            className="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg"
+                            className="flex-1 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg active:scale-98 cursor-pointer"
                           >
                             <Check className="w-4 h-4" />
                             <span>I Have Completed Payment — Activate License</span>
@@ -719,7 +725,7 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                             href={getPaypalCheckoutUrl()}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="py-3 px-4 rounded-xl glass hover:bg-white/10 text-slate-300 hover:text-white font-semibold text-xs text-center transition flex items-center justify-center gap-1"
+                            className="py-3 px-4 rounded-xl glass hover:bg-white/10 text-slate-300 hover:text-white font-semibold text-xs text-center transition flex items-center justify-center gap-1 cursor-pointer"
                           >
                             <ExternalLink className="w-3.5 h-3.5" /> Re-open PayPal
                           </a>
@@ -731,41 +737,43 @@ Merchant Entity    : OmniStack AI Technologies Inc.
 
                 {/* TAB 2: CREDIT / DEBIT CARD CHECKOUT */}
                 {checkoutTab === 'card' && (
-                  <form onSubmit={handleProcessCardPayment} className="space-y-4 pt-1">
-                    {/* Featured 1-Click Hosted Checkout via Dodo Payments */}
-                    <a
-                      href="https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full p-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs shadow-xl shadow-emerald-500/25 transition flex items-center justify-between group cursor-pointer"
-                    >
+                  <form onSubmit={handleProcessCardPayment} className="space-y-3.5 pt-0.5">
+                    {/* Featured 1-Click Fast Hosted Checkout via Dodo Payments */}
+                    <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-brand-500/15 border border-emerald-500/30 space-y-2.5">
                       <div className="flex items-center gap-2.5">
-                        <span className="text-xl">🦤</span>
-                        <div className="text-left">
-                          <div className="font-black text-slate-950 flex items-center gap-1.5">
-                            <span>1-Click Instant Card & Apple Pay Checkout</span>
-                            <span className="text-[9px] bg-slate-950 text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">Fastest</span>
+                        <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-base shrink-0 border border-emerald-500/30">
+                          🦤
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                            <span>Instant 1-Click Fast Checkout</span>
+                            <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">Recommended</span>
                           </div>
-                          <div className="text-[10px] text-emerald-950 font-medium">
-                            Zero-friction hosted checkout powered by Dodo Payments
+                          <div className="text-[10px] text-slate-300 truncate">
+                            Apple Pay • Google Pay • Cards • Instant Tax Invoice
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 font-black text-xs text-slate-950 shrink-0">
-                        <span>Pay ${getChargeAmount()}.00 USD ↗</span>
-                        <ExternalLink className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                      </div>
-                    </a>
+                      <a
+                        href="https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-98 cursor-pointer text-center"
+                      >
+                        <span>Launch 1-Click Checkout (${getChargeAmount()}.00 USD) ↗</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
 
-                    <div className="relative flex py-1 items-center">
+                    <div className="relative flex py-0.5 items-center">
                       <div className="flex-grow border-t border-white/10"></div>
-                      <span className="flex-shrink mx-3 text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Or enter card details manually below</span>
+                      <span className="flex-shrink mx-3 text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Or enter card details manually</span>
                       <div className="flex-grow border-t border-white/10"></div>
                     </div>
 
                     {/* Error Banner */}
                     {cardError && (
-                      <div className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2 animate-in fade-in">
+                      <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2 animate-in fade-in">
                         <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                         <span>{cardError}</span>
                       </div>
@@ -776,6 +784,8 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                       <input 
                         type="text" 
                         required
+                        autoComplete="cc-name"
+                        autoCapitalize="words"
                         value={payerName} 
                         onChange={(e) => {
                           setPayerName(e.target.value);
@@ -800,6 +810,8 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                       <div className="relative">
                         <input 
                           type="text" 
+                          inputMode="numeric"
+                          autoComplete="cc-number"
                           required
                           value={cardNumber} 
                           onChange={handleCardNumberChange}
@@ -816,6 +828,8 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                         <label className="block text-[11px] font-semibold text-slate-300 mb-1">Expiry Date</label>
                         <input 
                           type="text" 
+                          inputMode="numeric"
+                          autoComplete="cc-exp"
                           required
                           value={cardExpiry} 
                           onChange={handleExpiryChange}
@@ -828,6 +842,8 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                         <label className="block text-[11px] font-semibold text-slate-300 mb-1">CVC / CVV</label>
                         <input 
                           type="text" 
+                          inputMode="numeric"
+                          autoComplete="cc-csc"
                           required
                           value={cardCvc} 
                           onChange={handleCvcChange}
@@ -865,51 +881,20 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                       <div className="space-y-2.5 pt-1">
                         <button
                           type="submit"
-                          className="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white font-extrabold text-sm shadow-xl shadow-brand-500/25 transition flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer"
+                          className="w-full py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-brand-500 via-indigo-500 to-accent-500 text-white font-extrabold text-xs sm:text-sm shadow-xl shadow-brand-500/25 transition flex items-center justify-center gap-2 hover:opacity-95 cursor-pointer active:scale-98"
                         >
                           <Lock className="w-4 h-4" />
                           <span>Authorize & Pay ${getChargeAmount()}.00 USD with Card</span>
                         </button>
 
-                        {/* Dodo Payments Integration Highlight */}
-                        <div className="p-3.5 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-brand-500/10 border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-sm shrink-0 border border-emerald-500/30">
-                              🦤
-                            </div>
-                            <div>
-                              <div className="text-xs font-bold text-white flex items-center gap-1.5">
-                                <span>Dodo Payments Global Checkout</span>
-                                <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full font-bold">Recommended MoR</span>
-                              </div>
-                              <div className="text-[10px] text-slate-300 mt-0.5">
-                                100% Zero-Friction: Cards, Apple Pay, Google Pay with instant automated VAT/tax invoice.
-                              </div>
-                            </div>
-                          </div>
-                          <a
-                            href="https://checkout.dodopayments.com/buy/pdt_0Noz3iseuD6nqAUvsHz2R?quantity=1"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 shrink-0"
-                          >
-                            <span>Launch Dodo Checkout ($9.00 USD) ↗</span>
-                            <ExternalLink className="w-3.5 h-3.5" />
-                          </a>
-                        </div>
-
-                        <div className="text-center pt-1">
-                          <span className="text-[11px] text-slate-400">or pay with card through PayPal's hosted card gateway:</span>
-                        </div>
-
                         <a
                           href={getPaypalMeUrl()}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full py-3 rounded-xl bg-white/10 hover:bg-white/15 text-slate-200 hover:text-white font-bold text-xs transition flex items-center justify-center gap-2 text-center"
+                          className="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-medium text-[11px] transition flex items-center justify-center gap-1.5 text-center border border-white/5"
                         >
-                          <CreditCard className="w-4 h-4 text-cyan-400" />
-                          <span>Pay with Card on PayPal Portal (Zero Account Required) ↗</span>
+                          <CreditCard className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>Alternative: Pay with Card on PayPal Hosted Portal ↗</span>
                         </a>
                       </div>
                     )}
@@ -918,30 +903,31 @@ Merchant Entity    : OmniStack AI Technologies Inc.
 
                 {/* TAB 3: UPI / ZERO DOCUMENTATION GLOBAL WIRE */}
                 {checkoutTab === 'upi' && (
-                  <div className="space-y-4 pt-1 text-xs text-slate-300">
-                    <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 space-y-2">
-                      <div className="font-bold text-emerald-400 flex items-center gap-1.5">
-                        <Globe className="w-4 h-4" />
-                        <span>Instant UPI & Global Settlement</span>
+                  <div className="space-y-3.5 pt-0.5 text-xs text-slate-300">
+                    <div className="p-3 sm:p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Globe className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <div className="min-w-0">
+                          <div className="text-xs font-bold text-emerald-400">Instant UPI & Direct Bank Settlement</div>
+                          <div className="text-[10px] text-slate-300 truncate">Zero processing fees • Instant manual & automated activation</div>
+                        </div>
                       </div>
-                      <p className="text-[11px] text-slate-300 leading-relaxed">
-                        For users who prefer Instant Direct Bank Transfer, UPI, or QR Checkout (Zero Processing Fees):
-                      </p>
+                      <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-bold shrink-0">0% Fees</span>
                     </div>
 
-                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+                    <div className="p-3.5 sm:p-4 rounded-2xl bg-white/5 border border-white/10 space-y-3.5">
                       {/* Copyable UPI ID Box */}
-                      <div className="flex items-center justify-between p-3.5 rounded-xl bg-black/40 border border-emerald-500/30">
-                        <div>
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-black/50 border border-emerald-500/30">
+                        <div className="min-w-0">
                           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Direct Official UPI ID</div>
-                          <div className="font-mono text-base font-black text-emerald-400 mt-0.5 tracking-wide select-all">
+                          <div className="font-mono text-sm sm:text-base font-black text-emerald-400 mt-0.5 tracking-wide select-all truncate">
                             7901857685@ptyes
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={copyUpiId}
-                          className="px-3.5 py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition flex items-center gap-1.5 shadow-sm"
+                          className="px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 text-xs font-bold border border-emerald-500/30 transition flex items-center gap-1.5 shadow-sm shrink-0 active:scale-95 cursor-pointer"
                         >
                           {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                           <span>{copiedUpi ? 'Copied!' : 'Copy UPI'}</span>
@@ -949,42 +935,52 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                       </div>
 
                       {/* QR Code and Amount Section */}
-                      <div className="flex flex-col sm:flex-row items-center gap-4 p-3.5 rounded-xl bg-white/5 border border-white/10">
+                      <div className="flex flex-row items-center gap-3 sm:gap-4 p-3 rounded-xl bg-white/5 border border-white/10">
                         <div className="bg-white p-2 rounded-xl shadow-md shrink-0">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img 
-                            src={`https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=${encodeURIComponent('upi://pay?pa=7901857685@ptyes&pn=OmniStack%20AI&am=' + (getChargeAmount() * 86) + '&cu=INR')}`}
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent('upi://pay?pa=7901857685@ptyes&pn=OmniStack%20AI&am=' + (getChargeAmount() * 86) + '&cu=INR')}`}
                             alt="Scan to Pay UPI: 7901857685@ptyes"
-                            className="w-24 h-24 object-contain"
+                            className="w-20 h-20 sm:w-24 sm:h-24 object-contain"
                           />
                         </div>
-                        <div className="space-y-1.5 text-center sm:text-left">
+                        <div className="space-y-1 min-w-0 flex-1">
                           <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Amount Due (INR)</div>
-                          <div className="font-black text-white text-lg">
+                          <div className="font-black text-white text-base sm:text-lg">
                             ₹{(getChargeAmount() * 86).toLocaleString('en-IN')} INR
                           </div>
-                          <div className="text-[11px] text-slate-400">
+                          <div className="text-[11px] text-slate-400 truncate">
                             ≈ ${getChargeAmount()}.00 USD ({selectedPlan.name})
                           </div>
                           <div className="text-[10px] text-emerald-400 font-medium">
-                            Scan with Google Pay, PhonePe, Paytm, or BHIM
+                            Google Pay • PhonePe • Paytm • BHIM
                           </div>
                         </div>
                       </div>
 
+                      {/* 1-Click Mobile UPI App Intent Launcher (for iPhone & Android/Lenovo Tab) */}
+                      <a
+                        href={`upi://pay?pa=7901857685@ptyes&pn=OmniStack%20AI&am=${getChargeAmount() * 86}&cu=INR`}
+                        className="w-full py-2.5 px-3 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-300 font-bold text-xs transition flex items-center justify-center gap-1.5 border border-emerald-500/30 active:scale-98 text-center"
+                      >
+                        <span>📲 Tap to Pay in UPI App (GPay / PhonePe / Paytm)</span>
+                      </a>
+
                       {/* UTR / Transaction ID Input */}
-                      <div className="space-y-2">
+                      <div className="space-y-1.5">
                         {upiError && (
-                          <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
+                          <div className="p-2.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs flex items-center gap-2">
                             <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
                             <span>{upiError}</span>
                           </div>
                         )}
                         <label className="block text-[11px] font-semibold text-slate-300">
-                          Transaction Reference / UTR Number (From Google Pay / PhonePe / Paytm / Bank)
+                          Transaction Reference / UTR Number
                         </label>
                         <input
                           type="text"
+                          inputMode="numeric"
+                          autoComplete="off"
                           required
                           value={upiRef}
                           onChange={(e) => {
@@ -992,14 +988,14 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                             if (upiError) setUpiError('');
                           }}
                           placeholder="e.g. 12-digit UTR No. (403928172635)"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-emerald-500 font-mono placeholder:text-slate-600"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-black/50 border border-white/10 text-white text-xs outline-none focus:border-emerald-500 font-mono placeholder:text-slate-600"
                         />
                       </div>
 
                       <button
                         type="button"
                         onClick={handleVerifyUpiPayment}
-                        className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20 cursor-pointer active:scale-98"
+                        className="w-full py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs transition flex items-center justify-center gap-1.5 shadow-lg shadow-emerald-500/20 cursor-pointer active:scale-98"
                       >
                         <Check className="w-4 h-4" />
                         <span>Verify UTR & Activate Pro License</span>
@@ -1008,12 +1004,12 @@ Merchant Entity    : OmniStack AI Technologies Inc.
                   </div>
                 )}
 
-                {/* Secondary Back/Cancel Button at bottom */}
-                <div className="pt-2 border-t border-white/10">
+                {/* Secondary Back/Cancel Button at bottom of form */}
+                <div className="pt-2 pb-2 border-t border-white/10">
                   <button
                     type="button"
                     onClick={() => setShowPaypalModal(false)}
-                    className="w-full py-3.5 px-4 rounded-xl border border-white/10 hover:border-white/20 text-slate-300 hover:text-white hover:bg-white/5 text-xs font-semibold transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                    className="w-full py-3 px-4 rounded-xl border border-white/10 hover:border-white/20 text-slate-400 hover:text-white hover:bg-white/5 text-xs font-semibold transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                   >
                     <ArrowLeft className="w-4 h-4 text-brand-400" />
                     <span>Cancel and return to pricing plans</span>
